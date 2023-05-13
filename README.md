@@ -1,16 +1,18 @@
-# travel_tracker
+# TravelTracker
 
-A new Flutter project.
+A travel app for tracking and organizing your journey data.
 
-## Getting Started
+## FEATURE
 
-This project is a starting point for a Flutter application.
+- work on android
+- select and show gpx track
+- auto search image to attach on gpx track
+- map marker cluster
+- gallery show all images in external storage
 
-A few resources to get you started if this is your first Flutter project:
+## TODO
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- [ ] gallery filter
+- [ ] bundle the data of track toghther
+- [ ] record track
+- [ ] modify track
