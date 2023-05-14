@@ -11,17 +11,33 @@ class GalleryPage extends StatefulWidget {
 }
 
 class _GalleryPageState extends State<GalleryPage> {
-  late Future<List<AssetEntity>?> assets;
+  late Future<List<AssetEntity>?> futureAssets;
 
   @override
   void initState() {
     super.initState();
-    assets = GetIt.I
-        .isReady<ExternalAssetManager>()
-        .then((_) async => GetIt.I<ExternalAssetManager>().getAssetsFilteredByTime(
+    futureAssets = GetIt.I.isReady<ExternalAssetManager>().then(
+        (_) async => GetIt.I<ExternalAssetManager>().getAssetsFilteredByTime(
               // minDate: DateTime(2023, 5, 1),
               isTimeAsc: false,
             ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: futureAssets,
+      builder:
+          (BuildContext context, AsyncSnapshot<List<AssetEntity>?> snapshot) {
+        if (snapshot.hasData) {
+          return _buildGridView(snapshot.data!);
+        } else if (snapshot.connectionState == ConnectionState.done) {
+          return const Center(child: Text('Nothing to show'));
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
+    );
   }
 
   Widget _buildGridView(List<AssetEntity> assets) {
@@ -36,62 +52,33 @@ class _GalleryPageState extends State<GalleryPage> {
         itemCount: assets.length,
         itemBuilder: (BuildContext context, int index) {
           AssetEntity asset = assets[index];
-          return InkWell(
-            child:
-                (asset.type != AssetType.image && asset.type != AssetType.video)
-                    ? Card(
-                        child: Center(
-                          child: Text(
-                            '${asset.relativePath}${asset.title!}',
-                            style: const TextStyle(
-                              fontSize: 8.0,
-                            ),
-                          ),
-                        ),
-                      )
-                    : Ink.image(
-                        image: AssetEntityImageProvider(
-                          asset,
-                          isOriginal: false,
-                        ),
-                        fit: BoxFit.cover,
-                      ),
-            onTap: () async {
-              debugPrint('${asset.relativePath}${asset.title}');
-            },
-          );
+          return _buildAssetThumbnail(asset);
         },
       ),
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      // future: Future.wait([
-      //   GetIt.I.isReady<ExternalAssetManager>().then(
-      //         (_) async => GetIt.I<ExternalAssetManager>()
-      //             .getAssets(
-      //               minDate: DateTime(2023, 5, 31),
-      //               timeAsc: false,
-      //             )
-      //             .then((value) => assets = value),
-      //       ),
-      // ]),
-      future: assets,
-      builder:
-          (BuildContext context, AsyncSnapshot<List<AssetEntity>?> snapshot) {
-        if (snapshot.hasData) {
-          return _buildGridView(snapshot.data!);
-        } else if (snapshot.connectionState == ConnectionState.done) {
-          return const Center(child: Text('Nothing to show'));
-        } else {
-          return const Center(child: CircularProgressIndicator());
-        }
-      },
+  Widget _buildAssetThumbnail(AssetEntity asset) {
+    return Card(
+      margin: const EdgeInsets.all(0),
+      child: InkWell(
+        onTap: () => _onTapAsset(asset),
+        child: (asset.type != AssetType.image && asset.type != AssetType.video)
+            ? Text(
+                '${asset.relativePath}${asset.title!}',
+              )
+            : Ink.image(
+                image: AssetEntityImageProvider(
+                  asset,
+                  isOriginal: false,
+                ),
+                fit: BoxFit.cover,
+              ),
+      ),
     );
-    // return assets.isEmpty
-    //     ? const Center(child: CircularProgressIndicator())
-    //     : _buildGridView();
+  }
+
+  void _onTapAsset(AssetEntity asset) async {
+    debugPrint('${asset.relativePath}${asset.title}');
   }
 }
