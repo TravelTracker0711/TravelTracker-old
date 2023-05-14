@@ -18,9 +18,9 @@ class _GalleryPageState extends State<GalleryPage> {
     super.initState();
     assets = GetIt.I
         .isReady<ExternalAssetManager>()
-        .then((_) async => GetIt.I<ExternalAssetManager>().getAssets(
+        .then((_) async => GetIt.I<ExternalAssetManager>().getAssetsFilteredByTime(
               // minDate: DateTime(2023, 5, 1),
-              timeAsc: false,
+              isTimeAsc: false,
             ));
   }
 

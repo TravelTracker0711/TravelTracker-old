@@ -3,35 +3,72 @@ import 'package:photo_manager/photo_manager.dart';
 
 // singleton
 class ExternalAssetManager {
-  AssetPathEntity? _allAssetsPath;
+  AssetPathEntity? _allAssetsPathEntity;
 
   Future<void> init() async {
-    final PermissionState ps = await PhotoManager.requestPermissionExtend();
-    if (!ps.isAuth) {
+    if (!(await _getPermission())) {
       debugPrint('Permission not granted');
       return;
     }
+    _allAssetsPathEntity = await _getAllAssetPath();
+  }
 
-    final List<AssetPathEntity> paths = await PhotoManager.getAssetPathList(
+  Future<List<AssetEntity>?> getAssetsFilteredByTime({
+    DateTime? minDate,
+    DateTime? maxDate,
+    bool isTimeAsc = false,
+    int? start,
+    int? end,
+  }) async {
+    if (!_isAllAssetsPathEntityReady()) {
+      debugPrint('all asset path not ready');
+      return null;
+    }
+    FilterOptionGroup filterOption =
+        _getFilterOption(minDate, maxDate, isTimeAsc);
+    AssetPathEntity? filteredPathEntity =
+        await _getFilteredPathEntity(filterOption);
+    List<AssetEntity>? assets =
+        await _getAssetsRange(filteredPathEntity, start, end);
+    debugPrint('total assets: ${assets?.length}');
+    return assets;
+  }
+
+  Future<AssetPathEntity> _getAllAssetPath() async {
+    final List<AssetPathEntity> pathEntities =
+        await PhotoManager.getAssetPathList(
       type: RequestType.all,
       hasAll: true,
       onlyAll: true,
     );
-    _allAssetsPath = paths[0];
+    return pathEntities[0];
   }
 
-  Future<List<AssetEntity>?> getAssets({
-    DateTime? minDate,
-    DateTime? maxDate,
-    int? start,
-    int? end,
-    bool timeAsc = false,
-  }) async {
-    if (_allAssetsPath == null) {
-      debugPrint('Path is null');
-      return null;
-    }
+  Future<bool> _getPermission() async {
+    final PermissionState ps = await PhotoManager.requestPermissionExtend();
+    return ps.isAuth;
+  }
 
+  Future<List<AssetEntity>?> _getAssetsRange(
+      AssetPathEntity? filteredPathEntity, int? start, int? end) async {
+    List<AssetEntity>? assets = await filteredPathEntity?.getAssetListRange(
+      start: start ?? 0,
+      end: end ?? await filteredPathEntity.assetCountAsync,
+    );
+    return assets;
+  }
+
+  Future<AssetPathEntity?> _getFilteredPathEntity(
+      FilterOptionGroup filterOption) async {
+    AssetPathEntity? filteredPathEntity =
+        await _allAssetsPathEntity?.fetchPathProperties(
+      filterOptionGroup: filterOption,
+    );
+    return filteredPathEntity;
+  }
+
+  FilterOptionGroup _getFilterOption(
+      DateTime? minDate, DateTime? maxDate, bool isTimeAsc) {
     final FilterOptionGroup filterOption = FilterOptionGroup(
       updateTimeCond: DateTimeCond(
         min: minDate ?? DateTime.fromMillisecondsSinceEpoch(0),
@@ -40,21 +77,14 @@ class ExternalAssetManager {
       orders: [
         OrderOption(
           type: OrderOptionType.createDate,
-          asc: timeAsc,
+          asc: isTimeAsc,
         ),
       ],
     );
-
-    AssetPathEntity? filteredPath = await _allAssetsPath?.fetchPathProperties(
-      filterOptionGroup: filterOption,
-    );
-
-    List<AssetEntity>? assets = await filteredPath?.getAssetListRange(
-      start: start ?? 0,
-      end: end ?? await _allAssetsPath!.assetCountAsync,
-    );
-    debugPrint('total assets: ${assets?.length}');
-    return assets;
+    return filterOption;
   }
 
+  bool _isAllAssetsPathEntityReady() {
+    return _allAssetsPathEntity != null;
+  }
 }

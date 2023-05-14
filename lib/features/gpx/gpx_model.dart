@@ -36,10 +36,10 @@ class TrksegWithAssets {
       {required Trkseg trkseg, List<AssetEntity>? assets}) async {
     assets ??= await GetIt.I
         .isReady<ExternalAssetManager>()
-        .then((_) async => GetIt.I<ExternalAssetManager>().getAssets(
+        .then((_) async => GetIt.I<ExternalAssetManager>().getAssetsFilteredByTime(
               minDate: trkseg.trkpts.first.time,
               maxDate: trkseg.trkpts.last.time,
-              timeAsc: true,
+              isTimeAsc: true,
             ));
 
     List<CustomAsset> customAssets = <CustomAsset>[];
