@@ -14,25 +14,22 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0;
+  int _selectedPageIndex = 0;
 
   final List<Widget> _bodyPages = <Widget>[
     const TrackPage(),
     const GalleryPage(),
-    const Text(
-      'Index 2: Settings',
-    ),
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     return ChangeNotifierProvider(
-      create: (BuildContext context) => GpxModel(),
+      create: (context) => GpxModel(),
       child: Scaffold(
         appBar: TrackAppBar(title: widget.title),
-        body: Center(child: _bodyPages.elementAt(_selectedIndex)),
+        body: Center(child: _bodyPages.elementAt(_selectedPageIndex)),
         bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
+          items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.map),
               label: 'Track',
@@ -41,15 +38,11 @@ class _HomePageState extends State<HomePage> {
               icon: Icon(Icons.photo_library),
               label: 'Data',
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              label: 'Settings',
-            ),
           ],
-          currentIndex: _selectedIndex,
+          currentIndex: _selectedPageIndex,
           onTap: (int index) {
             setState(() {
-              _selectedIndex = index;
+              _selectedPageIndex = index;
             });
           },
         ),

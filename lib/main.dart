@@ -11,24 +11,22 @@ void main() {
       await eam.init();
       return eam;
     },
-    // instanceName: 'ExternalAssetManager',
   );
   runApp(const MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Travel Tracker',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         splashFactory: InkRipple.splashFactory,
       ),
-      home: const HomePage(title: 'Flutter Demo Home Page'),
+      home: const HomePage(title: 'Travel Tracker Home Page'),
     );
   }
 }
