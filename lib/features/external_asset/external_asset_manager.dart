@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 // singleton
 class ExternalAssetManager {
   AssetPathEntity? _allAssetsPathEntity;
+
+  // ignore: non_constant_identifier_names
+  static Future<ExternalAssetManager> get FI async {
+    return await GetIt.I
+        .isReady<ExternalAssetManager>()
+        .then((_) => GetIt.I<ExternalAssetManager>());
+  }
 
   Future<void> init() async {
     if (!(await _getPermission())) {

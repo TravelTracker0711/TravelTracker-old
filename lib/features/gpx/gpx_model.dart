@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:gpx/gpx.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:travel_tracker/features/external_asset/external_asset_manager.dart';
@@ -34,13 +33,12 @@ class TrksegWithAssets {
 
   static Future<TrksegWithAssets> create(
       {required Trkseg trkseg, List<AssetEntity>? assets}) async {
-    assets ??= await GetIt.I
-        .isReady<ExternalAssetManager>()
-        .then((_) async => GetIt.I<ExternalAssetManager>().getAssetsFilteredByTime(
-              minDate: trkseg.trkpts.first.time,
-              maxDate: trkseg.trkpts.last.time,
-              isTimeAsc: true,
-            ));
+    ExternalAssetManager eam = await ExternalAssetManager.FI;
+    assets ??= await eam.getAssetsFilteredByTime(
+      minDate: trkseg.trkpts.first.time,
+      maxDate: trkseg.trkpts.last.time,
+      isTimeAsc: true,
+    );
 
     List<CustomAsset> customAssets = <CustomAsset>[];
 

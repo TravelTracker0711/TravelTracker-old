@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:travel_tracker/features/external_asset/external_asset_manager.dart';
 
@@ -16,11 +15,11 @@ class _GalleryPageState extends State<GalleryPage> {
   @override
   void initState() {
     super.initState();
-    futureAssets = GetIt.I.isReady<ExternalAssetManager>().then(
-        (_) async => GetIt.I<ExternalAssetManager>().getAssetsFilteredByTime(
-              // minDate: DateTime(2023, 5, 1),
-              isTimeAsc: false,
-            ));
+    Future<ExternalAssetManager> feam = ExternalAssetManager.FI;
+    futureAssets = feam.then((eam) => eam.getAssetsFilteredByTime(
+          // minDate: DateTime(2023, 5, 1),
+          isTimeAsc: false,
+        ));
   }
 
   @override
