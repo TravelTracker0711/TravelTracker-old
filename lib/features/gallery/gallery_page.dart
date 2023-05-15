@@ -7,6 +7,7 @@ class GalleryPage extends StatefulWidget {
 
   @override
   State<GalleryPage> createState() => _GalleryPageState();
+
 }
 
 class _GalleryPageState extends State<GalleryPage> {
