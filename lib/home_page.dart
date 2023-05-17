@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_tracker/features/gallery/gallery_page.dart';
 import 'package:travel_tracker/features/gpx/gpx_model.dart';
-import 'package:travel_tracker/features/track/track_app_bar.dart';
-import 'package:travel_tracker/features/track/track_page.dart';
+import 'package:travel_tracker/features/map_view/map_view_app_bar.dart';
+import 'package:travel_tracker/features/map_view/map_view_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
   int _selectedPageIndex = 0;
 
   final List<Widget> _bodyPages = <Widget>[
-    const TrackPage(),
+    const MapViewPage(),
     const GalleryPage(),
   ];
 
@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
     return ChangeNotifierProvider(
       create: (context) => GpxModel(),
       child: Scaffold(
-        appBar: TrackAppBar(title: widget.title),
+        appBar: MapViewAppBar(title: widget.title),
         body: Center(child: _bodyPages.elementAt(_selectedPageIndex)),
         bottomNavigationBar: BottomNavigationBar(
           items: const [

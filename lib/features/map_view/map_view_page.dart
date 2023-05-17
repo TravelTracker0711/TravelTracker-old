@@ -7,21 +7,21 @@ import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:latlong2/latlong.dart' as latlng;
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
-import 'package:travel_tracker/features/track/extra_marker.dart';
+import 'package:travel_tracker/features/map_view/extra_marker.dart';
 import 'package:travel_tracker/features/gpx/gpx_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:gpx/gpx.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 
-class TrackPage extends StatefulWidget {
-  const TrackPage({super.key});
+class MapViewPage extends StatefulWidget {
+  const MapViewPage({super.key});
 
   @override
-  State<TrackPage> createState() => _TrackPageState();
+  State<MapViewPage> createState() => _MapViewPageState();
 }
 
 // TODO refactor
-class _TrackPageState extends State<TrackPage> {
+class _MapViewPageState extends State<MapViewPage> {
   FlutterMap? _map;
   MapController? _mapController;
   double _mapRotation = 0.0;
