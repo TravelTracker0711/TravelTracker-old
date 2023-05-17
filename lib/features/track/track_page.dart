@@ -20,6 +20,7 @@ class TrackPage extends StatefulWidget {
   State<TrackPage> createState() => _TrackPageState();
 }
 
+// TODO refactor
 class _TrackPageState extends State<TrackPage> {
   FlutterMap? _map;
   MapController? _mapController;
