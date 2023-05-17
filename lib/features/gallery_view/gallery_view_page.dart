@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:travel_tracker/features/external_asset/external_asset_manager.dart';
 
-class GalleryPage extends StatefulWidget {
-  const GalleryPage({super.key});
+class GalleryViewPage extends StatefulWidget {
+  const GalleryViewPage({super.key});
 
   @override
-  State<GalleryPage> createState() => _GalleryPageState();
+  State<GalleryViewPage> createState() => _GalleryViewPageState();
 }
 
-class _GalleryPageState extends State<GalleryPage> {
+class _GalleryViewPageState extends State<GalleryViewPage> {
   late Future<List<AssetEntity>?> futureAssets;
 
   @override
