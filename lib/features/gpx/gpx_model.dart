@@ -6,77 +6,76 @@ import 'package:latlong2/latlong.dart' as latlng;
 
 class GpxModel with ChangeNotifier {
   final List<Gpx> _gpxs = <Gpx>[];
-  final List<TrksegWithAssets> _trksegWithAssets = <TrksegWithAssets>[];
-  int _lastTrksegIndex = 0;
+  final List<TrksegWithAssets> _trksegsWithAssets = <TrksegWithAssets>[];
 
   List<Gpx> get gpxs => _gpxs;
-  List<TrksegWithAssets> get trksegWithAssets => _trksegWithAssets;
-  Gpx? get lastGpx => _gpxs.isNotEmpty ? _gpxs.last : null;
-  List<TrksegWithAssets> get lastTrksegWithAssets =>
-      _trksegWithAssets.sublist(_lastTrksegIndex);
+  List<TrksegWithAssets> get trksegsWithAssets => _trksegsWithAssets;
 
   Future<void> addGpx(Gpx gpx) async {
     _gpxs.add(gpx);
-    _lastTrksegIndex = _trksegWithAssets.length;
+    _trksegsWithAssets.addAll(await _getAllTrksegWithAssets(gpx));
+    notifyListeners();
+  }
+
+  Future<List<TrksegWithAssets>> _getAllTrksegWithAssets(Gpx gpx) async {
+    List<TrksegWithAssets> trksegsWithAssets = <TrksegWithAssets>[];
     for (Trk trk in gpx.trks) {
       for (Trkseg trkseg in trk.trksegs) {
-        _trksegWithAssets.add(await TrksegWithAssets.create(trkseg: trkseg));
+        trksegsWithAssets.add(await TrksegWithAssets.create(trkseg: trkseg));
       }
     }
-    notifyListeners();
+    return trksegsWithAssets;
   }
 }
 
 class TrksegWithAssets {
-  TrksegWithAssets(
-      {required this.trkseg, required this.customAssets}) ;
+  TrksegWithAssets({required this.trkseg, required this.extendedAssets});
+
+  Trkseg trkseg;
+  List<ExtendedAsset> extendedAssets;
 
   static Future<TrksegWithAssets> create(
       {required Trkseg trkseg, List<AssetEntity>? assets}) async {
+    assets ??= await _getAssetsInTrkseg(assets, trkseg);
+    List<ExtendedAsset> extendedAssets = _locateAssetsInTrkseg(trkseg, assets);
+    return TrksegWithAssets(trkseg: trkseg, extendedAssets: extendedAssets);
+  }
+
+  static List<ExtendedAsset> _locateAssetsInTrkseg(
+      Trkseg trkseg, List<AssetEntity>? assets) {
+    List<ExtendedAsset> extendedAssets = <ExtendedAsset>[];
+    if (assets == null) {
+      return extendedAssets;
+    }
+    int trkptIndex = 0;
+    for (AssetEntity asset in assets) {
+      while (trkptIndex < trkseg.trkpts.length - 1 &&
+          (trkseg.trkpts[trkptIndex + 1].time!.isBefore(asset.createDateTime))) {
+        trkptIndex++;
+      }
+      latlng.LatLng latLng = latlng.LatLng(
+        trkseg.trkpts[trkptIndex].lat!,
+        trkseg.trkpts[trkptIndex].lon!,
+      );
+      ExtendedAsset extendedAsset = ExtendedAsset(asset: asset, latLng: latLng);
+      extendedAssets.add(extendedAsset);
+    }
+    return extendedAssets;
+  }
+
+  static Future<List<AssetEntity>?> _getAssetsInTrkseg(List<AssetEntity>? assets, Trkseg trkseg) async {
     ExternalAssetManager eam = await ExternalAssetManager.FI;
     assets ??= await eam.getAssetsFilteredByTime(
       minDate: trkseg.trkpts.first.time,
       maxDate: trkseg.trkpts.last.time,
       isTimeAsc: true,
     );
-
-    List<CustomAsset> customAssets = <CustomAsset>[];
-
-    if (assets != null) {
-      int trkptIndex = 0;
-      for (AssetEntity asset in assets) {
-        latlng.LatLng? latLng;
-        if (asset.latitude != null && asset.longitude != null) {
-          latLng = latlng.LatLng(
-            asset.latitude!,
-            asset.longitude!,
-          );
-        } else {
-          while (trkptIndex < trkseg.trkpts.length - 1 &&
-              (trkseg.trkpts[trkptIndex + 1].time
-                      !.isBefore(asset.createDateTime))) {
-            trkptIndex++;
-            debugPrint('${trkseg.trkpts[trkptIndex].time} ${asset.createDateTime}');
-          }
-          latLng = latlng.LatLng(
-            trkseg.trkpts[trkptIndex].lat!,
-            trkseg.trkpts[trkptIndex].lon!,
-          );
-          debugPrint('${asset.title} ${trkptIndex} ${asset.createDateTime} ${latLng}');
-        }
-        CustomAsset customAsset = CustomAsset(asset: asset, latLng: latLng);
-        customAssets.add(customAsset);
-      }
-    }
-    return TrksegWithAssets(trkseg: trkseg, customAssets: customAssets);
+    return assets;
   }
-
-  Trkseg trkseg;
-  List<CustomAsset> customAssets;
 }
 
-class CustomAsset {
-  CustomAsset({required this.asset, required this.latLng});
+class ExtendedAsset {
+  ExtendedAsset({required this.asset, required this.latLng});
 
   AssetEntity asset;
   latlng.LatLng latLng;

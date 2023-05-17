@@ -64,10 +64,10 @@ class _TrackPageState extends State<TrackPage> {
       }
     }
 
-    List<ExtraMarker<CustomAsset>> markers = <ExtraMarker<CustomAsset>>[];
-    for (CustomAsset asset in trksegWithAssets.customAssets) {
+    List<ExtraMarker<ExtendedAsset>> markers = <ExtraMarker<ExtendedAsset>>[];
+    for (ExtendedAsset asset in trksegWithAssets.extendedAssets) {
       markers.add(
-        ExtraMarker<CustomAsset>(
+        ExtraMarker<ExtendedAsset>(
           width: 70,
           height: 70,
           point: asset.latLng,
@@ -156,11 +156,11 @@ class _TrackPageState extends State<TrackPage> {
         markers: markers,
         builder: (context, markers) {
           // cast markers to extraMarkers
-          List<ExtraMarker<CustomAsset>> extraMarkers = markers
-              .map((marker) => marker as ExtraMarker<CustomAsset>)
+          List<ExtraMarker<ExtendedAsset>> extraMarkers = markers
+              .map((marker) => marker as ExtraMarker<ExtendedAsset>)
               .toList();
-          CustomAsset? asset;
-          for (ExtraMarker<CustomAsset> extraMarker in extraMarkers) {
+          ExtendedAsset? asset;
+          for (ExtraMarker<ExtendedAsset> extraMarker in extraMarkers) {
             if (extraMarker.extra != null) {
               asset = extraMarker.extra;
               break;
@@ -255,7 +255,7 @@ class _TrackPageState extends State<TrackPage> {
     ];
 
     List<TrksegWithAssets> trksegWithAssetsList =
-        context.watch<GpxModel>().trksegWithAssets;
+        context.watch<GpxModel>().trksegsWithAssets;
     for (TrksegWithAssets trksegWithAssets in trksegWithAssetsList) {
       layers.addAll(
         genTrksegLayers(trksegWithAssets),
