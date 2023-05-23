@@ -87,7 +87,7 @@ class MapViewAppBar extends StatelessWidget implements PreferredSizeWidget {
     if (result != null) {
       File(result.files.single.path!).readAsString().then((String contents) {
         Gpx gpx = GpxReader().fromString(contents);
-        context.read<GpxModel>().addGpx(gpx);
+        // context.read<GpxModel>().addGpx(gpx);
       });
     } else {
       // User canceled the picker

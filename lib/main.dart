@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:provider/provider.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
 import 'package:travel_tracker/home_page.dart';
 
@@ -13,13 +14,7 @@ void main() {
       return eam;
     },
   );
-  GetIt.I.registerLazySingletonAsync<TravelTrackManager>(
-    () async {
-      final TravelTrackManager ttm = TravelTrackManager();
-      await ttm.init();
-      return ttm;
-    },
-  );
+  GetIt.I.registerSingleton<TravelTrackManager>(TravelTrackManager());
   runApp(const MyApp());
 }
 
@@ -28,13 +23,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(context) {
-    return MaterialApp(
-      title: 'Travel Tracker',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        splashFactory: InkRipple.splashFactory,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<TravelTrackManager>(
+          create: (_) => TravelTrackManager.I,
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Travel Tracker',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          splashFactory: InkRipple.splashFactory,
+        ),
+        home: const HomePage(title: 'Travel Tracker Home Page'),
       ),
-      home: const HomePage(title: 'Travel Tracker Home Page'),
     );
   }
 }

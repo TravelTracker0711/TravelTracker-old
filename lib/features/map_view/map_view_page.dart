@@ -256,7 +256,7 @@ class _MapViewPageState extends State<MapViewPage> {
     ];
 
     List<TrksegWithAssets> trksegWithAssetsList =
-        context.watch<GpxModel>().trksegsWithAssets;
+    // context.watch<GpxModel>().trksegsWithAssets;
     for (TrksegWithAssets trksegWithAssets in trksegWithAssetsList) {
       layers.addAll(
         genTrksegLayers(trksegWithAssets),
