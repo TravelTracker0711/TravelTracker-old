@@ -51,7 +51,8 @@ class TrksegWithAssets {
     int trkptIndex = 0;
     for (AssetEntity asset in assets) {
       while (trkptIndex < trkseg.trkpts.length - 1 &&
-          (trkseg.trkpts[trkptIndex + 1].time!.isBefore(asset.createDateTime))) {
+          (trkseg.trkpts[trkptIndex + 1].time!
+              .isBefore(asset.createDateTime))) {
         trkptIndex++;
       }
       latlng.LatLng latLng = latlng.LatLng(
@@ -64,7 +65,8 @@ class TrksegWithAssets {
     return extendedAssets;
   }
 
-  static Future<List<AssetEntity>?> _getAssetsInTrkseg(List<AssetEntity>? assets, Trkseg trkseg) async {
+  static Future<List<AssetEntity>?> _getAssetsInTrkseg(
+      List<AssetEntity>? assets, Trkseg trkseg) async {
     ExternalAssetManager eam = await ExternalAssetManager.FI;
     assets ??= await eam.getAssetsFilteredByTime(
       minDate: trkseg.trkpts.first.time,

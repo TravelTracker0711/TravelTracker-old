@@ -23,7 +23,7 @@ class TrkAsset {
     required this.type,
     this.path,
     this.latLng,
-    this.attachedTrkseg, 
+    this.attachedTrkseg,
   });
 
   static Future<TrkAsset?> fromPath({

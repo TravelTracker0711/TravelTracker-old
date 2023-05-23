@@ -27,7 +27,8 @@ class _HomePageState extends State<HomePage> {
     const StatsViewPage(),
   ];
 
-  @override void initState() {
+  @override
+  void initState() {
     super.initState();
     // TODO: construct appropriate app bars
     _appBars = <PreferredSizeWidget>[

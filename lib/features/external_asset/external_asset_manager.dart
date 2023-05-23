@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-// singleton
 class ExternalAssetManager {
   AssetPathEntity? _allAssetsPathEntity;
 

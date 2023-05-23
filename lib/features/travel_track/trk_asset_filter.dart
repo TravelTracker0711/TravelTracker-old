@@ -1,6 +1,2 @@
-
-
 // TODO: Implement TrkAssetFilter
-class TrkAssetFilter {
-
-}
+class TrkAssetFilter {}
