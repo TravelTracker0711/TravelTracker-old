@@ -15,10 +15,10 @@ A travel app for tracking and organizing your journey data.
 ### new feature
 
 - [ ] TravelTrack class as a basic data structure
-- [ ] TrackAsset class as a asset linked with TravelTrack, with extra data like location, time, tag, etc.
+- [ ] TrkAsset class as a asset linked with TravelTrack, with extra data like location, time, tag, etc.
 - [ ] Create TravelTrack
   - [ ] Auto search image to attach on gpx track
-- [ ] Create/Attach TrackAsset
+- [ ] Create/Attach TrkAsset
   - [ ] Determine if asset is already linked in current TravelTrack
 - [ ] Filter assets by time, location, tag, type, marker cluster, etc.
 - [ ] pages
@@ -29,13 +29,13 @@ A travel app for tracking and organizing your journey data.
       - [ ] Follow track by slider
       - [ ] Follow user location
       - [ ] Highlight track / asset
-      - [ ] *Jump to temporary marker*
-    - [ ] Show partial track 
+      - [ ] _Jump to temporary marker_
+    - [ ] Show partial track
       - [ ] control by slider
       - [ ] Trksegs that isn't intersect
   - [ ] gallery view
   - [ ] celender view
-  - [ ] *timeline view*
+  - [ ] _timeline view_
   - [ ] Travel Stat page
 - [ ] Manipulate multiple TravelTrack simultaneously
   - [ ] Show total distance, time, etc.

@@ -6,6 +6,8 @@ import 'package:gpx/gpx.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_tracker/features/gpx/gpx_model.dart';
+import 'package:travel_tracker/features/travel_track/travel_track.dart';
+import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
 
 enum PopupAction { test1, addGpxFile }
 
@@ -81,16 +83,23 @@ class MapViewAppBar extends StatelessWidget implements PreferredSizeWidget {
     if (!status.isGranted) {
       return;
     }
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.any,
+    FilePicker.platform.pickFiles(type: FileType.any).then(
+      (result) {
+        if (result != null) {
+          List<String> filePaths = [];
+          for (var path in result.paths) {
+            if (path != null) {
+              filePaths.add(path);
+            }
+          }
+          TravelTrack.fromGpxFilePaths(gpxFilePaths: filePaths)
+              .then((travelTrack) {
+            context.read<TravelTrackManager>().addTravelTrack(travelTrack);
+          });
+        } else {
+          // User canceled the picker
+        }
+      },
     );
-    if (result != null) {
-      File(result.files.single.path!).readAsString().then((String contents) {
-        Gpx gpx = GpxReader().fromString(contents);
-        // context.read<GpxModel>().addGpx(gpx);
-      });
-    } else {
-      // User canceled the picker
-    }
   }
 }

@@ -20,6 +20,7 @@ class ExternalAssetManager {
     _allAssetsPathEntity = await _getAllAssetPath();
   }
 
+  // TODO: refactor filter with filter options
   Future<List<AssetEntity>?> getAssetsFilteredByTime({
     DateTime? minDate,
     DateTime? maxDate,
