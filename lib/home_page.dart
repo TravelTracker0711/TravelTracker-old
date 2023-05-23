@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:travel_tracker/features/views/gallery_view/gallery_view_page.dart';
+import 'package:travel_tracker/features/gallery_view/gallery_view_page.dart';
 import 'package:travel_tracker/features/gpx/gpx_model.dart';
-import 'package:travel_tracker/features/views/map_view/map_view_app_bar.dart';
-import 'package:travel_tracker/features/views/map_view/map_view_page.dart';
+import 'package:travel_tracker/features/map_view/map_view_app_bar.dart';
+import 'package:travel_tracker/features/map_view/map_view_page.dart';
 import 'package:travel_tracker/features/views/calendar_view/calendar_view_page.dart';
 
 class HomePage extends StatefulWidget {
