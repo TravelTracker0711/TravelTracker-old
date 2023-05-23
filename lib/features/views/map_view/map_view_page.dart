@@ -7,7 +7,7 @@ import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:latlong2/latlong.dart' as latlng;
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
-import 'package:travel_tracker/features/map_view/extra_marker.dart';
+import 'package:travel_tracker/features/views/map_view/extra_marker.dart';
 import 'package:travel_tracker/features/gpx/gpx_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:gpx/gpx.dart';
