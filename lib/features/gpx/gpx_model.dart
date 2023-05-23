@@ -4,6 +4,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:travel_tracker/features/external_asset/external_asset_manager.dart';
 import 'package:latlong2/latlong.dart' as latlng;
 
+// TODO: refactor this file into travel_track folder
 class GpxModel with ChangeNotifier {
   final List<Gpx> _gpxs = <Gpx>[];
   final List<TrksegWithAssets> _trksegsWithAssets = <TrksegWithAssets>[];
