@@ -4,6 +4,7 @@ import 'package:travel_tracker/features/views/gallery_view/gallery_view_page.dar
 import 'package:travel_tracker/features/gpx/gpx_model.dart';
 import 'package:travel_tracker/features/views/map_view/map_view_app_bar.dart';
 import 'package:travel_tracker/features/views/map_view/map_view_page.dart';
+import 'package:travel_tracker/features/views/calendar_view/calendar_view_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -19,6 +20,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _bodyPages = <Widget>[
     const MapViewPage(),
     const GalleryViewPage(),
+    const CalendarViewPage(),
   ];
 
   @override
@@ -37,6 +39,10 @@ class _HomePageState extends State<HomePage> {
             BottomNavigationBarItem(
               icon: Icon(Icons.photo_library),
               label: 'Data',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_month),
+              label: 'Calendar',
             ),
           ],
           currentIndex: _selectedPageIndex,
