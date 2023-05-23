@@ -281,25 +281,17 @@ class _MapViewPageState extends State<MapViewPage> {
       // ignore: sort_child_properties_last
       children: layers,
       nonRotatedChildren: <Widget>[
-        AttributionWidget.defaultWidget(
-          source: '© OpenStreetMap contributors',
-          onSourceTapped: () => launchUrl(
-            Uri.parse('https://openstreetmap.org/copyright'),
-            mode: LaunchMode.externalApplication,
-          ),
+        RichAttributionWidget(
+          attributions: [
+            TextSourceAttribution(
+              'OpenStreetMap contributors',
+              onTap: () => launchUrl(
+                Uri.parse('https://openstreetmap.org/copyright'),
+                mode: LaunchMode.externalApplication,
+              ),
+            ),
+          ],
         ),
-        // TODO: upgrade flutter_map to ^4.0.0
-        // RichAttributionWidget(
-        //   attributions: [
-        //     TextSourceAttribution(
-        //       'OpenStreetMap contributors',
-        //       onTap: () => launchUrl(
-        //         Uri.parse('https://openstreetmap.org/copyright'),
-        //         mode: LaunchMode.externalApplication,
-        //       ),
-        //     ),
-        //   ],
-        // ),
       ],
     );
 
