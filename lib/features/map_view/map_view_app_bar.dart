@@ -42,7 +42,7 @@ class MapViewAppBar extends StatelessWidget implements PreferredSizeWidget {
                 debugPrint('test1');
                 break;
               case PopupAction.addGpxFile:
-                _addGpxFile(context);
+                _addGpxFileAsync(context);
                 break;
             }
           },
@@ -78,7 +78,7 @@ class MapViewAppBar extends StatelessWidget implements PreferredSizeWidget {
   //   debugPrint(imageAlbums.toString());
   // }
 
-  void _addGpxFile(BuildContext context) async {
+  Future<void> _addGpxFileAsync(BuildContext context) async {
     PermissionStatus status = await Permission.storage.request();
     if (!status.isGranted) {
       return;
@@ -92,9 +92,9 @@ class MapViewAppBar extends StatelessWidget implements PreferredSizeWidget {
               filePaths.add(path);
             }
           }
-          TravelTrack.fromGpxFilePaths(gpxFilePaths: filePaths)
+          TravelTrack.fromGpxFilePathsAsync(gpxFilePaths: filePaths)
               .then((travelTrack) {
-            context.read<TravelTrackManager>().addTravelTrack(travelTrack);
+            context.read<TravelTrackManager>().addTravelTrackAsync(travelTrack);
           });
         } else {
           // User canceled the picker

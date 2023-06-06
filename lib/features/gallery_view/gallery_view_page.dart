@@ -16,7 +16,7 @@ class _GalleryViewPageState extends State<GalleryViewPage> {
   void initState() {
     super.initState();
     Future<ExternalAssetManager> feam = ExternalAssetManager.FI;
-    futureAssets = feam.then((eam) => eam.getAssetsFilteredByTime(
+    futureAssets = feam.then((eam) => eam.getAssetsFilteredByTimeAsync(
           // minDate: DateTime(2023, 5, 1),
           isTimeAsc: false,
         ));
@@ -77,7 +77,7 @@ class _GalleryViewPageState extends State<GalleryViewPage> {
     );
   }
 
-  void _onTapAsset(AssetEntity asset) async {
+  void _onTapAsset(AssetEntity asset) {
     debugPrint('${asset.relativePath}${asset.title}');
   }
 }

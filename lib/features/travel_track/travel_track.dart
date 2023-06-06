@@ -29,8 +29,8 @@ class TravelTrack {
     _description = description;
   }
 
-  void addGpxByFilePath(String gpxFilePath) async {
-    _gpxExts.add(await GpxExt.fromFilePath(gpxFilePath));
+  Future<void> addGpxByFilePathAsync(String gpxFilePath) async {
+    _gpxExts.add(await GpxExt.fromFilePathAsync(gpxFilePath));
   }
 
   // TODO: cal totalDistance
@@ -59,7 +59,7 @@ class TravelTrack {
   }
 
   // TODO: TravelTrackService.createAutoAttachAssets
-  // static Future<TravelTrack> createAutoAttachAssets({
+  // static Future<TravelTrack> createAutoAttachAssetsAsync({
   //   List<String>? gpxFilePaths,
   //   List<TrkAsset>? trkAssets,
   //   required String name,
@@ -90,7 +90,7 @@ class TravelTrack {
   }
 
   // TODO: auto attach assets
-  static Future<TravelTrack> fromGpxFilePaths({
+  static Future<TravelTrack> fromGpxFilePathsAsync({
     String? name,
     String? description,
     required List<String> gpxFilePaths,
@@ -101,13 +101,13 @@ class TravelTrack {
 
     List<GpxExt> gpxExts = <GpxExt>[];
     for (String gpxFilePath in gpxFilePaths) {
-      gpxExts.add(await GpxExt.fromFilePath(gpxFilePath));
+      gpxExts.add(await GpxExt.fromFilePathAsync(gpxFilePath));
     }
 
     List<TrkAsset> trkAssets = <TrkAsset>[];
     for (GpxExt gpxExt in gpxExts) {
       for (TrksegExt trksegExt in gpxExt.trksegExts) {
-        trkAssets.addAll(await TrkAsset.fromTimeRange(
+        trkAssets.addAll(await TrkAsset.fromTimeRangeAsync(
           startTime: trksegExt.trkseg.trkpts.first.time,
           endTime: trksegExt.trkseg.trkpts.last.time,
           attachedTrksegExt: trksegExt,

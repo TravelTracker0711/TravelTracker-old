@@ -10,7 +10,7 @@ void main() {
   GetIt.I.registerLazySingletonAsync<ExternalAssetManager>(
     () async {
       final ExternalAssetManager eam = ExternalAssetManager();
-      await eam.init();
+      await eam.initAsync();
       return eam;
     },
   );

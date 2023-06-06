@@ -18,7 +18,7 @@ class GpxExt {
     );
   }
 
-  static Future<GpxExt> fromFilePath(String filePath) async {
+  static Future<GpxExt> fromFilePathAsync(String filePath) async {
     return File(filePath).readAsString().then((String content) {
       return GpxExt.fromString(content);
     });

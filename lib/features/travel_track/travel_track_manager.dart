@@ -19,26 +19,26 @@ class TravelTrackManager with ChangeNotifier {
     TravelTrackManager instance = GetIt.I<TravelTrackManager>();
     if (!instance._isInitializing) {
       instance._isInitializing = true;
-      instance.init();
+      instance.initAsync();
     }
     return instance;
   }
 
-  Future<void> init() async {
+  Future<void> initAsync() async {
     debugPrint('TravelTrackManager init');
     // TODO: load _travelTracks from storage
     _isInitialized = true;
     notifyListeners();
   }
 
-  Future<void> addTravelTrack(TravelTrack travelTrack) async {
+  Future<void> addTravelTrackAsync(TravelTrack travelTrack) async {
     debugPrint('TravelTrackManager addTravelTrack');
     // TODO: save travelTrack to storage
     _travelTracks[travelTrack.id] = travelTrack;
     notifyListeners();
   }
 
-  Future<void> removeTravelTrack(String travelTrackId) async {
+  Future<void> removeTravelTrackAsync(String travelTrackId) async {
     debugPrint('TravelTrackManager removeTravelTrack');
     // TODO: delete travelTrack from storage
     _travelTracks.remove(travelTrackId);

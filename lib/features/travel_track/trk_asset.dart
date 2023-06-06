@@ -29,7 +29,7 @@ class TrkAsset {
     this.attachedTrksegExt,
   });
 
-  static Future<TrkAsset?> fromFilePath({
+  static Future<TrkAsset?> fromFilePathAsync({
     required String filePath,
     TrksegExt? attachedTrksegExt,
   }) async {
@@ -51,14 +51,14 @@ class TrkAsset {
   }
 
   // TODO: refactor
-  static Future<List<TrkAsset>> fromTimeRange({
+  static Future<List<TrkAsset>> fromTimeRangeAsync({
     required DateTime? startTime,
     required DateTime? endTime,
     TrksegExt? attachedTrksegExt,
   }) async {
     List<TrkAsset> trkAssets = [];
     ExternalAssetManager eam = await ExternalAssetManager.FI;
-    List<AssetEntity>? assets = await eam.getAssetsFilteredByTime(
+    List<AssetEntity>? assets = await eam.getAssetsFilteredByTimeAsync(
       minDate: startTime,
       maxDate: endTime,
       isTimeAsc: true,
