@@ -8,7 +8,7 @@ import 'package:gpx/gpx.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:travel_tracker/features/travel_track/gpx_ext.dart';
 import 'package:travel_tracker/features/travel_track/travel_track.dart';
-import 'package:travel_tracker/features/travel_track/trk_asset.dart';
+import 'package:travel_tracker/features/travel_track/asset_ext.dart';
 import 'package:travel_tracker/features/travel_track/trkseg_ext.dart';
 
 class TravelTrackLayerBuilder {
@@ -62,20 +62,20 @@ class TravelTrackLayerBuilder {
 
   MarkerClusterLayerWidget buildMarkerClusterLayerByTravelTracks(
       List<TravelTrack> travelTracks) {
-    List<TrkAsset> trkAssets = <TrkAsset>[];
+    List<AssetExt> assetExts = <AssetExt>[];
     for (TravelTrack travelTrack in travelTracks) {
-      trkAssets.addAll(travelTrack.trkAssets);
+      assetExts.addAll(travelTrack.assetExts);
     }
     MarkerClusterLayerWidget layer =
-        buildMarkerClusterLayerByTrkAssets(trkAssets);
+        buildMarkerClusterLayerByAssetExts(assetExts);
     return layer;
   }
 
-  MarkerClusterLayerWidget buildMarkerClusterLayerByTrkAssets(
-      List<TrkAsset> trkAssets) {
-    List<MarkerExt<TrkAsset>> markerExts = <MarkerExt<TrkAsset>>[];
-    for (TrkAsset trkAsset in trkAssets) {
-      MarkerExt<TrkAsset>? markerExt = buildMarkerByTrkAsset(trkAsset);
+  MarkerClusterLayerWidget buildMarkerClusterLayerByAssetExts(
+      List<AssetExt> assetExts) {
+    List<MarkerExt<AssetExt>> markerExts = <MarkerExt<AssetExt>>[];
+    for (AssetExt assetExt in assetExts) {
+      MarkerExt<AssetExt>? markerExt = buildMarkerByAssetExt(assetExt);
       if (markerExt != null) {
         markerExts.add(markerExt);
       }
@@ -83,17 +83,17 @@ class TravelTrackLayerBuilder {
     return buildMarkerClusterByMarkers(markerExts);
   }
 
-  MarkerExt<TrkAsset>? buildMarkerByTrkAsset(TrkAsset trkAsset) {
-    if (trkAsset.latLng == null) {
+  MarkerExt<AssetExt>? buildMarkerByAssetExt(AssetExt assetExt) {
+    if (assetExt.latLng == null) {
       return null;
     }
     double mapRotation = _mapRotationNotifier.value;
-    return MarkerExt<TrkAsset>(
+    return MarkerExt<AssetExt>(
       width: 70,
       height: 70,
-      point: trkAsset.latLng!,
+      point: assetExt.latLng!,
       rotate: false,
-      extra: trkAsset,
+      extra: assetExt,
       builder: (BuildContext context) {
         return Transform.rotate(
           angle: -mapRotation * math.pi / 180,
@@ -109,7 +109,7 @@ class TravelTrackLayerBuilder {
                   ),
                   image: DecorationImage(
                     image: AssetEntityImageProvider(
-                      trkAsset.asset,
+                      assetExt.asset,
                       isOriginal: false,
                     ),
                     fit: BoxFit.cover,
@@ -126,7 +126,7 @@ class TravelTrackLayerBuilder {
             padding: const EdgeInsets.all(0),
             color: Colors.red,
             onPressed: () {
-              debugPrint('onPressed ${trkAsset.asset.title}');
+              debugPrint('onPressed ${assetExt.asset.title}');
               // TODO: show asset
               // Navigator.pushNamed(context, '/asset');
             },
@@ -137,7 +137,7 @@ class TravelTrackLayerBuilder {
   }
 
   MarkerClusterLayerWidget buildMarkerClusterByMarkers(
-      List<MarkerExt<TrkAsset>> markerExts) {
+      List<MarkerExt<AssetExt>> markerExts) {
     double mapRotation = _mapRotationNotifier.value;
     return MarkerClusterLayerWidget(
       options: MarkerClusterLayerOptions(
@@ -151,10 +151,10 @@ class TravelTrackLayerBuilder {
         markers: markerExts,
         builder: (context, markers) {
           // cast markers to extraMarkers
-          List<MarkerExt<TrkAsset>> extraMarkers =
-              markers.map((marker) => marker as MarkerExt<TrkAsset>).toList();
-          TrkAsset? displayedAsset;
-          for (MarkerExt<TrkAsset> extraMarker in extraMarkers) {
+          List<MarkerExt<AssetExt>> extraMarkers =
+              markers.map((marker) => marker as MarkerExt<AssetExt>).toList();
+          AssetExt? displayedAsset;
+          for (MarkerExt<AssetExt> extraMarker in extraMarkers) {
             if (extraMarker.extra != null) {
               displayedAsset = extraMarker.extra;
               break;

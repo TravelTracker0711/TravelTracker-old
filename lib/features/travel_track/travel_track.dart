@@ -13,13 +13,13 @@ class TravelTrack {
   late String _name;
   String? _description = "";
   List<GpxExt> _gpxExts = <GpxExt>[];
-  List<TrkAsset> _trkAssets = <TrkAsset>[];
+  List<AssetExt> _assetExts = <AssetExt>[];
 
   String get id => _id;
   String get name => _name;
   String? get description => _description;
   List<GpxExt> get gpxExts => List<GpxExt>.unmodifiable(_gpxExts);
-  List<TrkAsset> get trkAssets => List<TrkAsset>.unmodifiable(_trkAssets);
+  List<AssetExt> get assetExts => List<AssetExt>.unmodifiable(_assetExts);
 
   set name(String name) {
     _name = name;
@@ -61,13 +61,13 @@ class TravelTrack {
   // TODO: TravelTrackService.createAutoAttachAssets
   // static Future<TravelTrack> createAutoAttachAssetsAsync({
   //   List<String>? gpxFilePaths,
-  //   List<TrkAsset>? trkAssets,
+  //   List<AssetExt>? assetExts,
   //   required String name,
   //   String? description,
   // }) async {
   //   TravelTrack travelTrack = TravelTrack(
   //     gpxFilePaths: gpxFilePaths,
-  //     trkAssets: trkAssets,
+  //     assetExts: assetExts,
   //     name: name,
   //     description: description,
   //   );
@@ -78,14 +78,14 @@ class TravelTrack {
     String? name,
     String? description,
     List<GpxExt>? gpxExts,
-    List<TrkAsset>? trkAssets,
+    List<AssetExt>? assetExts,
   }) : _description = description {
     _name = name ?? 'Unnamed $_id';
     if (gpxExts != null) {
       _gpxExts = List<GpxExt>.from(gpxExts);
     }
-    if (trkAssets != null) {
-      _trkAssets = List<TrkAsset>.from(trkAssets);
+    if (assetExts != null) {
+      _assetExts = List<AssetExt>.from(assetExts);
     }
   }
 
@@ -104,10 +104,10 @@ class TravelTrack {
       gpxExts.add(await GpxExt.fromFilePathAsync(gpxFilePath));
     }
 
-    List<TrkAsset> trkAssets = <TrkAsset>[];
+    List<AssetExt> assetExts = <AssetExt>[];
     for (GpxExt gpxExt in gpxExts) {
       for (TrksegExt trksegExt in gpxExt.trksegExts) {
-        trkAssets.addAll(await TrkAsset.fromTimeRangeAsync(
+        assetExts.addAll(await AssetExt.fromTimeRangeAsync(
           startTime: trksegExt.trkseg.trkpts.first.time,
           endTime: trksegExt.trkseg.trkpts.last.time,
           attachedTrksegExt: trksegExt,
@@ -118,7 +118,7 @@ class TravelTrack {
       name: name,
       description: description,
       gpxExts: gpxExts,
-      trkAssets: trkAssets,
+      assetExts: assetExts,
     );
   }
 }

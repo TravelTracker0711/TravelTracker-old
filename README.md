@@ -15,10 +15,10 @@ A travel app for tracking and organizing your journey data.
 ### new feature
 
 - [ ] TravelTrack class as a basic data structure
-- [ ] TrkAsset class as a asset linked with TravelTrack, with extra data like location, time, tag, etc.
+- [ ] AssetExt class as a asset linked with TravelTrack, with extra data like location, time, tag, etc.
 - [ ] Create TravelTrack
   - [ ] Auto search image to attach on gpx track
-- [ ] Create/Attach TrkAsset
+- [ ] Create/Attach AssetExt
   - [ ] Determine if asset is already linked in current TravelTrack
 - [ ] Filter assets by time, location, tag, type, marker cluster, etc.
 - [ ] pages

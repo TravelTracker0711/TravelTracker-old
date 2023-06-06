@@ -5,7 +5,7 @@ import 'package:latlong2/latlong.dart' as latlng;
 import 'package:travel_tracker/features/external_asset/external_asset_manager.dart';
 import 'package:travel_tracker/features/travel_track/trkseg_ext.dart';
 
-enum TrkAssetType {
+enum AssetExtType {
   image,
   video,
   audio,
@@ -13,15 +13,15 @@ enum TrkAssetType {
   other,
 }
 
-//TODO: all TrkAsset factory methods
-class TrkAsset {
+//TODO: all AssetExt factory methods
+class AssetExt {
   late final AssetEntity asset;
-  late final TrkAssetType type;
+  late final AssetExtType type;
   late final String? filePath;
   late final latlng.LatLng? latLng;
   final TrksegExt? attachedTrksegExt;
 
-  TrkAsset._({
+  AssetExt._({
     required this.asset,
     required this.type,
     this.filePath,
@@ -29,7 +29,7 @@ class TrkAsset {
     this.attachedTrksegExt,
   });
 
-  static Future<TrkAsset?> fromFilePathAsync({
+  static Future<AssetExt?> fromFilePathAsync({
     required String filePath,
     TrksegExt? attachedTrksegExt,
   }) async {
@@ -38,10 +38,10 @@ class TrkAsset {
     if (asset == null) {
       return null;
     }
-    TrkAssetType type = TrkAssetType.image;
+    AssetExtType type = AssetExtType.image;
     latlng.LatLng? latLng = latlng.LatLng(0, 0);
 
-    return TrkAsset._(
+    return AssetExt._(
       asset: asset,
       type: type,
       filePath: filePath,
@@ -51,12 +51,12 @@ class TrkAsset {
   }
 
   // TODO: refactor
-  static Future<List<TrkAsset>> fromTimeRangeAsync({
+  static Future<List<AssetExt>> fromTimeRangeAsync({
     required DateTime? startTime,
     required DateTime? endTime,
     TrksegExt? attachedTrksegExt,
   }) async {
-    List<TrkAsset> trkAssets = [];
+    List<AssetExt> assetExts = [];
     ExternalAssetManager eam = await ExternalAssetManager.FI;
     List<AssetEntity>? assets = await eam.getAssetsFilteredByTimeAsync(
       minDate: startTime,
@@ -64,12 +64,12 @@ class TrkAsset {
       isTimeAsc: true,
     );
     if (assets == null) {
-      return trkAssets;
+      return assetExts;
     }
     for (AssetEntity asset in assets) {
-      TrkAssetType type = _getAssetType(asset);
-      trkAssets.add(
-        TrkAsset._(
+      AssetExtType type = _getAssetType(asset);
+      assetExts.add(
+        AssetExt._(
           asset: asset,
           type: type,
           filePath: asset.relativePath,
@@ -79,35 +79,35 @@ class TrkAsset {
       );
     }
     if (attachedTrksegExt != null) {
-      trkAssets = _locateTrkAssetsInTrkseg(trkAssets, attachedTrksegExt);
+      assetExts = _locateAssetExtsInTrkseg(assetExts, attachedTrksegExt);
     }
-    return trkAssets;
+    return assetExts;
   }
 
   static _getAssetType(AssetEntity asset) {
     if (asset.type == AssetType.audio) {
-      return TrkAssetType.audio;
+      return AssetExtType.audio;
     } else if (asset.type == AssetType.video) {
-      return TrkAssetType.video;
+      return AssetExtType.video;
     } else if (asset.type == AssetType.image) {
-      return TrkAssetType.image;
+      return AssetExtType.image;
     } else {
-      return TrkAssetType.other;
+      return AssetExtType.other;
     }
   }
 
-  static List<TrkAsset> _locateTrkAssetsInTrkseg(
-    List<TrkAsset> trkAssets,
+  static List<AssetExt> _locateAssetExtsInTrkseg(
+    List<AssetExt> assetExts,
     TrksegExt trksegExt,
   ) {
-    List<TrkAsset> locatedTrkAssets = [];
+    List<AssetExt> locatedAssetExts = [];
     List<Wpt> trkpts = trksegExt.trkseg.trkpts;
     int trkptIndex = 0;
-    for (TrkAsset trkAsset in trkAssets) {
+    for (AssetExt assetExt in assetExts) {
       while (trkptIndex < trkpts.length - 1 &&
           (trkpts[trkptIndex + 1]
               .time!
-              .isBefore(trkAsset.asset.createDateTime))) {
+              .isBefore(assetExt.asset.createDateTime))) {
         trkptIndex++;
       }
       latlng.LatLng latLng = latlng.LatLng(
@@ -115,16 +115,16 @@ class TrkAsset {
         trkpts[trkptIndex].lon!,
       );
       debugPrint('latLng: $latLng');
-      locatedTrkAssets.add(
-        TrkAsset._(
-          asset: trkAsset.asset,
-          type: trkAsset.type,
-          filePath: trkAsset.filePath,
+      locatedAssetExts.add(
+        AssetExt._(
+          asset: assetExt.asset,
+          type: assetExt.type,
+          filePath: assetExt.filePath,
           latLng: latLng,
           attachedTrksegExt: trksegExt,
         ),
       );
     }
-    return locatedTrkAssets;
+    return locatedAssetExts;
   }
 }
