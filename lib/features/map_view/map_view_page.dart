@@ -93,18 +93,11 @@ class _MapViewPageState extends State<MapViewPage> {
         context.watch<TravelTrackManager>().travelTracks;
     TravelTrackLayerBuilder travelTrackLayerBuilder =
         TravelTrackLayerBuilder(mapRotationNotifier);
-    for (TravelTrack travelTrack in travelTracks.values) {
-      layers.addAll(
-        travelTrackLayerBuilder.build(travelTrack),
-      );
-    }
-    debugPrint(layers.toString());
+    layers.addAll(travelTrackLayerBuilder.build(travelTracks.values.toList()));
 
     return FlutterMap(
       mapController: mapController,
       options: _getMapOptions(),
-      // children, nonRotatedChildren must be in order
-      // or onTap will be triggered even if attribution isn't open
       // ignore: sort_child_properties_last
       children: layers,
       nonRotatedChildren: <Widget>[

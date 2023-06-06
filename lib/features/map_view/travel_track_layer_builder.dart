@@ -17,185 +17,32 @@ class TravelTrackLayerBuilder {
 
   TravelTrackLayerBuilder(this._mapRotationNotifier);
 
-  List<Widget> build(TravelTrack travelTrack) {
+  List<Widget> build(List<TravelTrack> travelTracks) {
     List<Widget> layers = <Widget>[];
+    for (TravelTrack travelTrack in travelTracks) {
+      layers.addAll(buildPolylineLayersByTravelTrack(travelTrack));
+    }
+    layers.add(buildMarkerClusterLayerByTravelTracks(travelTracks));
+    return layers;
+  }
+
+  List<Widget> buildPolylineLayersByTravelTrack(TravelTrack travelTrack) {
+    List<PolylineLayer> layers = <PolylineLayer>[];
     for (GpxExt gpxExt in travelTrack.gpxExts) {
-      layers.addAll(_genTrksegLayersByGpxExt(gpxExt));
+      layers.addAll(buildPolylineLayersByGpxExt(gpxExt));
     }
-    layers.add(_genAssetLayerByTrkAssets(travelTrack.trkAssets));
     return layers;
   }
 
-  // void t() {
-  //   List<MarkerExt<ExtendedAsset>> markers = <MarkerExt<ExtendedAsset>>[];
-  //   for (ExtendedAsset asset in trksegWithAssets.extendedAssets) {
-  //     markers.add(
-  //       MarkerExt<ExtendedAsset>(
-  //         width: 70,
-  //         height: 70,
-  //         point: asset.latLng,
-  //         rotate: false,
-  //         extra: asset,
-  //         builder: (BuildContext context) {
-  //           return Transform.rotate(
-  //             angle: -mapRotation * math.pi / 180,
-  //             child: IconButton(
-  //               // icon: const Icon(Icons.location_on),
-  //               icon: AspectRatio(
-  //                 aspectRatio: 1 / 1,
-  //                 child: Container(
-  //                   decoration: BoxDecoration(
-  //                     borderRadius: BorderRadius.circular(10),
-  //                     border: Border.all(
-  //                       color: Colors.white,
-  //                       width: 2,
-  //                     ),
-  //                     image: DecorationImage(
-  //                       image: AssetEntityImageProvider(
-  //                         asset.asset,
-  //                         isOriginal: false,
-  //                       ),
-  //                       fit: BoxFit.cover,
-  //                     ),
-  //                   ),
-  //                   child: Container(
-  //                     decoration: BoxDecoration(
-  //                       borderRadius: BorderRadius.circular(10),
-  //                       color: Colors.black.withOpacity(0),
-  //                     ),
-  //                     // TODO: decide if we want to show the asset title
-  //                     // child: Padding(
-  //                     //   padding: const EdgeInsets.all(4.0),
-  //                     //   child: Center(
-  //                     //     child: Text(
-  //                     //       asset.asset.title ?? '',
-  //                     //       style: const TextStyle(
-  //                     //         color: Colors.white,
-  //                     //         fontSize: 12,
-  //                     //       ),
-  //                     //     ),
-  //                     //   ),
-  //                     // ),
-  //                   ),
-  //                 ),
-  //               ),
-  //               padding: const EdgeInsets.all(0),
-  //               color: Colors.red,
-  //               onPressed: () {
-  //                 debugPrint('onPressed ${asset.asset.title}');
-  //                 // context.read<GpxModel>().setSelectedCustomAsset(asset);
-  //                 // Navigator.pushNamed(context, '/asset');
-  //               },
-  //             ),
-  //           );
-  //         },
-  //       ),
-  //     );
-  //   }
-
-  //   MarkerClusterLayerWidget markerClusterLayerWidget =
-  //       MarkerClusterLayerWidget(
-  //     options: MarkerClusterLayerOptions(
-  //       maxClusterRadius: 45,
-  //       size: const Size(50, 50),
-  //       anchor: AnchorPos.align(AnchorAlign.center),
-  //       fitBoundsOptions: const FitBoundsOptions(
-  //         padding: EdgeInsets.all(50),
-  //         maxZoom: 15,
-  //       ),
-  //       markers: markers,
-  //       builder: (context, markers) {
-  //         // cast markers to extraMarkers
-  //         List<MarkerExt<ExtendedAsset>> extraMarkers = markers
-  //             .map((marker) => marker as MarkerExt<ExtendedAsset>)
-  //             .toList();
-  //         ExtendedAsset? asset;
-  //         for (MarkerExt<ExtendedAsset> extraMarker in extraMarkers) {
-  //           if (extraMarker.extra != null) {
-  //             asset = extraMarker.extra;
-  //             break;
-  //           }
-  //         }
-  //         return Transform.rotate(
-  //           angle: -mapRotation * math.pi / 180,
-  //           child: IconButton(
-  //             icon: AspectRatio(
-  //               aspectRatio: 1 / 1,
-  //               child: Container(
-  //                 decoration: BoxDecoration(
-  //                   borderRadius: BorderRadius.circular(10),
-  //                   border: Border.all(
-  //                     color: Colors.white,
-  //                     width: 2,
-  //                   ),
-  //                   image: asset == null
-  //                       ? null
-  //                       : DecorationImage(
-  //                           image: AssetEntityImageProvider(
-  //                             asset.asset,
-  //                             isOriginal: false,
-  //                           ),
-  //                           fit: BoxFit.cover,
-  //                         ),
-  //                 ),
-  //                 child: Stack(
-  //                   children: <Widget>[
-  //                     asset == null
-  //                         ? Icon(
-  //                             Icons.photo,
-  //                             color: Colors.white,
-  //                           )
-  //                         : Container(),
-  //                     Container(
-  //                       decoration: BoxDecoration(
-  //                         borderRadius: BorderRadius.circular(10),
-  //                         color: Colors.black.withOpacity(0.3),
-  //                       ),
-  //                     ),
-  //                     Center(
-  //                         child: Text(
-  //                       markers.length.toString(),
-  //                       style: const TextStyle(
-  //                         color: Colors.white,
-  //                         fontSize: 18,
-  //                       ),
-  //                     )),
-  //                   ],
-  //                 ),
-  //               ),
-  //             ),
-  //             padding: const EdgeInsets.all(0),
-  //             onPressed: () {
-  //               debugPrint('onPressed ${markers.length}');
-  //               // context.read<GpxModel>().setSelectedCustomAsset(asset);
-  //               // Navigator.pushNamed(context, '/asset');
-  //             },
-  //           ),
-  //         );
-  //         // Container(
-  //         //   decoration: BoxDecoration(
-  //         //       borderRadius: BorderRadius.circular(20), color: Colors.blue),
-  //         //   child: Center(
-  //         //     child: Text(
-  //         //       markers.length.toString(),
-  //         //       style: const TextStyle(color: Colors.white),
-  //         //     ),
-  //         //   ),
-  //         // );
-  //       },
-  //     ),
-  //   );
-  // }
-
-  List<Widget> _genTrksegLayersByGpxExt(GpxExt gpxExt) {
-    List<Widget> layers = <Widget>[];
+  List<PolylineLayer> buildPolylineLayersByGpxExt(GpxExt gpxExt) {
+    List<PolylineLayer> layers = <PolylineLayer>[];
     for (TrksegExt trksegExt in gpxExt.trksegExts) {
-      layers.add(_genTrksegLayerByTrksegExt(trksegExt));
+      layers.add(buildPolylineLayerByTrksegExt(trksegExt));
     }
     return layers;
   }
 
-  PolylineLayer _genTrksegLayerByTrksegExt(TrksegExt trksegExt) {
+  PolylineLayer buildPolylineLayerByTrksegExt(TrksegExt trksegExt) {
     List<latlng.LatLng> points = <latlng.LatLng>[];
     for (Wpt trkpt in trksegExt.trkseg.trkpts) {
       if (trkpt.lat != null && trkpt.lon != null) {
@@ -214,22 +61,33 @@ class TravelTrackLayerBuilder {
     return polylineLayer;
   }
 
-  MarkerClusterLayerWidget _genAssetLayerByTrkAssets(List<TrkAsset> trkAssets) {
+  MarkerClusterLayerWidget buildMarkerClusterLayerByTravelTracks(
+      List<TravelTrack> travelTracks) {
+    List<TrkAsset> trkAssets = <TrkAsset>[];
+    for (TravelTrack travelTrack in travelTracks) {
+      trkAssets.addAll(travelTrack.trkAssets);
+    }
+    MarkerClusterLayerWidget layer =
+        buildMarkerClusterLayerByTrkAssets(trkAssets);
+    return layer;
+  }
+
+  MarkerClusterLayerWidget buildMarkerClusterLayerByTrkAssets(
+      List<TrkAsset> trkAssets) {
     List<MarkerExt<TrkAsset>> markerExts = <MarkerExt<TrkAsset>>[];
     for (TrkAsset trkAsset in trkAssets) {
-      MarkerExt<TrkAsset>? markerExt = _genAssetMarkerByTrkAsset(trkAsset);
+      MarkerExt<TrkAsset>? markerExt = buildMarkerByTrkAsset(trkAsset);
       if (markerExt != null) {
         markerExts.add(markerExt);
       }
     }
-    return _genMarkerClusterLayerWidgetByMarkers(markerExts);
+    return buildMarkerClusterByMarkers(markerExts);
   }
 
-  MarkerExt<TrkAsset>? _genAssetMarkerByTrkAsset(TrkAsset trkAsset) {
+  MarkerExt<TrkAsset>? buildMarkerByTrkAsset(TrkAsset trkAsset) {
     if (trkAsset.latLng == null) {
       return null;
     }
-
     double mapRotation = _mapRotationNotifier.value;
     return MarkerExt<TrkAsset>(
       width: 70,
@@ -263,19 +121,6 @@ class TravelTrackLayerBuilder {
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.black.withOpacity(0),
                   ),
-                  // TODO: decide if we want to show the asset title
-                  // child: Padding(
-                  //   padding: const EdgeInsets.all(4.0),
-                  //   child: Center(
-                  //     child: Text(
-                  //       asset.asset.title ?? '',
-                  //       style: const TextStyle(
-                  //         color: Colors.white,
-                  //         fontSize: 12,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                 ),
               ),
             ),
@@ -293,8 +138,8 @@ class TravelTrackLayerBuilder {
     );
   }
 
-  MarkerClusterLayerWidget _genMarkerClusterLayerWidgetByMarkers(
-      List<MarkerExt> markerExts) {
+  MarkerClusterLayerWidget buildMarkerClusterByMarkers(
+      List<MarkerExt<TrkAsset>> markerExts) {
     double mapRotation = _mapRotationNotifier.value;
     return MarkerClusterLayerWidget(
       options: MarkerClusterLayerOptions(
@@ -310,10 +155,10 @@ class TravelTrackLayerBuilder {
           // cast markers to extraMarkers
           List<MarkerExt<TrkAsset>> extraMarkers =
               markers.map((marker) => marker as MarkerExt<TrkAsset>).toList();
-          TrkAsset? asset;
+          TrkAsset? displayedAsset;
           for (MarkerExt<TrkAsset> extraMarker in extraMarkers) {
             if (extraMarker.extra != null) {
-              asset = extraMarker.extra;
+              displayedAsset = extraMarker.extra;
               break;
             }
           }
@@ -329,11 +174,11 @@ class TravelTrackLayerBuilder {
                       color: Colors.white,
                       width: 2,
                     ),
-                    image: asset == null
+                    image: displayedAsset == null
                         ? null
                         : DecorationImage(
                             image: AssetEntityImageProvider(
-                              asset.asset,
+                              displayedAsset.asset,
                               isOriginal: false,
                             ),
                             fit: BoxFit.cover,
@@ -341,7 +186,7 @@ class TravelTrackLayerBuilder {
                   ),
                   child: Stack(
                     children: <Widget>[
-                      asset == null
+                      displayedAsset == null
                           ? Icon(
                               Icons.photo,
                               color: Colors.white,
@@ -368,21 +213,12 @@ class TravelTrackLayerBuilder {
               padding: const EdgeInsets.all(0),
               onPressed: () {
                 debugPrint('onPressed ${markers.length}');
+                // TODO: show asset cluster
                 // context.read<GpxModel>().setSelectedCustomAsset(asset);
                 // Navigator.pushNamed(context, '/asset');
               },
             ),
           );
-          // Container(
-          //   decoration: BoxDecoration(
-          //       borderRadius: BorderRadius.circular(20), color: Colors.blue),
-          //   child: Center(
-          //     child: Text(
-          //       markers.length.toString(),
-          //       style: const TextStyle(color: Colors.white),
-          //     ),
-          //   ),
-          // );
         },
       ),
     );
