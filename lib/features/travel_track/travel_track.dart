@@ -1,9 +1,8 @@
-import 'package:gpx/gpx.dart';
 import 'package:path/path.dart';
 import 'package:travel_tracker/features/travel_track/gpx_ext.dart';
 import 'package:travel_tracker/features/travel_track/trkseg_ext.dart';
 import 'package:uuid/uuid.dart';
-import 'package:travel_tracker/features/travel_track/trk_asset.dart';
+import 'package:travel_tracker/features/travel_track/asset_ext.dart';
 
 // TODO: find a way to store global list of travel tracks, and load them when app starts
 // TODO: TravelTrackManager, TravelTrackRepository, TravelTrackService

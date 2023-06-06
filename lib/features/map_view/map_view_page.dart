@@ -1,19 +1,14 @@
-import 'dart:math' as math;
 import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:latlong2/latlong.dart' as latlng;
-import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
-import 'package:travel_tracker/features/map_view/marker_ext.dart';
 import 'package:travel_tracker/features/map_view/travel_track_layer_builder.dart';
 import 'package:travel_tracker/features/travel_track/travel_track.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:gpx/gpx.dart';
-import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 
 class MapViewPage extends StatefulWidget {
   const MapViewPage({super.key});

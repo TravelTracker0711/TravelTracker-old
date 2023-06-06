@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:flutter/material.dart';
 import 'package:gpx/gpx.dart';
 import 'package:travel_tracker/features/travel_track/trkseg_ext.dart';
 
