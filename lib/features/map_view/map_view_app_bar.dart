@@ -5,7 +5,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:gpx/gpx.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:travel_tracker/features/gpx/gpx_model.dart';
 import 'package:travel_tracker/features/travel_track/travel_track.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
 

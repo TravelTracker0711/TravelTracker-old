@@ -4,7 +4,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' as latlng;
 import 'package:photo_manager/photo_manager.dart';
 import 'package:travel_tracker/features/map_view/marker_ext.dart';
-import 'package:travel_tracker/features/gpx/gpx_model.dart';
 import 'package:gpx/gpx.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:travel_tracker/features/travel_track/gpx_ext.dart';
@@ -129,7 +128,6 @@ class TravelTrackLayerBuilder {
             onPressed: () {
               debugPrint('onPressed ${trkAsset.asset.title}');
               // TODO: show asset
-              // context.read<GpxModel>().setSelectedCustomAsset(asset);
               // Navigator.pushNamed(context, '/asset');
             },
           ),
@@ -214,7 +212,6 @@ class TravelTrackLayerBuilder {
               onPressed: () {
                 debugPrint('onPressed ${markers.length}');
                 // TODO: show asset cluster
-                // context.read<GpxModel>().setSelectedCustomAsset(asset);
                 // Navigator.pushNamed(context, '/asset');
               },
             ),

@@ -8,7 +8,6 @@ import 'package:latlong2/latlong.dart' as latlng;
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_tracker/features/map_view/marker_ext.dart';
-import 'package:travel_tracker/features/gpx/gpx_model.dart';
 import 'package:travel_tracker/features/map_view/travel_track_layer_builder.dart';
 import 'package:travel_tracker/features/travel_track/travel_track.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
