@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:travel_tracker/features/external_asset/external_asset_manager.dart';
+import 'package:travel_tracker/features/gallery_view/gallery_photo_view_page.dart';
 
 class GalleryViewPage extends StatefulWidget {
   const GalleryViewPage({super.key});
@@ -78,6 +79,18 @@ class _GalleryViewPageState extends State<GalleryViewPage> {
   }
 
   void _onTapAsset(AssetEntity asset) {
-    debugPrint('${asset.relativePath}${asset.title}');
+    // navigate to gallery photo view page
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          appBar: AppBar(
+            title: Text(asset.title!),
+          ),
+          body: GalleryPhotoViewPage(
+            asset: asset,
+          ),
+        ),
+      ),
+    );
   }
 }
