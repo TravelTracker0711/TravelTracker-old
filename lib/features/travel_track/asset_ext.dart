@@ -19,6 +19,7 @@ class AssetExt {
   late final AssetExtType type;
   late final String? filePath;
   late final latlng.LatLng? latLng;
+  final List<String> tags = [];
   final TrksegExt? attachedTrksegExt;
 
   AssetExt._({
