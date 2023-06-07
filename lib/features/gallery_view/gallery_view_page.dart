@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:photo_manager/photo_manager.dart';
-import 'package:travel_tracker/features/external_asset/external_asset_manager.dart';
-import 'package:travel_tracker/features/gallery_view/gallery_photo_view_page.dart';
+import 'package:provider/provider.dart';
+import 'package:travel_tracker/features/gallery_view/gallery_view_controller.dart';
+import 'package:travel_tracker/features/gallery_view/gallery_view_grid.dart';
+import 'package:travel_tracker/features/travel_track/asset_ext.dart';
+import 'package:travel_tracker/features/travel_track/travel_track.dart';
+import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
 
 class GalleryViewPage extends StatefulWidget {
   const GalleryViewPage({super.key});
@@ -11,86 +14,19 @@ class GalleryViewPage extends StatefulWidget {
 }
 
 class _GalleryViewPageState extends State<GalleryViewPage> {
-  late Future<List<AssetEntity>?> futureAssets;
-
-  @override
-  void initState() {
-    super.initState();
-    Future<ExternalAssetManager> feam = ExternalAssetManager.FI;
-    futureAssets = feam.then((eam) => eam.getAssetsFilteredByTimeAsync(
-          // minDate: DateTime(2023, 5, 1),
-          isTimeAsc: false,
-        ));
-  }
-
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: futureAssets,
-      builder:
-          (BuildContext context, AsyncSnapshot<List<AssetEntity>?> snapshot) {
-        if (snapshot.hasData) {
-          return _buildGridView(snapshot.data!);
-        } else if (snapshot.connectionState == ConnectionState.done) {
-          return const Center(child: Text('Nothing to show'));
-        } else {
-          return const Center(child: CircularProgressIndicator());
-        }
-      },
-    );
-  }
-
-  Widget _buildGridView(List<AssetEntity> assets) {
-    return Scrollbar(
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
-          mainAxisSpacing: 3.0,
-          crossAxisSpacing: 3.0,
-        ),
-        padding: const EdgeInsets.all(10.0),
-        itemCount: assets.length,
-        itemBuilder: (BuildContext context, int index) {
-          AssetEntity asset = assets[index];
-          return _buildAssetThumbnail(asset);
-        },
-      ),
-    );
-  }
-
-  Widget _buildAssetThumbnail(AssetEntity asset) {
-    return Card(
-      margin: const EdgeInsets.all(0),
-      child: InkWell(
-        onTap: () => _onTapAsset(asset),
-        child: (asset.type != AssetType.image && asset.type != AssetType.video)
-            ? Text(
-                '${asset.relativePath}${asset.title!}',
-              )
-            : Ink.image(
-                image: AssetEntityImageProvider(
-                  asset,
-                  isOriginal: false,
-                ),
-                fit: BoxFit.cover,
-              ),
-      ),
-    );
-  }
-
-  void _onTapAsset(AssetEntity asset) {
-    // navigate to gallery photo view page
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => Scaffold(
-          appBar: AppBar(
-            title: Text(asset.title!),
-          ),
-          body: GalleryPhotoViewPage(
-            asset: asset,
-          ),
-        ),
-      ),
+    Map<String, TravelTrack> travelTracks =
+        context.watch<TravelTrackManager>().travelTracks;
+    List<AssetExt> assetExts = <AssetExt>[];
+    travelTracks.forEach((String travelTrackId, TravelTrack travelTrack) {
+      for (AssetExt assetExt in travelTrack.assetExts) {
+        assetExts.add(assetExt);
+      }
+    });
+    return GalleryViewGrid(
+      controller: GalleryViewController(),
+      assetExts: assetExts,
     );
   }
 }

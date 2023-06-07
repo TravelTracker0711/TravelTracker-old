@@ -22,6 +22,8 @@ class AssetExt {
   final List<String> tags = [];
   final TrksegExt? attachedTrksegExt;
 
+  String? get title => asset.title;
+
   AssetExt._({
     required this.asset,
     required this.type,
