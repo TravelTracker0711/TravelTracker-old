@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:travel_tracker/features/map_view/map_view_controller.dart';
 import 'package:travel_tracker/features/travel_track/travel_track.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
 
@@ -9,12 +10,17 @@ enum PopupAction { test1, addGpxFile }
 
 // TODO refactor
 class MapViewAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const MapViewAppBar({super.key, required this.title});
+  const MapViewAppBar({
+    super.key,
+    required this.title,
+    required this.controller,
+  });
 
   @override
   Size get preferredSize => const Size.fromHeight(56);
 
   final String title;
+  final MapViewController controller;
 
   @override
   Widget build(BuildContext context) {
