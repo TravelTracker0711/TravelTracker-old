@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
 import 'package:travel_tracker/home_page.dart';
+import 'package:go_router/go_router.dart';
 
 import 'features/external_asset/external_asset_manager.dart';
 
@@ -18,6 +19,15 @@ void main() {
   runApp(const MyApp());
 }
 
+final _router = GoRouter(
+  routes: [
+    GoRoute(
+      path: '/',
+      builder: (context, state) => const HomePage(title: 'Travel Tracker'),
+    ),
+  ],
+);
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -29,13 +39,13 @@ class MyApp extends StatelessWidget {
           create: (_) => TravelTrackManager.I,
         ),
       ],
-      child: MaterialApp(
+      child: MaterialApp.router(
+        routerConfig: _router,
         title: 'Travel Tracker',
         theme: ThemeData(
           primarySwatch: Colors.blue,
           splashFactory: InkRipple.splashFactory,
         ),
-        home: const HomePage(title: 'Travel Tracker Home Page'),
       ),
     );
   }
