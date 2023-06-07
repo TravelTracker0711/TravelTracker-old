@@ -16,41 +16,9 @@ class MapViewPage extends StatefulWidget {
   State<MapViewPage> createState() => _MapViewPageState();
 }
 
-// TODO refactor
 class _MapViewPageState extends State<MapViewPage> {
   final MapController mapController = MapController();
   final ValueNotifier<double> mapRotationNotifier = ValueNotifier<double>(0.0);
-
-  // void addGpxLayer(Gpx gpx) {
-  //   List<latlng.LatLng> points = <latlng.LatLng>[];
-  //   for (Trk trk in gpx.trks) {
-  //     for (var trksegEntry in trk.trksegs.asMap().entries) {
-  //       Trkseg trkseg = trksegEntry.value;
-  //       int trksegIndex = trksegEntry.key;
-  //       for (var trkptEntry in trkseg.trkpts.asMap().entries) {
-  //         Wpt trkpt = trkptEntry.value;
-  //         int trkptIndex = trkptEntry.key;
-  //         if (trkpt.lat != null && trkpt.lon != null) {
-  //           points.add(latlng.LatLng(trkpt.lat!, trkpt.lon!));
-  //         }
-  //       }
-  //     }
-  //   }
-
-  //   PolylineLayer polylineLayer = PolylineLayer(
-  //     polylines: <Polyline>[
-  //       Polyline(
-  //         points: points,
-  //         strokeWidth: 4.0,
-  //         color: Colors.deepOrange,
-  //       ),
-  //     ],
-  //   );
-
-  //   setState(() {
-  //     _layers.add(polylineLayer);
-  //   });
-  // }
 
   MapOptions _getMapOptions() {
     return MapOptions(

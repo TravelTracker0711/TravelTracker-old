@@ -25,7 +25,8 @@ class TravelTrackLayerBuilder {
     return layers;
   }
 
-  List<Widget> buildPolylineLayersByTravelTrack(TravelTrack travelTrack) {
+  List<PolylineLayer> buildPolylineLayersByTravelTrack(
+      TravelTrack travelTrack) {
     List<PolylineLayer> layers = <PolylineLayer>[];
     for (GpxExt gpxExt in travelTrack.gpxExts) {
       layers.addAll(buildPolylineLayersByGpxExt(gpxExt));
@@ -148,11 +149,13 @@ class TravelTrackLayerBuilder {
           padding: EdgeInsets.all(50),
           maxZoom: 15,
         ),
+        spiderfySpiralDistanceMultiplier: 2,
+        disableClusteringAtZoom: 17,
+        zoomToBoundsOnClick: false,
         markers: markerExts,
         builder: (context, markers) {
-          // cast markers to extraMarkers
           List<MarkerExt<AssetExt>> extraMarkers =
-              markers.map((marker) => marker as MarkerExt<AssetExt>).toList();
+              _castMarkerToMarkerExt(markers);
           AssetExt? displayedAsset;
           for (MarkerExt<AssetExt> extraMarker in extraMarkers) {
             if (extraMarker.extra != null) {
@@ -162,62 +165,60 @@ class TravelTrackLayerBuilder {
           }
           return Transform.rotate(
             angle: -mapRotation * math.pi / 180,
-            child: IconButton(
-              icon: AspectRatio(
-                aspectRatio: 1 / 1,
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: Colors.white,
-                      width: 2,
-                    ),
-                    image: displayedAsset == null
-                        ? null
-                        : DecorationImage(
-                            image: AssetEntityImageProvider(
-                              displayedAsset.asset,
-                              isOriginal: false,
-                            ),
-                            fit: BoxFit.cover,
+            child: AspectRatio(
+              aspectRatio: 1 / 1,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: Colors.white,
+                    width: 2,
+                  ),
+                  image: displayedAsset == null
+                      ? null
+                      : DecorationImage(
+                          image: AssetEntityImageProvider(
+                            displayedAsset.asset,
+                            isOriginal: false,
                           ),
-                  ),
-                  child: Stack(
-                    children: <Widget>[
-                      displayedAsset == null
-                          ? Icon(
-                              Icons.photo,
-                              color: Colors.white,
-                            )
-                          : Container(),
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.black.withOpacity(0.3),
+                          fit: BoxFit.cover,
                         ),
+                ),
+                child: Stack(
+                  children: <Widget>[
+                    displayedAsset == null
+                        ? Icon(
+                            Icons.photo,
+                            color: Colors.white,
+                          )
+                        : Container(),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.black.withOpacity(0.3),
                       ),
-                      Center(
-                          child: Text(
-                        markers.length.toString(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                        ),
-                      )),
-                    ],
-                  ),
+                    ),
+                    Center(
+                        child: Text(
+                      markers.length.toString(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
+                    )),
+                  ],
                 ),
               ),
-              padding: const EdgeInsets.all(0),
-              onPressed: () {
-                debugPrint('onPressed ${markers.length}');
-                // TODO: show asset cluster
-                // Navigator.pushNamed(context, '/asset');
-              },
             ),
           );
         },
       ),
     );
+  }
+
+  List<MarkerExt<AssetExt>> _castMarkerToMarkerExt(List<Marker> markers) {
+    List<MarkerExt<AssetExt>> extraMarkers =
+        markers.map((marker) => marker as MarkerExt<AssetExt>).toList();
+    return extraMarkers;
   }
 }
