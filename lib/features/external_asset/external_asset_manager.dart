@@ -42,13 +42,16 @@ class ExternalAssetManager {
     return assets;
   }
 
-  Future<AssetPathEntity> _getAllAssetPathAsync() async {
+  Future<AssetPathEntity?> _getAllAssetPathAsync() async {
     final List<AssetPathEntity> pathEntities =
         await PhotoManager.getAssetPathList(
       type: RequestType.all,
       hasAll: true,
       onlyAll: true,
     );
+    if (pathEntities.isEmpty) {
+      return null;
+    }
     return pathEntities[0];
   }
 
