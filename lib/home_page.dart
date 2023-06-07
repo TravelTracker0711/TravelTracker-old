@@ -42,7 +42,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(context) {
     return Scaffold(
       appBar: _appBars.elementAt(_selectedPageIndex),
-      body: Center(child: _bodyPages.elementAt(_selectedPageIndex)),
+      body: IndexedStack(
+        index: _selectedPageIndex,
+        children: _bodyPages,
+      ),
       bottomNavigationBar: HomePageBottomNavigationBar(
         onTap: (int index) {
           setState(() {
