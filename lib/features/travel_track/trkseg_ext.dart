@@ -1,7 +1,9 @@
 import 'package:gpx/gpx.dart';
 import 'package:travel_tracker/features/travel_track/gpx_ext.dart';
+import 'package:uuid/uuid.dart';
 
 class TrksegExt {
+  final String id = const Uuid().v4();
   final Trkseg trkseg;
   late String name;
   final GpxExt? attachedGpxExt;

@@ -2,8 +2,10 @@ import 'dart:io';
 import 'package:gpx/gpx.dart';
 import 'package:path/path.dart';
 import 'package:travel_tracker/features/travel_track/trkseg_ext.dart';
+import 'package:uuid/uuid.dart';
 
 class GpxExt {
+  final String id = const Uuid().v4();
   final Gpx gpx;
   late final List<TrksegExt> trksegExts;
   late String name;

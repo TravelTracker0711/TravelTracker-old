@@ -4,6 +4,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:latlong2/latlong.dart' as latlng;
 import 'package:travel_tracker/features/external_asset/external_asset_manager.dart';
 import 'package:travel_tracker/features/travel_track/trkseg_ext.dart';
+import 'package:uuid/uuid.dart';
 
 enum AssetExtType {
   image,
@@ -15,6 +16,7 @@ enum AssetExtType {
 
 //TODO: all AssetExt factory methods
 class AssetExt {
+  final String id = const Uuid().v4();
   late final AssetEntity asset;
   late final AssetExtType type;
   late final String? filePath;
