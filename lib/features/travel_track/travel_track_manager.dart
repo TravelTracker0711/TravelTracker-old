@@ -19,12 +19,12 @@ class TravelTrackManager with ChangeNotifier {
     TravelTrackManager instance = GetIt.I<TravelTrackManager>();
     if (!instance._isInitializing) {
       instance._isInitializing = true;
-      instance.initAsync();
+      instance._initAsync();
     }
     return instance;
   }
 
-  Future<void> initAsync() async {
+  Future<void> _initAsync() async {
     debugPrint('TravelTrackManager init');
     // TODO: load _travelTracks from storage
     _isInitialized = true;
