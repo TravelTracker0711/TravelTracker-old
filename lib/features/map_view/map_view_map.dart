@@ -62,11 +62,12 @@ class _MapViewMapState extends State<MapViewMap> {
   @override
   Widget build(BuildContext context) {
     List<Widget> layers = _getBasicMapLayer();
-    Map<String, TravelTrack> travelTracks =
-        context.watch<TravelTrackManager>().travelTracks;
+    Map<String, TravelTrack> travelTrackMap =
+        context.watch<TravelTrackManager>().travelTrackMap;
     TravelTrackLayerBuilder travelTrackLayerBuilder =
         TravelTrackLayerBuilder(mapRotationNotifier);
-    layers.addAll(travelTrackLayerBuilder.build(travelTracks.values.toList()));
+    layers
+        .addAll(travelTrackLayerBuilder.build(travelTrackMap.values.toList()));
 
     return FlutterMap(
       mapController: mapController,

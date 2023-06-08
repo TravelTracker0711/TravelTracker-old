@@ -16,10 +16,10 @@ class GalleryViewPage extends StatefulWidget {
 class _GalleryViewPageState extends State<GalleryViewPage> {
   @override
   Widget build(BuildContext context) {
-    Map<String, TravelTrack> travelTracks =
-        context.watch<TravelTrackManager>().travelTracks;
+    Map<String, TravelTrack> travelTrackMap =
+        context.watch<TravelTrackManager>().travelTrackMap;
     List<AssetExt> assetExts = <AssetExt>[];
-    travelTracks.forEach((String travelTrackId, TravelTrack travelTrack) {
+    travelTrackMap.forEach((String travelTrackId, TravelTrack travelTrack) {
       for (AssetExt assetExt in travelTrack.assetExts) {
         assetExts.add(assetExt);
       }
