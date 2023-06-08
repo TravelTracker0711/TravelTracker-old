@@ -16,31 +16,6 @@ class TravelTrack {
   List<GpxExt> get gpxExts => List<GpxExt>.unmodifiable(_gpxExts);
   List<AssetExt> get assetExts => List<AssetExt>.unmodifiable(_assetExts);
 
-  // TODO: cal totalDistance
-  double get totalDistance {
-    return 0.0;
-  }
-
-  // TODO: cal totalDuration
-  double get totalDuration {
-    return 0.0;
-  }
-
-  // TODO: cal averageSpeed
-  double get averageSpeed {
-    return 0.0;
-  }
-
-  // TODO: get startTime
-  DateTime get startTime {
-    return DateTime.now();
-  }
-
-  // TODO: get endTime
-  DateTime get endTime {
-    return DateTime.now();
-  }
-
   // TODO: TravelTrackService.createAutoAttachAssets
   // static Future<TravelTrack> createAutoAttachAssetsAsync({
   //   List<String>? gpxFilePaths,
