@@ -5,7 +5,10 @@ import 'package:travel_tracker/features/map_view/map_view_controller.dart';
 import 'package:travel_tracker/features/map_view/map_view_page.dart';
 import 'package:travel_tracker/features/calendar_view/calendar_view_page.dart';
 import 'package:travel_tracker/features/stats_view/stats_view_page.dart';
+import 'package:travel_tracker/features/travel_track/travel_track_drawer.dart';
 import 'package:travel_tracker/home_page_bottom_navigation_bar.dart';
+
+import 'features/travel_track/travel_track_drawer_options.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -20,6 +23,7 @@ class _HomePageState extends State<HomePage> {
 
   late final List<Widget> _bodyPages;
   late final List<PreferredSizeWidget> _appBars;
+  late final TravelTrackDrawerOptions _travelTrackDrawerOptions;
 
   @override
   void initState() {
@@ -43,6 +47,9 @@ class _HomePageState extends State<HomePage> {
       AppBar(title: const Text('Calendar')),
       AppBar(title: const Text('Stats')),
     ];
+    _travelTrackDrawerOptions = TravelTrackDrawerOptions(
+      title: widget.title,
+    );
   }
 
   @override
@@ -59,6 +66,9 @@ class _HomePageState extends State<HomePage> {
             _selectedPageIndex = index;
           });
         },
+      ),
+      drawer: TravelTrackDrawer(
+        options: _travelTrackDrawerOptions,
       ),
     );
   }
