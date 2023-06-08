@@ -29,7 +29,7 @@ class TravelTrack {
   }
 
   Future<void> addGpxByFilePathAsync(String gpxFilePath) async {
-    _gpxExts.add(await GpxExt.fromFilePathAsync(gpxFilePath));
+    _gpxExts.add(await GpxExt.fromFilePathAsync(filePath: gpxFilePath));
   }
 
   // TODO: cal totalDistance
@@ -100,7 +100,7 @@ class TravelTrack {
 
     List<GpxExt> gpxExts = <GpxExt>[];
     for (String gpxFilePath in gpxFilePaths) {
-      gpxExts.add(await GpxExt.fromFilePathAsync(gpxFilePath));
+      gpxExts.add(await GpxExt.fromFilePathAsync(filePath: gpxFilePath));
     }
 
     List<AssetExt> assetExts = <AssetExt>[];
