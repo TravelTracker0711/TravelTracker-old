@@ -57,6 +57,7 @@ dependencies:
   go_router: ^7.1.1
   scrollable_positioned_list: ^0.3.8
   flukit: ^3.0.1
+  path_provider: ^2.0.15
 
   photo_gallery: ^1.2.1
   photo_view: ^0.14.0

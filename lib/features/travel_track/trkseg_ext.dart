@@ -8,6 +8,14 @@ class TrksegExt {
   late String name;
   final GpxExt? attachedGpxExt;
 
+  Map toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'attachedGpxExtId': attachedGpxExt?.id,
+    };
+  }
+
   TrksegExt._({
     required this.trkseg,
     String? name,
@@ -20,7 +28,7 @@ class TrksegExt {
     required GpxExt gpxExt,
   }) {
     List<TrksegExt> trksegs = [];
-    for (Trk trk in gpxExt.gpx.trks) {
+    for (Trk trk in gpxExt.gpx!.trks) {
       for (Trkseg trkseg in trk.trksegs) {
         String trksegName = '${gpxExt.name} - Trkseg ${trksegs.length + 1}';
         trksegs.add(TrksegExt._(

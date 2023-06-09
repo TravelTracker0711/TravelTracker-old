@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:gpx/gpx.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -23,6 +25,17 @@ class AssetExt {
   late final latlng.LatLng? latLng;
   final List<String> tags = [];
   final TrksegExt? attachedTrksegExt;
+
+  Map toJson() {
+    return {
+      'id': id,
+      'type': type.toString(),
+      'filePath': filePath,
+      'latLng': latLng?.toJson(),
+      'tags': tags,
+      'attachedTrksegExtId': attachedTrksegExt?.id,
+    };
+  }
 
   String? get title => asset.title;
 
@@ -73,11 +86,13 @@ class AssetExt {
     }
     for (AssetEntity asset in assets) {
       AssetExtType type = _getAssetType(asset);
+      File? assetFile = await asset.originFile;
+      String? filePath = assetFile?.path;
       assetExts.add(
         AssetExt._(
           asset: asset,
           type: type,
-          filePath: asset.relativePath,
+          filePath: filePath,
           latLng: null,
           attachedTrksegExt: attachedTrksegExt,
         ),

@@ -4,6 +4,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_tracker/features/map_view/map_view_controller.dart';
 import 'package:travel_tracker/features/travel_track/travel_track.dart';
+import 'package:travel_tracker/features/travel_track/travel_track_file_handler.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
 
 enum PopupAction { test1, addGpxFile }
@@ -41,7 +42,9 @@ class MapViewAppBar extends StatelessWidget implements PreferredSizeWidget {
           onSelected: (PopupAction result) async {
             switch (result) {
               case PopupAction.test1:
-                debugPrint('test1');
+                TravelTrackFileHandler travelTrackFileHandler =
+                    TravelTrackFileHandler();
+                await travelTrackFileHandler.test();
                 break;
               case PopupAction.addGpxFile:
                 _addGpxFileAsync(context);

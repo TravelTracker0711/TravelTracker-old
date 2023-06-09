@@ -5,45 +5,66 @@ import 'package:travel_tracker/features/travel_track/trkseg_ext.dart';
 import 'package:uuid/uuid.dart';
 
 class GpxExt {
-  final String id = const Uuid().v4();
-  final Gpx gpx;
+  late final String id;
+  late final Gpx? gpx;
   late final List<TrksegExt> trksegExts;
   late String name;
-  final String? fileFullPath;
+  late final String? fullFilePath;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'fileFullPath': fullFilePath,
+      'trksegExts': trksegExts.map((e) => e.toJson()).toList(),
+    };
+  }
+
+  // GpxExt.fromJson(Map<String, dynamic> json) {
+  //   id = json['id'];
+  //   name = json['name'];
+  //   fullFilePath = json['fileFullPath'];
+  //   trksegExts = (json['trksegExts'] as List)
+  //       .map((e) => TrksegExt.fromJson(e))
+  //       .toList()
+  //       .cast<TrksegExt>();
+  //   gpx = null;
+  // }
 
   String? get dirName {
-    if (fileFullPath == null) {
+    if (fullFilePath == null) {
       return null;
     }
-    return dirname(fileFullPath!);
+    return dirname(fullFilePath!);
   }
 
   String? get fileName {
-    if (fileFullPath == null) {
+    if (fullFilePath == null) {
       return null;
     }
-    return basename(fileFullPath!);
+    return basename(fullFilePath!);
   }
 
   String? get fileBaseName {
-    if (fileFullPath == null) {
+    if (fullFilePath == null) {
       return null;
     }
-    return basenameWithoutExtension(fileFullPath!);
+    return basenameWithoutExtension(fullFilePath!);
   }
 
   String? get fileExtension {
-    if (fileFullPath == null) {
+    if (fullFilePath == null) {
       return null;
     }
-    return extension(fileFullPath!);
+    return extension(fullFilePath!);
   }
 
   GpxExt._({
     required this.gpx,
-    this.fileFullPath,
+    this.fullFilePath,
     String? name,
   }) {
+    id = const Uuid().v4();
     this.name = name ?? fileBaseName ?? 'Unnamed Gpx';
     trksegExts = TrksegExt.fromGpxExt(
       gpxExt: this,
@@ -85,7 +106,7 @@ class GpxExt {
   }) {
     return GpxExt._(
       gpx: gpx,
-      fileFullPath: filePath,
+      fullFilePath: filePath,
       name: name,
     );
   }

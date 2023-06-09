@@ -7,13 +7,40 @@ import 'package:travel_tracker/features/travel_track/asset_ext.dart';
 // TODO: TravelTrackManager, TravelTrackRepository, TravelTrackService
 // TODO: with ChangeNotifier
 class TravelTrack {
-  final String id = const Uuid().v4();
+  late final String id;
   late String name;
   late String description;
   List<GpxExt> _gpxExts = <GpxExt>[];
   List<AssetExt> _assetExts = <AssetExt>[];
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'gpxExts': _gpxExts.map((e) => e.toJson()).toList(),
+      'assetExts': _assetExts.map((e) => e.toJson()).toList(),
+    };
+  }
+
+  // TravelTrack.fromJson(Map<String, dynamic> json) {
+  //   id = json['id'];
+  //   name = json['name'];
+  //   description = json['description'];
+  //   _gpxExts = (json['gpxExts'] as List)
+  //       .map((e) => GpxExt.fromJson(e))
+  //       .toList()
+  //       .cast<GpxExt>();
+  //   _assetExts = (json['assetExts'] as List)
+  //       .map((e) => AssetExt.fromJson(e))
+  //       .toList()
+  //       .cast<AssetExt>();
+  // }
+
   List<GpxExt> get gpxExts => List<GpxExt>.unmodifiable(_gpxExts);
+  List<TrksegExt> get trksegExts => List<TrksegExt>.unmodifiable(
+        _gpxExts.expand((gpxExt) => gpxExt.trksegExts).toList(),
+      );
   List<AssetExt> get assetExts => List<AssetExt>.unmodifiable(_assetExts);
 
   // TODO: TravelTrackService.createAutoAttachAssets
@@ -38,6 +65,7 @@ class TravelTrack {
     List<GpxExt>? gpxExts,
     List<AssetExt>? assetExts,
   }) {
+    id = const Uuid().v4();
     this.name = name ?? _getFirstGpxExtName(gpxExts) ?? 'Unnamed $id';
     this.description = description ?? '';
     _gpxExts = List<GpxExt>.of(gpxExts ?? []);
