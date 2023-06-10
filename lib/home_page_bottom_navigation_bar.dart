@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
 
-class HomePageBottomNavigationBar extends StatefulWidget {
-  const HomePageBottomNavigationBar({Key? key, required this.onTap})
-      : super(key: key);
+class HomePageBottomNavigationBar extends StatelessWidget {
+  const HomePageBottomNavigationBar({
+    Key? key,
+    required this.onPageTap,
+    this.selectedPageIndex = 0,
+  }) : super(key: key);
 
-  final ValueChanged<int> onTap;
-
-  @override
-  State<HomePageBottomNavigationBar> createState() =>
-      _HomePageBottomNavigationBarState();
-}
-
-class _HomePageBottomNavigationBarState
-    extends State<HomePageBottomNavigationBar> {
-  int _selectedPageIndex = 0;
+  final ValueChanged<int> onPageTap;
+  final int selectedPageIndex;
 
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      currentIndex: _selectedPageIndex,
+      currentIndex: selectedPageIndex,
       type: BottomNavigationBarType.fixed,
       items: const [
         BottomNavigationBarItem(
@@ -39,10 +34,7 @@ class _HomePageBottomNavigationBarState
         ),
       ],
       onTap: (int index) {
-        setState(() {
-          _selectedPageIndex = index;
-        });
-        widget.onTap(index);
+        onPageTap(index);
       },
     );
   }

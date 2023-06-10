@@ -74,7 +74,8 @@ class _HomePageState extends State<HomePage> {
         children: _bodyPages,
       ),
       bottomNavigationBar: HomePageBottomNavigationBar(
-        onTap: (int index) {
+        selectedPageIndex: _selectedPageIndex,
+        onPageTap: (int index) {
           setState(() {
             _selectedPageIndex = index;
           });
