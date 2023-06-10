@@ -9,6 +9,13 @@ class TravelTrackManager with ChangeNotifier {
   bool _isInitialized = false;
 
   bool get isInitialized => _isInitialized;
+  bool get isAnyTravelTrackSelected => _travelTrackMap.values
+      .any((travelTrack) => travelTrack.isSelected == true);
+  // TODO: get list of travel tracks, with setted sort and filter
+  List<TravelTrack> get travelTracks => _travelTrackMap.values.toList();
+  List<TravelTrack> get selectedTravelTracks => travelTracks
+      .where((travelTrack) => travelTrack.isSelected == true)
+      .toList();
 
   Map<String, TravelTrack> get travelTrackMap =>
       Map<String, TravelTrack>.unmodifiable(_travelTrackMap);
@@ -24,14 +31,12 @@ class TravelTrackManager with ChangeNotifier {
   }
 
   Future<void> _initAsync() async {
-    debugPrint('TravelTrackManager init');
     // TODO: load _travelTracks from storage
     _isInitialized = true;
     notifyListeners();
   }
 
   Future<void> addTravelTrackAsync(TravelTrack travelTrack) async {
-    debugPrint('TravelTrackManager addTravelTrack');
     TravelTrackFileHandler travelTrackFileHandler = TravelTrackFileHandler();
     await travelTrackFileHandler.write(travelTrack);
     _travelTrackMap[travelTrack.id] = travelTrack;
@@ -39,9 +44,32 @@ class TravelTrackManager with ChangeNotifier {
   }
 
   Future<void> removeTravelTrackAsync(String travelTrackId) async {
-    debugPrint('TravelTrackManager removeTravelTrack');
     // TODO: delete travelTrack from storage
     _travelTrackMap.remove(travelTrackId);
     notifyListeners();
+  }
+
+  void setTravelTrackSelected({
+    required String travelTrackId,
+    required bool isSelected,
+  }) {
+    _travelTrackMap[travelTrackId]!.isSelected = isSelected;
+    notifyListeners();
+  }
+
+  void setTravelTrackVisible({
+    required String travelTrackId,
+    required bool isVisible,
+  }) {
+    _travelTrackMap[travelTrackId]!.isVisible = isVisible;
+    notifyListeners();
+  }
+
+  bool isTravelTrackSelected(String travelTrackId) {
+    return _travelTrackMap[travelTrackId]!.isSelected;
+  }
+
+  bool isTravelTrackVisible(String travelTrackId) {
+    return _travelTrackMap[travelTrackId]!.isVisible;
   }
 }

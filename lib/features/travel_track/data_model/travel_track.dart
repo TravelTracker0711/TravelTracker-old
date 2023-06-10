@@ -17,6 +17,8 @@ class TravelTrack extends TravelData {
   final List<TrksegExt> _trksegExts = <TrksegExt>[];
   final List<AssetExt> _assetExts = <AssetExt>[];
   final List<String> _gpxFileFullPaths = <String>[];
+  bool isSelected = false;
+  bool isVisible = true;
 
   List<TrksegExt> get trksegExts => List<TrksegExt>.unmodifiable(_trksegExts);
   List<AssetExt> get assetExts => List<AssetExt>.unmodifiable(_assetExts);
@@ -44,22 +46,6 @@ class TravelTrack extends TravelData {
   //       .map((e) => AssetExt.fromJson(e))
   //       .toList()
   //       .cast<AssetExt>();
-  // }
-
-  // TODO: TravelTrackService.createAutoAttachAssets
-  // static Future<TravelTrack> createAutoAttachAssetsAsync({
-  //   List<String>? gpxFilePaths,
-  //   List<AssetExt>? assetExts,
-  //   required String name,
-  //   String? description,
-  // }) async {
-  //   TravelTrack travelTrack = TravelTrack(
-  //     gpxFilePaths: gpxFilePaths,
-  //     assetExts: assetExts,
-  //     name: name,
-  //     description: description,
-  //   );
-  //   return travelTrack;
   // }
 
   TravelTrack._({

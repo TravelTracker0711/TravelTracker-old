@@ -16,11 +16,14 @@ class TravelTrackLayerBuilder {
   TravelTrackLayerBuilder(this._mapRotationNotifier);
 
   List<Widget> build(List<TravelTrack> travelTracks) {
+    List<TravelTrack> visibleTravelTracks = travelTracks
+        .where((travelTrack) => travelTrack.isVisible == true)
+        .toList();
     List<Widget> layers = <Widget>[];
-    for (TravelTrack travelTrack in travelTracks) {
+    for (TravelTrack travelTrack in visibleTravelTracks) {
       layers.addAll(buildPolylineLayersByTravelTrack(travelTrack));
     }
-    layers.add(buildMarkerClusterLayerByTravelTracks(travelTracks));
+    layers.add(buildMarkerClusterLayerByTravelTracks(visibleTravelTracks));
     return layers;
   }
 
