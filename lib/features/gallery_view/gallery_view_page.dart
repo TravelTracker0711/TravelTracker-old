@@ -16,14 +16,12 @@ class GalleryViewPage extends StatefulWidget {
 class _GalleryViewPageState extends State<GalleryViewPage> {
   @override
   Widget build(BuildContext context) {
-    Map<String, TravelTrack> travelTrackMap =
-        context.watch<TravelTrackManager>().travelTrackMap;
+    List<TravelTrack> visibleTravelTracks =
+        context.watch<TravelTrackManager>().visibleTravelTracks;
     List<AssetExt> assetExts = <AssetExt>[];
-    travelTrackMap.forEach((String travelTrackId, TravelTrack travelTrack) {
-      for (AssetExt assetExt in travelTrack.assetExts) {
-        assetExts.add(assetExt);
-      }
-    });
+    for (TravelTrack travelTrack in visibleTravelTracks) {
+      assetExts.addAll(travelTrack.assetExts);
+    }
     return GalleryViewGrid(
       controller: GalleryViewController(),
       assetExts: assetExts,
