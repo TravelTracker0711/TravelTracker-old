@@ -9,6 +9,7 @@ import 'package:travel_tracker/features/stats_view/stats_view_page.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_list_view.dart';
 import 'package:travel_tracker/home_page_bottom_navigation_bar.dart';
 
+import 'features/map_view/map_view_bottom_app_bar.dart';
 import 'features/travel_track/travel_track_list_view_options.dart';
 
 class HomePage extends StatefulWidget {
@@ -23,6 +24,7 @@ class _HomePageState extends State<HomePage> {
   int _selectedPageIndex = 0;
 
   late final TravelTrackListViewOptions _travelTrackListViewOptions;
+  late final MapViewController mapViewController;
   late final List<Widget> _bodyPages;
   late final List<PreferredSizeWidget> _appBars;
   late final List<Widget> _floatingActionButtons;
@@ -30,10 +32,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    MapViewController mapViewController = MapViewController();
     _travelTrackListViewOptions = TravelTrackListViewOptions(
       title: widget.title,
     );
+    mapViewController = MapViewController();
 
     // TODO: construct appropriate widgets
     _bodyPages = <Widget>[
@@ -73,14 +75,7 @@ class _HomePageState extends State<HomePage> {
         index: _selectedPageIndex,
         children: _bodyPages,
       ),
-      bottomNavigationBar: HomePageBottomNavigationBar(
-        selectedPageIndex: _selectedPageIndex,
-        onPageTap: (int index) {
-          setState(() {
-            _selectedPageIndex = index;
-          });
-        },
-      ),
+      bottomNavigationBar: _buildBottomAppBar(),
       drawer: Drawer(
         child: TravelTrackListView(
           options: _travelTrackListViewOptions,
@@ -89,5 +84,29 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton:
           _floatingActionButtons.elementAt(_selectedPageIndex),
     );
+  }
+
+  Widget _buildBottomAppBar() {
+    switch (_selectedPageIndex) {
+      case 0:
+        return MapViewBottomAppBar(
+          selectedPageIndex: _selectedPageIndex,
+          controller: mapViewController,
+          onPageTap: (int index) {
+            setState(() {
+              _selectedPageIndex = index;
+            });
+          },
+        );
+      default:
+        return HomePageBottomNavigationBar(
+          selectedPageIndex: _selectedPageIndex,
+          onPageTap: (int index) {
+            setState(() {
+              _selectedPageIndex = index;
+            });
+          },
+        );
+    }
   }
 }
