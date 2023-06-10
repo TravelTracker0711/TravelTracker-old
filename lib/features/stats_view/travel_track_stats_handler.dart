@@ -1,4 +1,4 @@
-import 'package:travel_tracker/features/travel_track/travel_track.dart';
+import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
 
 class TravelTrackStatsHandler {
   // TODO: cal totalDistance

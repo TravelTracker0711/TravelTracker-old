@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:travel_tracker/features/travel_track/gpx_ext.dart';
-import 'package:travel_tracker/features/travel_track/travel_track.dart';
+import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_drawer_options.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
 
@@ -57,7 +56,7 @@ class _TravelTrackDrawerState extends State<TravelTrackDrawer> {
           widget.options.travelTrackTileExpandMap[travelTrack.id] = false;
         }
         return ExpansionTile(
-          title: Text(travelTrack.name),
+          title: Text(travelTrack.config.name),
           initiallyExpanded:
               widget.options.travelTrackTileExpandMap[travelTrack.id]!,
           controlAffinity: ListTileControlAffinity.leading,
@@ -80,30 +79,23 @@ class _TravelTrackDrawerState extends State<TravelTrackDrawer> {
                   isExpanded;
             });
           },
-          children: _buildGpxExtList(context, travelTrack),
+          children: _buildTrksegExtList(context, travelTrack),
         );
       }),
     );
     return travelTrackList;
   }
 
-  List<Widget> _buildGpxExtList(BuildContext context, TravelTrack travelTrack) {
-    List<Widget> trksegExtList = [];
-    for (GpxExt gpxExt in travelTrack.gpxExts) {
-      trksegExtList.addAll(
-        _buildTrksegExtList(context, gpxExt),
-      );
-    }
-    return trksegExtList;
-  }
-
-  List<Widget> _buildTrksegExtList(BuildContext context, GpxExt gpxExt) {
+  List<Widget> _buildTrksegExtList(
+    BuildContext context,
+    TravelTrack travelTrack,
+  ) {
     List<Widget> trksegExtList = [];
     trksegExtList.addAll(
-      gpxExt.trksegExts.map((trksegExt) {
+      travelTrack.trksegExts.map((trksegExt) {
         return ListTile(
           leading: const Icon(Icons.timeline),
-          title: Text(trksegExt.name),
+          title: Text(trksegExt.config.name),
           onTap: () {
             // context
             //     .read<TravelTrackManager>()

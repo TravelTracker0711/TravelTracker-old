@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_tracker/features/gallery_view/gallery_view_controller.dart';
 import 'package:travel_tracker/features/gallery_view/gallery_view_grid.dart';
-import 'package:travel_tracker/features/travel_track/asset_ext.dart';
-import 'package:travel_tracker/features/travel_track/travel_track.dart';
+import 'package:travel_tracker/features/travel_track/data_model/asset_ext.dart';
+import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
 
 class GalleryViewPage extends StatefulWidget {

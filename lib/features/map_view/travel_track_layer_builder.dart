@@ -4,12 +4,11 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' as latlng;
 import 'package:photo_manager/photo_manager.dart';
 import 'package:travel_tracker/features/map_view/marker_ext.dart';
-import 'package:gpx/gpx.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
-import 'package:travel_tracker/features/travel_track/gpx_ext.dart';
-import 'package:travel_tracker/features/travel_track/travel_track.dart';
-import 'package:travel_tracker/features/travel_track/asset_ext.dart';
-import 'package:travel_tracker/features/travel_track/trkseg_ext.dart';
+import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
+import 'package:travel_tracker/features/travel_track/data_model/asset_ext.dart';
+import 'package:travel_tracker/features/travel_track/data_model/trkseg_ext.dart';
+import 'package:travel_tracker/features/travel_track/data_model/wpt_ext.dart';
 
 class TravelTrackLayerBuilder {
   final ValueNotifier<double> _mapRotationNotifier;
@@ -28,15 +27,7 @@ class TravelTrackLayerBuilder {
   List<PolylineLayer> buildPolylineLayersByTravelTrack(
       TravelTrack travelTrack) {
     List<PolylineLayer> layers = <PolylineLayer>[];
-    for (GpxExt gpxExt in travelTrack.gpxExts) {
-      layers.addAll(buildPolylineLayersByGpxExt(gpxExt));
-    }
-    return layers;
-  }
-
-  List<PolylineLayer> buildPolylineLayersByGpxExt(GpxExt gpxExt) {
-    List<PolylineLayer> layers = <PolylineLayer>[];
-    for (TrksegExt trksegExt in gpxExt.trksegExts) {
+    for (TrksegExt trksegExt in travelTrack.trksegExts) {
       layers.add(buildPolylineLayerByTrksegExt(trksegExt));
     }
     return layers;
@@ -44,10 +35,8 @@ class TravelTrackLayerBuilder {
 
   PolylineLayer buildPolylineLayerByTrksegExt(TrksegExt trksegExt) {
     List<latlng.LatLng> points = <latlng.LatLng>[];
-    for (Wpt trkpt in trksegExt.trkseg.trkpts) {
-      if (trkpt.lat != null && trkpt.lon != null) {
-        points.add(latlng.LatLng(trkpt.lat!, trkpt.lon!));
-      }
+    for (WptExt trkpt in trksegExt.trkpts) {
+      points.add(latlng.LatLng(trkpt.lat, trkpt.lon));
     }
     PolylineLayer polylineLayer = PolylineLayer(
       polylines: <Polyline>[
@@ -85,14 +74,14 @@ class TravelTrackLayerBuilder {
   }
 
   MarkerExt<AssetExt>? buildMarkerByAssetExt(AssetExt assetExt) {
-    if (assetExt.latLng == null) {
+    if (assetExt.coordinates == null) {
       return null;
     }
     double mapRotation = _mapRotationNotifier.value;
     return MarkerExt<AssetExt>(
       width: 70,
       height: 70,
-      point: assetExt.latLng!,
+      point: assetExt.coordinates!.latLng,
       rotate: false,
       extra: assetExt,
       builder: (BuildContext context) {

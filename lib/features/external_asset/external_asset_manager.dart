@@ -1,9 +1,13 @@
-import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 class ExternalAssetManager {
   AssetPathEntity? _allAssetsPathEntity;
+  bool _isInitialized = false;
+  bool _isPermissionGranted = false;
+
+  bool get isInitialized => _isInitialized;
+  bool get isPermissionGranted => _isPermissionGranted;
 
   // ignore: non_constant_identifier_names
   static Future<ExternalAssetManager> get FI async {
@@ -13,33 +17,46 @@ class ExternalAssetManager {
   }
 
   Future<void> initAsync() async {
-    if (!(await _getPermissionAsync())) {
-      debugPrint('Permission not granted');
+    if (_isInitialized) {
       return;
     }
+    _isInitialized = true;
+    if (!(await _checkPermissionAsync())) {
+      return;
+    }
+    _isPermissionGranted = true;
     _allAssetsPathEntity = await _getAllAssetPathAsync();
   }
 
   // TODO: refactor filter with filter options
-  Future<List<AssetEntity>?> getAssetsFilteredByTimeAsync({
+  Future<List<AssetEntity>?> getAssetsBetweenTimeAsync({
     DateTime? minDate,
     DateTime? maxDate,
-    bool isTimeAsc = false,
-    int? start,
-    int? end,
+    bool isTimeAsc = true,
   }) async {
     if (!_isAllAssetsPathEntityReady()) {
-      debugPrint('all asset path not ready');
       return null;
     }
-    FilterOptionGroup filterOption =
-        _getFilterOption(minDate, maxDate, isTimeAsc);
-    AssetPathEntity? filteredPathEntity =
-        await _getFilteredPathEntityAsync(filterOption);
-    List<AssetEntity>? assets =
-        await _getAssetsRangeAsync(filteredPathEntity, start, end);
-    debugPrint('total assets: ${assets?.length}');
+    FilterOptionGroup timeRangefilterOption = _getTimeRangeFilterOption(
+      minDate: minDate,
+      maxDate: maxDate,
+      isTimeAsc: isTimeAsc,
+    );
+    AssetPathEntity? filteredPathEntity = await _getFilteredPathEntityAsync(
+      filterOption: timeRangefilterOption,
+    );
+    if (filteredPathEntity == null) {
+      return null;
+    }
+    List<AssetEntity> assets = await _getAssetsAsync(
+      pathEntity: filteredPathEntity,
+    );
     return assets;
+  }
+
+  Future<bool> _checkPermissionAsync() async {
+    final PermissionState ps = await PhotoManager.requestPermissionExtend();
+    return ps.isAuth;
   }
 
   Future<AssetPathEntity?> _getAllAssetPathAsync() async {
@@ -55,31 +72,15 @@ class ExternalAssetManager {
     return pathEntities[0];
   }
 
-  Future<bool> _getPermissionAsync() async {
-    final PermissionState ps = await PhotoManager.requestPermissionExtend();
-    return ps.isAuth;
+  bool _isAllAssetsPathEntityReady() {
+    return _allAssetsPathEntity != null;
   }
 
-  Future<List<AssetEntity>?> _getAssetsRangeAsync(
-      AssetPathEntity? filteredPathEntity, int? start, int? end) async {
-    List<AssetEntity>? assets = await filteredPathEntity?.getAssetListRange(
-      start: start ?? 0,
-      end: end ?? await filteredPathEntity.assetCountAsync,
-    );
-    return assets;
-  }
-
-  Future<AssetPathEntity?> _getFilteredPathEntityAsync(
-      FilterOptionGroup filterOption) async {
-    AssetPathEntity? filteredPathEntity =
-        await _allAssetsPathEntity?.fetchPathProperties(
-      filterOptionGroup: filterOption,
-    );
-    return filteredPathEntity;
-  }
-
-  FilterOptionGroup _getFilterOption(
-      DateTime? minDate, DateTime? maxDate, bool isTimeAsc) {
+  FilterOptionGroup _getTimeRangeFilterOption({
+    DateTime? minDate,
+    DateTime? maxDate,
+    required bool isTimeAsc,
+  }) {
     final FilterOptionGroup filterOption = FilterOptionGroup(
       updateTimeCond: DateTimeCond(
         min: minDate ?? DateTime.fromMillisecondsSinceEpoch(0),
@@ -95,7 +96,23 @@ class ExternalAssetManager {
     return filterOption;
   }
 
-  bool _isAllAssetsPathEntityReady() {
-    return _allAssetsPathEntity != null;
+  Future<AssetPathEntity?> _getFilteredPathEntityAsync({
+    required FilterOptionGroup filterOption,
+  }) async {
+    AssetPathEntity? filteredPathEntity =
+        await _allAssetsPathEntity?.fetchPathProperties(
+      filterOptionGroup: filterOption,
+    );
+    return filteredPathEntity;
+  }
+
+  Future<List<AssetEntity>> _getAssetsAsync({
+    required AssetPathEntity pathEntity,
+  }) async {
+    List<AssetEntity> assets = await pathEntity.getAssetListRange(
+      start: 0,
+      end: await pathEntity.assetCountAsync,
+    );
+    return assets;
   }
 }

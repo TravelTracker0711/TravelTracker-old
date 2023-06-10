@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:travel_tracker/features/gallery_view/gallery_view_photo.dart';
 import 'package:travel_tracker/features/gallery_view/gallery_view_controller.dart';
-import 'package:travel_tracker/features/travel_track/asset_ext.dart';
+import 'package:travel_tracker/features/travel_track/data_model/asset_ext.dart';
 
 class GalleryViewGrid extends StatefulWidget {
   const GalleryViewGrid({
@@ -53,7 +53,7 @@ class _GalleryViewGridState extends State<GalleryViewGrid> {
         child: (assetExt.type != AssetExtType.image &&
                 assetExt.type != AssetExtType.video)
             ? Text(
-                '${assetExt.filePath}',
+                '${assetExt.fileFullPath}',
               )
             : Ink.image(
                 image: AssetEntityImageProvider(

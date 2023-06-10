@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
-import 'package:travel_tracker/features/travel_track/travel_track.dart';
+import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
 
 class TravelTrackFileHandler {
   // TODO: handle ios, windows, linux
@@ -38,7 +38,7 @@ class TravelTrackFileHandler {
   }
 
   Future<void> write(TravelTrack travelTrack) async {
-    String travelTrackDirPath = await toDocumentsPath(travelTrack.name);
+    String travelTrackDirPath = await toDocumentsPath(travelTrack.config.name);
     Directory(travelTrackDirPath).createSync(recursive: true);
     _writeTravelTrackFile(
       travelTrack,
