@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:travel_tracker/features/gallery_view/gallery_view_page.dart';
 import 'package:travel_tracker/features/map_view/map_view_app_bar.dart';
 import 'package:travel_tracker/features/map_view/map_view_controller.dart';
+import 'package:travel_tracker/features/map_view/map_view_floating_action_button.dart';
 import 'package:travel_tracker/features/map_view/map_view_page.dart';
 import 'package:travel_tracker/features/calendar_view/calendar_view_page.dart';
 import 'package:travel_tracker/features/stats_view/stats_view_page.dart';
@@ -21,14 +22,20 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedPageIndex = 0;
 
+  late final TravelTrackListViewOptions _travelTrackListViewOptions;
   late final List<Widget> _bodyPages;
   late final List<PreferredSizeWidget> _appBars;
-  late final TravelTrackListViewOptions _travelTrackListViewOptions;
+  late final List<Widget> _floatingActionButtons;
 
   @override
   void initState() {
     super.initState();
     MapViewController mapViewController = MapViewController();
+    _travelTrackListViewOptions = TravelTrackListViewOptions(
+      title: widget.title,
+    );
+
+    // TODO: construct appropriate widgets
     _bodyPages = <Widget>[
       MapViewPage(
         controller: mapViewController,
@@ -37,7 +44,7 @@ class _HomePageState extends State<HomePage> {
       const CalendarViewPage(),
       const StatsViewPage(),
     ];
-    // TODO: construct appropriate app bars
+
     _appBars = <PreferredSizeWidget>[
       MapViewAppBar(
         title: widget.title,
@@ -47,9 +54,15 @@ class _HomePageState extends State<HomePage> {
       AppBar(title: const Text('Calendar')),
       AppBar(title: const Text('Stats')),
     ];
-    _travelTrackListViewOptions = TravelTrackListViewOptions(
-      title: widget.title,
-    );
+
+    _floatingActionButtons = <Widget>[
+      MapViewFloatingActionButton(
+        controller: mapViewController,
+      ),
+      const SizedBox.shrink(),
+      const SizedBox.shrink(),
+      const SizedBox.shrink(),
+    ];
   }
 
   @override
@@ -72,6 +85,8 @@ class _HomePageState extends State<HomePage> {
           options: _travelTrackListViewOptions,
         ),
       ),
+      floatingActionButton:
+          _floatingActionButtons.elementAt(_selectedPageIndex),
     );
   }
 }
