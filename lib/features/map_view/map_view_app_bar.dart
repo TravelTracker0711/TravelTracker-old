@@ -104,7 +104,7 @@ class MapViewAppBar extends StatelessWidget implements PreferredSizeWidget {
             context.read<TravelTrackManager>().addTravelTrackAsync(travelTrack);
           });
         } else {
-          // User canceled the picker
+          debugPrint('Unhandle case: user cancel file picking');
         }
       },
     );

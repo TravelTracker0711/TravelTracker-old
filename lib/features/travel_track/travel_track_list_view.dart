@@ -99,7 +99,6 @@ class _TravelTrackListViewState extends State<TravelTrackListView> {
           canTapOnHeader: true,
           isExpanded:
               widget.options.isTravelTrackExpandedMap[travelTrack.id] ?? false,
-          // controlAffinity: ListTileControlAffinity.leading,
         );
       }),
     );
@@ -170,9 +169,7 @@ class _TravelTrackListViewState extends State<TravelTrackListView> {
           leading: const Icon(Icons.timeline),
           title: Text(trksegExt.config.name),
           onTap: () {
-            // context
-            //     .read<TravelTrackManager>()
-            //     .addTravelTrackAsync(travelTrack);
+            debugPrint('Unimplemented: focus on trksegExt');
           },
         );
       }),

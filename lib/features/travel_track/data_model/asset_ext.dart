@@ -79,8 +79,6 @@ class AssetExt extends TravelData {
       if (overrideAssetOriginCoordinates) {
         assetExt.coordinates = null;
       }
-      // debugPrint('assetExt.createDateTime: ${assetExt.createDateTime}');
-      // debugPrint('asset.createDateTime: ${asset.createDateTime}');
       assetExts.add(assetExt);
     }
     int trkptIndex = 0;
@@ -134,42 +132,6 @@ class AssetExt extends TravelData {
     throw UnimplementedError();
   }
 
-  // TODO: delete
-  // static Future<List<AssetExt>> fromTimeRangeAsync({
-  //   required DateTime? startTime,
-  //   required DateTime? endTime,
-  //   TrksegExt? attachedTrksegExt,
-  // }) async {
-  //   List<AssetExt> assetExts = [];
-  //   ExternalAssetManager eam = await ExternalAssetManager.FI;
-  //   List<AssetEntity>? assets = await eam.getAssetsBetweenTimeAsync(
-  //     minDate: startTime,
-  //     maxDate: endTime,
-  //     isTimeAsc: true,
-  //   );
-  //   if (assets == null) {
-  //     return assetExts;
-  //   }
-  //   for (AssetEntity asset in assets) {
-  //     AssetExtType type = _getAssetType(asset);
-  //     File? assetFile = await asset.originFile;
-  //     String? filePath = assetFile?.path;
-  //     assetExts.add(
-  //       AssetExt._(
-  //         asset: asset,
-  //         type: type,
-  //         fileFullPath: filePath,
-  //         latLng: null,
-  //         attachedTrksegExt: attachedTrksegExt,
-  //       ),
-  //     );
-  //   }
-  //   if (attachedTrksegExt != null) {
-  //     assetExts = _locateAssetExtsInTrkseg(assetExts, attachedTrksegExt);
-  //   }
-  //   return assetExts;
-  // }
-
   static _getAssetType(AssetEntity asset) {
     if (asset.type == AssetType.audio) {
       return AssetExtType.audio;
@@ -181,38 +143,6 @@ class AssetExt extends TravelData {
       return AssetExtType.unknown;
     }
   }
-
-  // static List<AssetExt> _locateAssetExtsInTrkseg(
-  //   List<AssetExt> assetExts,
-  //   TrksegExt trksegExt,
-  // ) {
-  //   List<AssetExt> locatedAssetExts = [];
-  //   List<Wpt> trkpts = trksegExt.trkseg.trkpts;
-  //   int trkptIndex = 0;
-  //   for (AssetExt assetExt in assetExts) {
-  //     while (trkptIndex < trkpts.length - 1 &&
-  //         (trkpts[trkptIndex + 1]
-  //             .time!
-  //             .isBefore(assetExt.asset.createDateTime))) {
-  //       trkptIndex++;
-  //     }
-  //     latlong.LatLng latLng = latlong.LatLng(
-  //       trkpts[trkptIndex].lat!,
-  //       trkpts[trkptIndex].lon!,
-  //     );
-  //     debugPrint('latLng: $latLng');
-  //     locatedAssetExts.add(
-  //       AssetExt._(
-  //         asset: assetExt.asset,
-  //         type: assetExt.type,
-  //         fileFullPath: assetExt.fileFullPath,
-  //         latLng: latLng,
-  //         attachedTrksegExt: trksegExt,
-  //       ),
-  //     );
-  //   }
-  //   return locatedAssetExts;
-  // }
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = super.toJson();

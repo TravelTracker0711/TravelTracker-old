@@ -9,9 +9,6 @@ import 'package:travel_tracker/features/travel_track/data_model/trkseg_ext.dart'
 import 'package:travel_tracker/features/travel_track/data_model/wpt_ext.dart';
 import 'package:travel_tracker/features/travel_track/data_model/asset_ext.dart';
 
-// TODO: find a way to store global list of travel tracks, and load them when app starts
-// TODO: TravelTrackManager, TravelTrackRepository, TravelTrackService
-// TODO: with ChangeNotifier
 class TravelTrack extends TravelData {
   final List<WptExt> _wptExts = <WptExt>[];
   final List<TrksegExt> _trksegExts = <TrksegExt>[];

@@ -24,6 +24,7 @@ class GalleryViewPhoto extends StatefulWidget {
   State<GalleryViewPhoto> createState() => _GalleryViewPhotoState();
 }
 
+// TODO: refactor, too much code
 class _GalleryViewPhotoState extends State<GalleryViewPhoto> {
   late final ItemScrollController _thumbnailItemScrollController;
   late double _thumbnailViewPortSize;

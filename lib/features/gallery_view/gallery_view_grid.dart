@@ -67,7 +67,6 @@ class _GalleryViewGridState extends State<GalleryViewGrid> {
   }
 
   void _onTapAsset(AssetExt assetExt, int index) {
-    // navigate to gallery photo view page
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => Scaffold(
