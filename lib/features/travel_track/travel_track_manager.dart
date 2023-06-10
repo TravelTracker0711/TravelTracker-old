@@ -16,6 +16,9 @@ class TravelTrackManager with ChangeNotifier {
   List<TravelTrack> get selectedTravelTracks => travelTracks
       .where((travelTrack) => travelTrack.isSelected == true)
       .toList();
+  List<TravelTrack> get visibleTravelTracks => travelTracks
+      .where((travelTrack) => travelTrack.isVisible == true)
+      .toList();
 
   Map<String, TravelTrack> get travelTrackMap =>
       Map<String, TravelTrack>.unmodifiable(_travelTrackMap);
