@@ -1,9 +1,9 @@
-class TravelTrackDrawerOptions {
+class TravelTrackListViewOptions {
   final String title;
   late Map<String, bool> travelTrackTileExpandMap;
   late Map<String, bool> gpxExtTileExpandMap;
 
-  TravelTrackDrawerOptions({
+  TravelTrackListViewOptions({
     required this.title,
     Map<String, bool>? travelTrackTileExpandMap,
     Map<String, bool>? gpxExtTileExpandMap,

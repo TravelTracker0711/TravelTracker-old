@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
-import 'package:travel_tracker/features/travel_track/travel_track_drawer_options.dart';
+import 'package:travel_tracker/features/travel_track/travel_track_list_view_options.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
 
-class TravelTrackDrawer extends StatefulWidget {
-  const TravelTrackDrawer({
+class TravelTrackListView extends StatefulWidget {
+  const TravelTrackListView({
     Key? key,
     required this.options,
   }) : super(key: key);
 
-  final TravelTrackDrawerOptions options;
+  final TravelTrackListViewOptions options;
   @override
-  State<TravelTrackDrawer> createState() => _TravelTrackDrawerState();
+  State<TravelTrackListView> createState() => _TravelTrackListViewState();
 }
 
-class _TravelTrackDrawerState extends State<TravelTrackDrawer> {
+class _TravelTrackListViewState extends State<TravelTrackListView> {
   @override
   void initState() {
     super.initState();
