@@ -45,6 +45,37 @@ class TravelTrack extends TravelData with ChangeNotifier {
     return json;
   }
 
+  Gpx toGpx() {
+    // WptExt, TrksegExt
+    Gpx gpx = Gpx();
+
+    List<Wpt> wpts = [];
+    for (WptExt ext in _wptExts) {
+      Wpt wpt = Wpt(lat: ext.lat, lon: ext.lon, ele: ext.ele, time: ext.time);
+      wpts.add(wpt);
+    }
+    gpx.wpts = wpts;
+
+    List<Trkseg> trksegs = [];
+    for (TrksegExt trkext in _trksegExts) {
+      List<Wpt> wpts = [];
+      for (WptExt wptext in trkext.trkpts) {
+        Wpt wpt = Wpt(
+            lat: wptext.lat,
+            lon: wptext.lon,
+            ele: wptext.ele,
+            time: wptext.time);
+        wpts.add(wpt);
+      }
+      Trkseg trkseg = Trkseg(trkpts: wpts);
+      trksegs.add(trkseg);
+    }
+    Trk trk = Trk(trksegs: trksegs);
+    List<Trk> trks = [trk];
+    gpx.trks = trks;
+    return gpx;
+  }
+
   // TravelTrack.fromJson(Map<String, dynamic> json) {
   //   id = json['id'];
   //   name = json['name'];
