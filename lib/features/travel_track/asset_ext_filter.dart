@@ -1,7 +1,7 @@
 // TODO: Implement AssetExtFilter
-import 'package:travel_tracker/features/travel_track/asset_ext.dart';
 import 'package:latlong2/latlong.dart' as latlng;
-import 'package:gpx/gpx.dart';
+import 'package:travel_tracker/features/travel_track/data_model/asset_ext.dart';
+import 'package:travel_tracker/features/travel_track/data_model/wpt_ext.dart';
 
 class AssetExtFilter {
   List<AssetExt> filterByTimeRange(
@@ -18,16 +18,18 @@ class AssetExtFilter {
   }
 
   List<AssetExt> filterByTag(List<AssetExt> assetExts, String tag) {
-    return assetExts.where((assetExt) => assetExt.tags.contains(tag)).toList();
+    return assetExts
+        .where((assetExt) => assetExt.config.tags.contains(tag))
+        .toList();
   }
 
   List<AssetExt> filterByLocationInCircle(
-      List<AssetExt> assetExts, latlng.LatLng center, double radiusMeter) {
+      List<AssetExt> assetExts, WptExt center, double radiusMeter) {
     return assetExts.where((assetExt) {
-      latlng.LatLng? assetLatLng = assetExt.latLng;
-      if (assetLatLng == null) return false;
+      WptExt? assetCoordinates = assetExt.coordinates;
+      if (assetCoordinates == null) return false;
       const latlng.Distance distance = latlng.Distance();
-      double dis = distance(center, assetLatLng);
+      double dis = distance(center.latLng, assetCoordinates.latLng);
       if (dis <= radiusMeter) return true;
       return false;
     }).toList();
@@ -35,18 +37,16 @@ class AssetExtFilter {
 
   //filterByLocationInBound
   List<AssetExt> filterByLocationInBound(
-      List<AssetExt> assetExts, latlng.LatLng p1, latlng.LatLng p2) {
-    double minLatitude = p1.latitude < p2.latitude ? p1.latitude : p2.latitude;
-    double maxLatitude = p1.latitude > p2.latitude ? p1.latitude : p2.latitude;
-    double minLongitude =
-        p1.longitude < p2.longitude ? p1.longitude : p2.longitude;
-    double maxLongitude =
-        p1.longitude > p2.longitude ? p1.longitude : p2.longitude;
+      List<AssetExt> assetExts, WptExt p1, WptExt p2) {
+    double minLatitude = p1.lat < p2.lat ? p1.lat : p2.lat;
+    double maxLatitude = p1.lat > p2.lat ? p1.lat : p2.lat;
+    double minLongitude = p1.lon < p2.lon ? p1.lon : p2.lon;
+    double maxLongitude = p1.lon > p2.lon ? p1.lon : p2.lon;
     return assetExts.where((assetExt) {
-      latlng.LatLng? assetLatLng = assetExt.latLng;
-      if (assetLatLng == null) return false;
-      double latitude = assetExt.latLng!.latitude;
-      double longitude = assetExt.latLng!.longitude;
+      WptExt? assetCoordinates = assetExt.coordinates;
+      if (assetCoordinates == null) return false;
+      double latitude = assetCoordinates.lat;
+      double longitude = assetCoordinates.lon;
       return (latitude >= minLatitude &&
           latitude <= maxLatitude &&
           longitude >= minLongitude &&
@@ -54,9 +54,9 @@ class AssetExtFilter {
     }).toList();
   }
 
-  List<AssetExt> filterByTrkseg(List<AssetExt> assetExts, Trkseg trkseg) {
+  List<AssetExt> filterByTrkseg(List<AssetExt> assetExts, String trksegExtId) {
     return assetExts
-        .where((assetExt) => assetExt.attachedTrksegExt?.trkseg == trkseg)
+        .where((assetExt) => assetExt.attachedTrksegExtId == trksegExtId)
         .toList();
   }
 }
