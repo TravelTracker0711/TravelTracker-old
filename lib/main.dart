@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
+import 'package:travel_tracker/features/gpx_recorder/gps_provider.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
 import 'package:travel_tracker/features/home_page/home_page.dart';
 import 'package:go_router/go_router.dart';
@@ -16,6 +17,8 @@ void main() {
     },
   );
   GetIt.I.registerSingleton<TravelTrackManager>(TravelTrackManager());
+  GetIt.I.registerSingleton<GpsProvider>(GpsProvider());
+
   runApp(const MyApp());
 }
 
@@ -38,6 +41,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<TravelTrackManager>(
           create: (_) => TravelTrackManager.I,
         ),
+        ChangeNotifierProvider<GpsProvider>(
+          create: (_) => GpsProvider.I,
+        )
       ],
       child: MaterialApp.router(
         routerConfig: _router,
