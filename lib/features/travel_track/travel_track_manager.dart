@@ -15,6 +15,7 @@ class TravelTrackManager with ChangeNotifier {
   Map<String, TravelTrack> get travelTrackMap =>
       Map<String, TravelTrack>.unmodifiable(_travelTrackMap);
   TravelTrack? get activeTravelTrack => _travelTrackMap[_activeTravelTrackId];
+  String? get activeTravelTrackId => _activeTravelTrackId;
   // TODO: get list of travel tracks, with setted sort and filter
   List<TravelTrack> get travelTracks => _travelTrackMap.values.toList();
   List<TravelTrack> get selectedTravelTracks => travelTracks
