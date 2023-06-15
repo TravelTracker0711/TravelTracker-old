@@ -2,13 +2,22 @@ class TravelConfig {
   late String name;
   String? description;
   final List<String> tags = [];
+  static int namePlaceholderCounter = 1;
 
   TravelConfig({
+    String? namePlaceholder,
     String? name,
     this.description,
     List<String>? tags,
   }) {
-    this.name = name ?? 'Unnamed';
+    if (name != null) {
+      this.name = name;
+    } else if (namePlaceholder != null) {
+      this.name = '$namePlaceholder $namePlaceholderCounter';
+      namePlaceholderCounter++;
+    } else {
+      this.name = 'Unnamed Travel Data';
+    }
     if (tags != null) {
       this.tags.addAll(tags);
     }

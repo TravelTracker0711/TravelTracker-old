@@ -90,6 +90,12 @@ class TravelTrack extends TravelData with ChangeNotifier {
   //       .cast<AssetExt>();
   // }
 
+  TravelTrack({
+    TravelConfig? config,
+  }) : super(
+          config: config,
+        );
+
   TravelTrack._({
     String? id,
     TravelConfig? config,
@@ -111,7 +117,6 @@ class TravelTrack extends TravelData with ChangeNotifier {
     }
     if (assetExts != null) {
       _assetExtMap.addAll(assetExts);
-      // _assetExts.sort((a, b) => a.compareTo(b));
     }
     if (gpxFileFullPaths != null) {
       _gpxFileFullPaths.addAll(gpxFileFullPaths);
