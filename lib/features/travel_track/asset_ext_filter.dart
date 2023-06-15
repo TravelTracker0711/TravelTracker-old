@@ -1,6 +1,6 @@
 // TODO: Implement AssetExtFilter
 import 'package:latlong2/latlong.dart' as latlng;
-import 'package:travel_tracker/features/travel_track/data_model/asset_ext.dart';
+import 'package:travel_tracker/features/asset/data_model/asset_ext.dart';
 import 'package:travel_tracker/features/travel_track/data_model/wpt_ext.dart';
 
 class AssetExtFilter {
