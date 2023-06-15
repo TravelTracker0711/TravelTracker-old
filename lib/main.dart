@@ -49,14 +49,20 @@ class MyApp extends StatelessWidget {
           create: (_) => TravelTrackRecorder.I,
         ),
       ],
-      child: MaterialApp.router(
-        routerConfig: _router,
-        title: 'Travel Tracker',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          splashFactory: InkRipple.splashFactory,
-          sliderTheme: const SliderThemeData(
-            showValueIndicator: ShowValueIndicator.always,
+      child: Consumer<TravelTrackRecorder>(
+        builder: (context, travelTrackRecorder, child) => MaterialApp.router(
+          routerConfig: _router,
+          title: 'Travel Tracker',
+          theme: ThemeData(
+            primarySwatch: travelTrackRecorder.isPaused
+                ? Colors.yellow
+                : travelTrackRecorder.isRecording
+                    ? Colors.green
+                    : Colors.blue,
+            splashFactory: InkRipple.splashFactory,
+            sliderTheme: const SliderThemeData(
+              showValueIndicator: ShowValueIndicator.always,
+            ),
           ),
         ),
       ),

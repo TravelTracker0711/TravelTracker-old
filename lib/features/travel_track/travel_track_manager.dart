@@ -78,7 +78,7 @@ class TravelTrackManager with ChangeNotifier {
     return _travelTrackMap[travelTrackId]!.isVisible;
   }
 
-  void setActiveTravelTrack(String? travelTrackId) {
+  void setActiveTravelTrackId(String? travelTrackId) {
     _activeTravelTrackId = travelTrackId;
     notifyListeners();
   }

@@ -11,12 +11,34 @@ class TravelTrackRecorder with ChangeNotifier {
     return instance;
   }
 
+  bool _isRecording = false;
+  bool _isPaused = false;
+
+  bool get isRecording => _isRecording;
+  bool get isPaused => _isPaused;
+
   void startRecording() {
     TravelTrack? travelTrack = TravelTrackManager.I.activeTravelTrack;
     if (travelTrack == null) {
-      TravelTrackManager.I.addTravelTrackAsync(TravelTrack(
+      travelTrack = TravelTrack(
         config: TravelConfig(namePlaceholder: "New Travel Track"),
-      ));
+      );
+      TravelTrackManager.I.addTravelTrackAsync(travelTrack);
+      TravelTrackManager.I.setActiveTravelTrackId(travelTrack.id);
     }
+    _isPaused = false;
+    _isRecording = true;
+    notifyListeners();
+  }
+
+  void pauseRecording() {
+    _isPaused = true;
+    notifyListeners();
+  }
+
+  void stopRecording() {
+    _isRecording = false;
+    _isPaused = false;
+    notifyListeners();
   }
 }

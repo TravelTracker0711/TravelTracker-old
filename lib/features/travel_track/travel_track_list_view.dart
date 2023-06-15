@@ -163,7 +163,7 @@ class _TravelTrackListViewState extends State<TravelTrackListView> {
                           : const Icon(Icons.radio_button_unchecked),
                       onPressed: () {
                         TravelTrackManager.I
-                            .setActiveTravelTrack(travelTrack.id);
+                            .setActiveTravelTrackId(travelTrack.id);
                       },
                     ),
                   ),
