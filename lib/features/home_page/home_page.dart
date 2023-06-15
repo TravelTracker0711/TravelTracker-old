@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travel_tracker/features/gallery_view/gallery_view_page.dart';
+import 'package:travel_tracker/features/home_page/home_page_floating_action_button.dart';
 import 'package:travel_tracker/features/map_view/map_view_app_bar.dart';
 import 'package:travel_tracker/features/map_view/map_view_controller.dart';
 import 'package:travel_tracker/features/map_view/map_view_floating_action_button.dart';
@@ -89,6 +90,8 @@ class _HomePageState extends State<HomePage> {
           options: _travelTrackListViewOptions,
         ),
       ),
+      floatingActionButton: HomePageFloatingActionButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       // floatingActionButton:
       //     _floatingActionButtons.elementAt(_selectedPageIndex),
     );
