@@ -5,12 +5,16 @@ import 'package:travel_tracker/features/travel_track/travel_track_file_handler.d
 
 class TravelTrackManager with ChangeNotifier {
   final Map<String, TravelTrack> _travelTrackMap = <String, TravelTrack>{};
+  String? _activeTravelTrackId;
   bool _isInitializing = false;
   bool _isInitialized = false;
 
   bool get isInitialized => _isInitialized;
   bool get isAnyTravelTrackSelected => _travelTrackMap.values
       .any((travelTrack) => travelTrack.isSelected == true);
+  Map<String, TravelTrack> get travelTrackMap =>
+      Map<String, TravelTrack>.unmodifiable(_travelTrackMap);
+  TravelTrack? get activeTravelTrack => _travelTrackMap[_activeTravelTrackId];
   // TODO: get list of travel tracks, with setted sort and filter
   List<TravelTrack> get travelTracks => _travelTrackMap.values.toList();
   List<TravelTrack> get selectedTravelTracks => travelTracks
@@ -19,9 +23,6 @@ class TravelTrackManager with ChangeNotifier {
   List<TravelTrack> get visibleTravelTracks => travelTracks
       .where((travelTrack) => travelTrack.isVisible == true)
       .toList();
-
-  Map<String, TravelTrack> get travelTrackMap =>
-      Map<String, TravelTrack>.unmodifiable(_travelTrackMap);
 
   // ignore: non_constant_identifier_names
   static TravelTrackManager get I {
@@ -74,5 +75,10 @@ class TravelTrackManager with ChangeNotifier {
 
   bool isTravelTrackVisible(String travelTrackId) {
     return _travelTrackMap[travelTrackId]!.isVisible;
+  }
+
+  void setActiveTravelTrack(String? travelTrackId) {
+    _activeTravelTrackId = travelTrackId;
+    notifyListeners();
   }
 }
