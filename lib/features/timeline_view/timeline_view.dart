@@ -17,6 +17,17 @@ class TimelineView extends StatefulWidget {
 }
 
 class _TimelineViewState extends State<TimelineView> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      debugPrint(_scrollController.offset.toString());
+    });
+    // widget.controller._scrollController = _controller;
+  }
+
   @override
   Widget build(BuildContext context) {
     TravelTrack? activeTravelTrack =
@@ -28,16 +39,22 @@ class _TimelineViewState extends State<TimelineView> {
         create: (context) => activeTravelTrack,
         child: Consumer<TravelTrack>(
           builder: (context, travelTrack, child) {
-            return _buildTimeline(travelTrack);
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                return _buildTimeline(travelTrack,
+                    maxHeight: constraints.maxHeight);
+              },
+            );
           },
         ),
       );
     }
   }
 
-  Widget _buildTimeline(TravelTrack travelTrack) {
+  Widget _buildTimeline(TravelTrack travelTrack, {required double maxHeight}) {
     TravelTrackTimelineBuilder travelTrackTimelineTileBuilder =
-        TravelTrackTimelineBuilder();
-    return travelTrackTimelineTileBuilder.build(travelTrack);
+        TravelTrackTimelineBuilder(scrollController: _scrollController);
+    return travelTrackTimelineTileBuilder.build(travelTrack,
+        maxHeight: maxHeight);
   }
 }

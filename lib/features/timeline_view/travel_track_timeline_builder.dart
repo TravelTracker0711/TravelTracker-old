@@ -6,16 +6,50 @@ import 'package:travel_tracker/features/travel_track/data_model/travel_track.dar
 import 'package:travel_tracker/features/travel_track/data_model/trkseg_ext.dart';
 
 class TravelTrackTimelineBuilder {
-  Widget build(TravelTrack travelTrack) {
+  final ScrollController scrollController;
+
+  TravelTrackTimelineBuilder({
+    required this.scrollController,
+  });
+
+  Widget build(TravelTrack travelTrack, {required double maxHeight}) {
     return SizedBox(
       width: 88,
-      child: ListView(
-        children: _buildTimelineTiles(travelTrack),
+      child: Stack(
+        children: [
+          ListView(
+            controller: scrollController,
+            children: _buildTimelineTiles(
+              travelTrack,
+              maxHeight: maxHeight,
+            ),
+          ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              margin: const EdgeInsets.only(top: 26),
+              decoration: BoxDecoration(
+                color: Colors.blue.withOpacity(0.5),
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                icon: const Icon(
+                  Icons.gps_fixed,
+                  color: Colors.white,
+                ),
+                onPressed: () {},
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  List<Widget> _buildTimelineTiles(TravelTrack travelTrack) {
+  List<Widget> _buildTimelineTiles(
+    TravelTrack travelTrack, {
+    required double maxHeight,
+  }) {
     List<Widget> timelineTiles = [];
     int trksegIndex = 0;
     String? lastTrksegId;
@@ -37,6 +71,12 @@ class TravelTrackTimelineBuilder {
     //   List<AssetExt> assetExts = travelTrack.getAssetExtsByIds(assetExtIds);
     //   timelineTiles.add(_buildAssetExtsTimelineTile(assetExts));
     // }
+    // 建立一個空白的container讓最底下的tile可以被滑到上面
+    timelineTiles.add(
+      Container(
+        height: maxHeight - 50,
+      ),
+    );
     return timelineTiles;
   }
 
@@ -49,19 +89,7 @@ class TravelTrackTimelineBuilder {
         width: 56,
         height: 56,
         color: Colors.blue,
-        indicator: Container(
-          decoration: const BoxDecoration(
-            color: Colors.blue,
-            shape: BoxShape.circle,
-          ),
-          child: IconButton(
-            icon: const Icon(
-              Icons.gps_fixed,
-              color: Colors.white,
-            ),
-            onPressed: () {},
-          ),
-        ),
+        indicator: Container(),
       ),
     );
   }

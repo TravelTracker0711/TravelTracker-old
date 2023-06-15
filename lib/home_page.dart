@@ -83,14 +83,14 @@ class _HomePageState extends State<HomePage> {
           TimelineView(),
         ],
       ),
-      bottomNavigationBar: _buildBottomAppBar(),
+      // bottomNavigationBar: _buildBottomAppBar(),
       drawer: Drawer(
         child: TravelTrackListView(
           options: _travelTrackListViewOptions,
         ),
       ),
-      floatingActionButton:
-          _floatingActionButtons.elementAt(_selectedPageIndex),
+      // floatingActionButton:
+      //     _floatingActionButtons.elementAt(_selectedPageIndex),
     );
   }
 
