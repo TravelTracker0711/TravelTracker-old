@@ -74,19 +74,19 @@ class _MapViewMapState extends State<MapViewMap> {
       options: _getMapOptions(),
       // ignore: sort_child_properties_last
       children: layers,
-      nonRotatedChildren: <Widget>[
-        RichAttributionWidget(
-          attributions: [
-            TextSourceAttribution(
-              'OpenStreetMap contributors',
-              onTap: () => launchUrl(
-                Uri.parse('https://openstreetmap.org/copyright'),
-                mode: LaunchMode.externalApplication,
-              ),
-            ),
-          ],
-        ),
-      ],
+      // nonRotatedChildren: <Widget>[
+      //   RichAttributionWidget(
+      //     attributions: [
+      //       TextSourceAttribution(
+      //         'OpenStreetMap contributors',
+      //         onTap: () => launchUrl(
+      //           Uri.parse('https://openstreetmap.org/copyright'),
+      //           mode: LaunchMode.externalApplication,
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // ],
     );
   }
 }

@@ -39,6 +39,7 @@ class TravelTrackRecorder with ChangeNotifier {
   void stopRecording() {
     _isRecording = false;
     _isPaused = false;
+    TravelTrackManager.I.setActiveTravelTrackId(null);
     notifyListeners();
   }
 }

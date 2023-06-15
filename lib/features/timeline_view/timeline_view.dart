@@ -35,8 +35,8 @@ class _TimelineViewState extends State<TimelineView> {
     if (activeTravelTrack == null) {
       return const SizedBox.shrink();
     } else {
-      return ChangeNotifierProvider(
-        create: (context) => activeTravelTrack,
+      return ChangeNotifierProvider<TravelTrack>.value(
+        value: activeTravelTrack,
         child: Consumer<TravelTrack>(
           builder: (context, travelTrack, child) {
             return LayoutBuilder(

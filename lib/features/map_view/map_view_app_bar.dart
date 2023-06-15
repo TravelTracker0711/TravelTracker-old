@@ -36,7 +36,7 @@ class MapViewAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return AppBar(
       title: Text(title),
-      bottom: appBarBottom,
+      // bottom: appBarBottom,
       actions: <Widget>[
         PopupMenuButton<PopupAction>(
           onSelected: (PopupAction result) async {
