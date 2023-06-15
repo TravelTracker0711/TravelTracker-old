@@ -8,10 +8,10 @@ import 'package:travel_tracker/features/calendar_view/calendar_view_page.dart';
 import 'package:travel_tracker/features/stats_view/stats_view_page.dart';
 import 'package:travel_tracker/features/timeline_view/timeline_view.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_list_view.dart';
-import 'package:travel_tracker/home_page_bottom_navigation_bar.dart';
+import 'package:travel_tracker/features/home_page/home_page_bottom_navigation_bar.dart';
 
-import 'features/map_view/map_view_bottom_app_bar.dart';
-import 'features/travel_track/travel_track_list_view_options.dart';
+import '../map_view/map_view_bottom_app_bar.dart';
+import '../travel_track/travel_track_list_view_options.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});

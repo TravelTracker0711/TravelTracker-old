@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travel_tracker/features/map_view/map_view_controller.dart';
-import 'package:travel_tracker/home_page_bottom_navigation_bar.dart';
+import 'package:travel_tracker/features/home_page/home_page_bottom_navigation_bar.dart';
 
 class MapViewBottomAppBar extends StatefulWidget {
   const MapViewBottomAppBar({
