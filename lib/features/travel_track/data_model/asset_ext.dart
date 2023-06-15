@@ -6,7 +6,7 @@ import 'package:travel_tracker/features/travel_track/data_model/travel_data.dart
 import 'package:travel_tracker/features/travel_track/data_model/travel_config.dart';
 import 'package:travel_tracker/features/travel_track/data_model/trkseg_ext.dart';
 import 'package:travel_tracker/features/travel_track/data_model/wpt_ext.dart';
-import 'package:travel_tracker/utils/latlong2_util.dart';
+import 'package:travel_tracker/utils/latlong2.dart';
 
 enum AssetExtType {
   image,
@@ -37,6 +37,10 @@ class AssetExt extends TravelData {
           id: id,
           config: config,
         );
+
+  int compareTo(AssetExt other) {
+    return createDateTime.compareTo(other.createDateTime);
+  }
 
   static Future<AssetExt?> fromAssetEntityAsync({
     required AssetEntity asset,

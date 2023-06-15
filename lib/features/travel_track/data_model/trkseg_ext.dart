@@ -2,11 +2,30 @@ import 'package:gpx/gpx.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_data.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_config.dart';
 import 'package:travel_tracker/features/travel_track/data_model/wpt_ext.dart';
+import 'package:travel_tracker/utils/datetime.dart';
 
 class TrksegExt extends TravelData {
   final List<WptExt> _trkpts = <WptExt>[];
 
   List<WptExt> get trkpts => List<WptExt>.unmodifiable(_trkpts);
+  DateTime? get startTime {
+    for (WptExt trkpt in trkpts) {
+      if (trkpt.time != null) {
+        return trkpt.time;
+      }
+    }
+    return null;
+  }
+
+  DateTime? get endTime {
+    for (int i = trkpts.length - 1; i >= 0; i--) {
+      WptExt trkpt = trkpts[i];
+      if (trkpt.time != null) {
+        return trkpt.time;
+      }
+    }
+    return null;
+  }
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = super.toJson();
@@ -26,7 +45,12 @@ class TrksegExt extends TravelData {
         ) {
     if (trkpts != null) {
       _trkpts.addAll(trkpts);
+      _trkpts.sort((a, b) => a.compareTo(b));
     }
+  }
+
+  int compareTo(TrksegExt other) {
+    return nullableDateTimeCompare(startTime, other.startTime);
   }
 
   factory TrksegExt.fromTrkseg({

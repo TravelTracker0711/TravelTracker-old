@@ -2,6 +2,7 @@ import 'package:gpx/gpx.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_data.dart';
 import 'package:latlong2/latlong.dart' as latlong;
 import 'package:travel_tracker/features/travel_track/data_model/travel_config.dart';
+import 'package:travel_tracker/utils/datetime.dart';
 
 class WptExt extends TravelData {
   final latlong.LatLng latLng;
@@ -34,6 +35,10 @@ class WptExt extends TravelData {
           id: id,
           config: config,
         );
+
+  int compareTo(WptExt other) {
+    return nullableDateTimeCompare(time, other.time);
+  }
 
   WptExt.clone(WptExt other)
       : latLng = latlong.LatLng(

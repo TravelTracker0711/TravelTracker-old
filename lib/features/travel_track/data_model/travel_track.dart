@@ -8,6 +8,7 @@ import 'package:travel_tracker/features/travel_track/data_model/travel_config.da
 import 'package:travel_tracker/features/travel_track/data_model/trkseg_ext.dart';
 import 'package:travel_tracker/features/travel_track/data_model/wpt_ext.dart';
 import 'package:travel_tracker/features/travel_track/data_model/asset_ext.dart';
+import 'package:travel_tracker/utils/datetime.dart';
 
 class TravelTrack extends TravelData {
   final List<WptExt> _wptExts = <WptExt>[];
@@ -58,16 +59,26 @@ class TravelTrack extends TravelData {
         ) {
     if (wptExts != null) {
       _wptExts.addAll(wptExts);
+      _wptExts.sort((a, b) => a.compareTo(b));
     }
     if (trksegExts != null) {
       _trksegExts.addAll(trksegExts);
+      _trksegExts.sort((a, b) => a.compareTo(b));
     }
     if (assetExts != null) {
       _assetExts.addAll(assetExts);
+      _assetExts.sort((a, b) => a.compareTo(b));
     }
     if (gpxFileFullPaths != null) {
       _gpxFileFullPaths.addAll(gpxFileFullPaths);
     }
+  }
+
+  int compareTo(TravelTrack other) {
+    return nullableDateTimeCompare(
+      trksegExts.first.startTime,
+      other.trksegExts.first.startTime,
+    );
   }
 
   static Future<TravelTrack> fromGpxFileFullPathsAsync({
