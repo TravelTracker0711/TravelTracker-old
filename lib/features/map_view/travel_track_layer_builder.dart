@@ -77,6 +77,8 @@ class TravelTrackLayerBuilder {
 
   Widget buildMiddlePointLayerByTrksegExt(TrksegExt trksegExt) {
     List<WptExt> trkpts = trksegExt.trkpts;
+
+    /// TODO: fix the bug of index out of range.(round() -> truncate() ?)
     WptExt middlePoint = trkpts[
         (trkpts.length * _controller.partialTrackMiddlePercentage!).round()];
 
