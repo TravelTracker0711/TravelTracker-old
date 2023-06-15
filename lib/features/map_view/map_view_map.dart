@@ -12,10 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 class MapViewMap extends StatefulWidget {
   const MapViewMap({
     super.key,
-    required this.controller,
   });
-
-  final MapViewController controller;
 
   @override
   State<MapViewMap> createState() => _MapViewMapState();
@@ -56,16 +53,20 @@ class _MapViewMapState extends State<MapViewMap> {
   @override
   void initState() {
     super.initState();
-    widget.controller.mapController = mapController;
+    context.read<MapViewController>().mapController = mapController;
   }
 
   @override
   Widget build(BuildContext context) {
+    MapViewController mapViewController = context.watch<MapViewController>();
+
     List<Widget> layers = _getBasicMapLayer();
     List<TravelTrack> visibleTravelTracks =
         context.watch<TravelTrackManager>().visibleTravelTracks;
-    TravelTrackLayerBuilder travelTrackLayerBuilder =
-        TravelTrackLayerBuilder(mapRotationNotifier);
+    TravelTrackLayerBuilder travelTrackLayerBuilder = TravelTrackLayerBuilder(
+      mapRotationNotifier: mapRotationNotifier,
+      mapViewController: mapViewController,
+    );
     layers.addAll(travelTrackLayerBuilder.build(visibleTravelTracks));
 
     return FlutterMap(

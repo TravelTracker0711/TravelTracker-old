@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:travel_tracker/features/map_view/map_view_controller.dart';
 import 'package:travel_tracker/features/map_view/map_view_map.dart';
 
@@ -17,8 +18,9 @@ class MapViewPage extends StatefulWidget {
 class _MapViewPageState extends State<MapViewPage> {
   @override
   Widget build(BuildContext context) {
-    return MapViewMap(
-      controller: widget.controller,
+    return ChangeNotifierProvider<MapViewController>(
+      create: (_) => widget.controller,
+      child: MapViewMap(),
     );
   }
 }

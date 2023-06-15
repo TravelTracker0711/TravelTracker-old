@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' as latlng;
 import 'package:travel_tracker/features/asset/asset_ext_thumbnail_button.dart';
+import 'package:travel_tracker/features/map_view/map_view_controller.dart';
 import 'package:travel_tracker/features/map_view/marker_ext.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
+import 'package:travel_tracker/features/map_view/trkseg_ext_extractor.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
 import 'package:travel_tracker/features/asset/data_model/asset_ext.dart';
 import 'package:travel_tracker/features/travel_track/data_model/trkseg_ext.dart';
@@ -12,8 +14,13 @@ import 'package:travel_tracker/features/travel_track/data_model/wpt_ext.dart';
 
 class TravelTrackLayerBuilder {
   final ValueNotifier<double> _mapRotationNotifier;
+  final MapViewController _controller;
 
-  TravelTrackLayerBuilder(this._mapRotationNotifier);
+  TravelTrackLayerBuilder({
+    required mapRotationNotifier,
+    required MapViewController mapViewController,
+  })  : _mapRotationNotifier = mapRotationNotifier,
+        _controller = mapViewController;
 
   List<Widget> build(List<TravelTrack> travelTracks) {
     List<Widget> layers = <Widget>[];
@@ -23,22 +30,37 @@ class TravelTrackLayerBuilder {
       layers.add(buildMarkerClusterLayerByAssetExts(travelTrack.assetExts,
           travelTrack: travelTrack));
     }
-    // layers.add(buildMarkerClusterLayerByTravelTracks(travelTracks));
+    // if (_controller.isShowingAsset) {
+    //   layers.add(buildMarkerClusterLayerByTravelTracks(travelTracks));
+    // }
     return layers;
   }
 
-  List<PolylineLayer> buildPolylineLayersByTravelTrack(
-      TravelTrack travelTrack) {
-    List<PolylineLayer> layers = <PolylineLayer>[];
+  List<Widget> buildPolylineLayersByTravelTrack(TravelTrack travelTrack) {
+    List<Widget> layers = <Widget>[];
     for (TrksegExt trksegExt in travelTrack.trksegExts) {
       layers.add(buildPolylineLayerByTrksegExt(trksegExt));
+      if (_controller.mode == MapViewMode.partialTrack &&
+          _controller.partialTrackMiddlePercentage != null) {
+        layers.add(buildMiddlePointLayerByTrksegExt(trksegExt));
+      }
     }
     return layers;
   }
 
   PolylineLayer buildPolylineLayerByTrksegExt(TrksegExt trksegExt) {
+    List<WptExt> trkpts = trksegExt.trkpts;
+    if (_controller.mode == MapViewMode.partialTrack &&
+        _controller.partialTrackMiddlePercentage != null) {
+      TrksegExtExtractor trksegExtExtractor = TrksegExtExtractor();
+      trkpts = trksegExtExtractor.getPartialTrkpts(
+        trkpts,
+        _controller.partialTrackMiddlePercentage!,
+      );
+    }
+
     List<latlng.LatLng> points = <latlng.LatLng>[];
-    for (WptExt trkpt in trksegExt.trkpts) {
+    for (WptExt trkpt in trkpts) {
       points.add(latlng.LatLng(trkpt.lat, trkpt.lon));
     }
     PolylineLayer polylineLayer = PolylineLayer(
@@ -51,6 +73,36 @@ class TravelTrackLayerBuilder {
       ],
     );
     return polylineLayer;
+  }
+
+  Widget buildMiddlePointLayerByTrksegExt(TrksegExt trksegExt) {
+    List<WptExt> trkpts = trksegExt.trkpts;
+    WptExt middlePoint = trkpts[
+        (trkpts.length * _controller.partialTrackMiddlePercentage!).round()];
+
+    Marker middlePointMarker = Marker(
+      width: 30,
+      height: 30,
+      point: latlng.LatLng(middlePoint.lat, middlePoint.lon),
+      anchorPos: AnchorPos.align(AnchorAlign.top),
+      builder: (BuildContext context) {
+        return IconButton(
+          icon: const Icon(
+            Icons.location_on,
+            color: Colors.red,
+          ),
+          padding: const EdgeInsets.all(0),
+          color: Colors.red,
+          onPressed: () {
+            debugPrint('onPressed middlePointMarker');
+          },
+        );
+      },
+    );
+    MarkerLayer markerLayer = MarkerLayer(
+      markers: <Marker>[middlePointMarker],
+    );
+    return markerLayer;
   }
 
   MarkerClusterLayerWidget buildMarkerClusterLayerByTravelTracks(

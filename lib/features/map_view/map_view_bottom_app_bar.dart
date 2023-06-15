@@ -75,7 +75,7 @@ class _MapViewBottomAppBarState extends State<MapViewBottomAppBar> {
         onChanged: (double value) {
           setState(() {
             _markerPositionFraction = value;
-            // widget.controller.setMarkerPositionFraction(value);
+            widget.controller.partialTrackMiddlePercentage = value;
           });
         },
       ),
