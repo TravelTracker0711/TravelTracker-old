@@ -5,7 +5,7 @@ import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
 import 'package:travel_tracker/home_page.dart';
 import 'package:go_router/go_router.dart';
 
-import 'features/external_asset/external_asset_manager.dart';
+import 'features/asset/external_asset_manager.dart';
 
 void main() {
   GetIt.I.registerLazySingletonAsync<ExternalAssetManager>(

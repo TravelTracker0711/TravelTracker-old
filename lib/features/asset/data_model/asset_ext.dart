@@ -54,6 +54,9 @@ class AssetExt extends TravelData {
     WptExt? coordinates;
     latlong.LatLng? latLng;
     latLng = photoManagerLatLngToLatLong2(await asset.latlngAsync());
+    if (latLng == latlong.LatLng(0, 0)) {
+      latLng = null;
+    }
     if (latLng != null) {
       coordinates = WptExt(
         latLng: latLng,
@@ -67,7 +70,7 @@ class AssetExt extends TravelData {
     );
   }
 
-  static fromAssetEntitysAsync({
+  static Future<List<AssetExt>> fromAssetEntitiesAsync({
     required List<AssetEntity> assets,
   }) async {
     List<AssetExt> assetExts = [];
@@ -88,7 +91,7 @@ class AssetExt extends TravelData {
     required TrksegExt trksegExt,
     bool overrideAssetOriginCoordinates = true,
   }) async {
-    List<AssetExt> assetExts = await fromAssetEntitysAsync(
+    List<AssetExt> assetExts = await fromAssetEntitiesAsync(
       assets: assets,
     );
     int trkptIndex = 0;
@@ -96,7 +99,8 @@ class AssetExt extends TravelData {
       return trkpt.time != null;
     }).toList();
     for (AssetExt assetExt in assetExts) {
-      if (assetExt.coordinates != null) {
+      if (overrideAssetOriginCoordinates == false &&
+          assetExt.coordinates != null) {
         continue;
       }
       while (trkptIndex < trkpts.length - 1 &&
@@ -142,7 +146,7 @@ class AssetExt extends TravelData {
     throw UnimplementedError();
   }
 
-  static _getAssetType(AssetEntity asset) {
+  static AssetExtType _getAssetType(AssetEntity asset) {
     if (asset.type == AssetType.audio) {
       return AssetExtType.audio;
     } else if (asset.type == AssetType.video) {

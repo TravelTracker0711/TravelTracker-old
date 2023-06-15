@@ -43,6 +43,7 @@ dependencies:
       url: https://github.com/nploi/flutter_map_marker_cluster
       ref: upgrade_flutter_map_v4
   latlong2: ^0.8.1
+  timeline_tile: ^2.0.0
 
   geolocator: ^9.0.2
   url_launcher: ^6.1.11

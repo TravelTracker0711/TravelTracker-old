@@ -36,6 +36,7 @@ class _TravelTrackListViewState extends State<TravelTrackListView> {
     if (widget.showDrawerHeader) {
       children.add(_buildDrawerHeader(context, travelTracks));
     }
+    // TODO: use isolate to build in background
     children.add(_buildExpansionPanelList(context, travelTracks));
 
     return ListView(
@@ -127,33 +128,47 @@ class _TravelTrackListViewState extends State<TravelTrackListView> {
                     : Colors.grey,
           ),
         ),
-        leading: SizedBox(
-          width: 48,
-          height: 48,
-          child: travelTrackManager.isAnyTravelTrackSelected
-              ? Checkbox(
-                  value:
-                      travelTrackManager.isTravelTrackSelected(travelTrack.id),
-                  onChanged: (bool? value) {
-                    travelTrackManager.setTravelTrackSelected(
-                      travelTrackId: travelTrack.id,
-                      isSelected: value ?? false,
-                    );
-                  },
-                )
-              : IconButton(
-                  icon: travelTrackManager.isTravelTrackVisible(travelTrack.id)
-                      ? const Icon(Icons.visibility)
-                      : const Icon(Icons.visibility_off),
-                  onPressed: () {
-                    travelTrackManager.setTravelTrackVisible(
-                      travelTrackId: travelTrack.id,
-                      isVisible: !travelTrackManager
-                          .isTravelTrackVisible(travelTrack.id),
-                    );
-                  },
-                ),
-        ),
+        leading: travelTrackManager.isAnyTravelTrackSelected
+            ? Checkbox(
+                value: travelTrackManager.isTravelTrackSelected(travelTrack.id),
+                onChanged: (bool? value) {
+                  travelTrackManager.setTravelTrackSelected(
+                    travelTrackId: travelTrack.id,
+                    isSelected: value ?? false,
+                  );
+                },
+              )
+            : Wrap(
+                children: [
+                  Flexible(
+                    child: IconButton(
+                      icon: TravelTrackManager.I
+                              .isTravelTrackVisible(travelTrack.id)
+                          ? const Icon(Icons.visibility)
+                          : const Icon(Icons.visibility_off),
+                      onPressed: () {
+                        TravelTrackManager.I.setTravelTrackVisible(
+                          travelTrackId: travelTrack.id,
+                          isVisible: !TravelTrackManager.I
+                              .isTravelTrackVisible(travelTrack.id),
+                        );
+                      },
+                    ),
+                  ),
+                  Flexible(
+                    child: IconButton(
+                      icon: TravelTrackManager.I.activeTravelTrackId ==
+                              travelTrack.id
+                          ? const Icon(Icons.radio_button_checked)
+                          : const Icon(Icons.radio_button_unchecked),
+                      onPressed: () {
+                        TravelTrackManager.I
+                            .setActiveTravelTrack(travelTrack.id);
+                      },
+                    ),
+                  ),
+                ],
+              ),
       ),
     );
   }

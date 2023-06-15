@@ -2,11 +2,11 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' as latlng;
-import 'package:photo_manager/photo_manager.dart';
+import 'package:travel_tracker/features/asset/asset_ext_thumbnail_button.dart';
 import 'package:travel_tracker/features/map_view/marker_ext.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
-import 'package:travel_tracker/features/travel_track/data_model/asset_ext.dart';
+import 'package:travel_tracker/features/asset/data_model/asset_ext.dart';
 import 'package:travel_tracker/features/travel_track/data_model/trkseg_ext.dart';
 import 'package:travel_tracker/features/travel_track/data_model/wpt_ext.dart';
 
@@ -19,8 +19,11 @@ class TravelTrackLayerBuilder {
     List<Widget> layers = <Widget>[];
     for (TravelTrack travelTrack in travelTracks) {
       layers.addAll(buildPolylineLayersByTravelTrack(travelTrack));
+      travelTrack.clearAssetExtIdGroupsAsync();
+      layers.add(buildMarkerClusterLayerByAssetExts(travelTrack.assetExts,
+          travelTrack: travelTrack));
     }
-    layers.add(buildMarkerClusterLayerByTravelTracks(travelTracks));
+    // layers.add(buildMarkerClusterLayerByTravelTracks(travelTracks));
     return layers;
   }
 
@@ -62,7 +65,9 @@ class TravelTrackLayerBuilder {
   }
 
   MarkerClusterLayerWidget buildMarkerClusterLayerByAssetExts(
-      List<AssetExt> assetExts) {
+    List<AssetExt> assetExts, {
+    TravelTrack? travelTrack,
+  }) {
     List<MarkerExt<AssetExt>> markerExts = <MarkerExt<AssetExt>>[];
     for (AssetExt assetExt in assetExts) {
       MarkerExt<AssetExt>? markerExt = buildMarkerByAssetExt(assetExt);
@@ -70,7 +75,7 @@ class TravelTrackLayerBuilder {
         markerExts.add(markerExt);
       }
     }
-    return buildMarkerClusterByMarkers(markerExts);
+    return buildMarkerClusterByMarkers(markerExts, travelTrack: travelTrack);
   }
 
   MarkerExt<AssetExt>? buildMarkerByAssetExt(AssetExt assetExt) {
@@ -87,35 +92,9 @@ class TravelTrackLayerBuilder {
       builder: (BuildContext context) {
         return Transform.rotate(
           angle: -mapRotation * math.pi / 180,
-          child: IconButton(
-            icon: AspectRatio(
-              aspectRatio: 1 / 1,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: Colors.white,
-                    width: 2,
-                  ),
-                  image: DecorationImage(
-                    image: AssetEntityImageProvider(
-                      assetExt.asset,
-                      isOriginal: false,
-                    ),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.black.withOpacity(0),
-                  ),
-                ),
-              ),
-            ),
-            padding: const EdgeInsets.all(0),
-            color: Colors.red,
-            onPressed: () {
+          child: AssetExtThumbnailButton(
+            displayedAssetExt: assetExt,
+            onTap: () {
               debugPrint('onPressed ${assetExt.asset.title}');
               // TODO: show asset
               // Navigator.pushNamed(context, '/asset');
@@ -127,7 +106,9 @@ class TravelTrackLayerBuilder {
   }
 
   MarkerClusterLayerWidget buildMarkerClusterByMarkers(
-      List<MarkerExt<AssetExt>> markerExts) {
+    List<MarkerExt<AssetExt>> markerExts, {
+    TravelTrack? travelTrack,
+  }) {
     double mapRotation = _mapRotationNotifier.value;
     return MarkerClusterLayerWidget(
       options: MarkerClusterLayerOptions(
@@ -139,65 +120,26 @@ class TravelTrackLayerBuilder {
           maxZoom: 15,
         ),
         spiderfySpiralDistanceMultiplier: 2,
+        spiderfyCircleRadius: 80,
         disableClusteringAtZoom: 17,
         zoomToBoundsOnClick: false,
         markers: markerExts,
         builder: (context, markers) {
           List<MarkerExt<AssetExt>> extraMarkers =
               _castMarkerToMarkerExt(markers);
-          AssetExt? displayedAsset;
+          List<AssetExt> assetExts = [];
           for (MarkerExt<AssetExt> extraMarker in extraMarkers) {
             if (extraMarker.extra != null) {
-              displayedAsset = extraMarker.extra;
-              break;
+              assetExts.add(extraMarker.extra!);
             }
           }
+          travelTrack
+              ?.addAssetExtIdGroupAsync(assetExts.map((e) => e.id).toList());
           return Transform.rotate(
             angle: -mapRotation * math.pi / 180,
-            child: AspectRatio(
-              aspectRatio: 1 / 1,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: Colors.white,
-                    width: 2,
-                  ),
-                  image: displayedAsset == null
-                      ? null
-                      : DecorationImage(
-                          image: AssetEntityImageProvider(
-                            displayedAsset.asset,
-                            isOriginal: false,
-                          ),
-                          fit: BoxFit.cover,
-                        ),
-                ),
-                child: Stack(
-                  children: <Widget>[
-                    displayedAsset == null
-                        ? Icon(
-                            Icons.photo,
-                            color: Colors.white,
-                          )
-                        : Container(),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.black.withOpacity(0.3),
-                      ),
-                    ),
-                    Center(
-                        child: Text(
-                      markers.length.toString(),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                      ),
-                    )),
-                  ],
-                ),
-              ),
+            child: AssetExtThumbnailButton(
+              displayedAssetExt: assetExts.isEmpty ? null : assetExts.first,
+              assetCount: extraMarkers.length,
             ),
           );
         },

@@ -1,25 +1,36 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:gpx/gpx.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:travel_tracker/features/external_asset/external_asset_manager.dart';
+import 'package:travel_tracker/features/asset/external_asset_manager.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_data.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_config.dart';
 import 'package:travel_tracker/features/travel_track/data_model/trkseg_ext.dart';
 import 'package:travel_tracker/features/travel_track/data_model/wpt_ext.dart';
-import 'package:travel_tracker/features/travel_track/data_model/asset_ext.dart';
+import 'package:travel_tracker/features/asset/data_model/asset_ext.dart';
 import 'package:travel_tracker/utils/datetime.dart';
 
-class TravelTrack extends TravelData {
+class TravelTrack extends TravelData with ChangeNotifier {
   final List<WptExt> _wptExts = <WptExt>[];
   final List<TrksegExt> _trksegExts = <TrksegExt>[];
-  final List<AssetExt> _assetExts = <AssetExt>[];
+  final Map<String, AssetExt> _assetExtMap = <String, AssetExt>{};
+  List<List<String>> _assetExtIdGroups = <List<String>>[];
   final List<String> _gpxFileFullPaths = <String>[];
   bool isSelected = false;
   bool isVisible = true;
 
   List<TrksegExt> get trksegExts => List<TrksegExt>.unmodifiable(_trksegExts);
-  List<AssetExt> get assetExts => List<AssetExt>.unmodifiable(_assetExts);
+  Map<String, AssetExt> get assetExtMap =>
+      Map<String, AssetExt>.unmodifiable(_assetExtMap);
+  List<AssetExt> get assetExts {
+    List<AssetExt> assetExts = _assetExtMap.values.toList();
+    assetExts.sort((a, b) => a.compareTo(b));
+    return List<AssetExt>.unmodifiable(assetExts);
+  }
+
+  List<List<String>> get assetExtIdGroups =>
+      List<List<String>>.unmodifiable(_assetExtIdGroups);
   DateTime? get startTime => getTrksegExtsStartTime(_trksegExts);
   DateTime? get endTime => getTrksegExtsEndTime(_trksegExts);
 
@@ -28,7 +39,7 @@ class TravelTrack extends TravelData {
     json.addAll({
       'wptExts': _wptExts.map((e) => e.toJson()).toList(),
       'trksegExts': _trksegExts.map((e) => e.toJson()).toList(),
-      'assetExts': _assetExts.map((e) => e.toJson()).toList(),
+      'assetExts': assetExts.map((e) => e.toJson()).toList(),
       'gpxFileFullPaths': _gpxFileFullPaths,
     });
     return json;
@@ -53,7 +64,7 @@ class TravelTrack extends TravelData {
     TravelConfig? config,
     List<WptExt>? wptExts,
     List<TrksegExt>? trksegExts,
-    List<AssetExt>? assetExts,
+    Map<String, AssetExt>? assetExts,
     List<String>? gpxFileFullPaths,
   }) : super(
           id: id,
@@ -68,8 +79,8 @@ class TravelTrack extends TravelData {
       _trksegExts.sort((a, b) => a.compareTo(b));
     }
     if (assetExts != null) {
-      _assetExts.addAll(assetExts);
-      _assetExts.sort((a, b) => a.compareTo(b));
+      _assetExtMap.addAll(assetExts);
+      // _assetExts.sort((a, b) => a.compareTo(b));
     }
     if (gpxFileFullPaths != null) {
       _gpxFileFullPaths.addAll(gpxFileFullPaths);
@@ -89,7 +100,7 @@ class TravelTrack extends TravelData {
   }) async {
     List<WptExt> wptExts = <WptExt>[];
     List<TrksegExt> trksegExts = <TrksegExt>[];
-    List<AssetExt> assetExts = <AssetExt>[];
+    Map<String, AssetExt> assetExtMap = <String, AssetExt>{};
     for (String gpxFilePath in gpxFileFullPaths) {
       File gpxFile = File(gpxFilePath);
       if (!await gpxFile.exists()) {
@@ -139,9 +150,12 @@ class TravelTrack extends TravelData {
             }
             break;
           }
-          assetExts.addAll(await AssetExt.fromAssetEntitysAsync(
-            assets: assets.sublist(lastAssetEndIndex, assetStartIndex),
-          ));
+          assetExtMap.addAll({
+            for (AssetExt assetExt in await AssetExt.fromAssetEntitiesAsync(
+              assets: assets.sublist(lastAssetEndIndex, assetStartIndex),
+            ))
+              assetExt.id: assetExt,
+          });
           assetEndIndex = assetStartIndex;
           while (assetEndIndex < assetCount) {
             AssetEntity asset = assets[assetEndIndex];
@@ -153,20 +167,62 @@ class TravelTrack extends TravelData {
             break;
           }
           lastAssetEndIndex = assetEndIndex;
+          assetExtMap.addAll({
+            for (AssetExt assetExt
+                in await AssetExt.fromAssetEntitiesWithTrksegExtAsync(
+              assets: assets.sublist(assetStartIndex, assetEndIndex),
+              trksegExt: trksegExt,
+            ))
+              assetExt.id: assetExt,
+          });
           assetStartIndex = assetEndIndex;
-          assetExts.addAll(await AssetExt.fromAssetEntitiesWithTrksegExtAsync(
-            assets: assets.sublist(assetStartIndex, assetEndIndex),
-            trksegExt: trksegExt,
-          ));
         }
+        assetExtMap.addAll({
+          for (AssetExt assetExt in await AssetExt.fromAssetEntitiesAsync(
+            assets: assets.sublist(lastAssetEndIndex, assetCount),
+          ))
+            assetExt.id: assetExt,
+        });
       }
     }
     return TravelTrack._(
       wptExts: wptExts,
       trksegExts: trksegExts,
-      assetExts: assetExts,
+      assetExts: assetExtMap,
       gpxFileFullPaths: gpxFileFullPaths,
     );
+  }
+
+  void clearAssetExtIdGroupsAsync() async {
+    await Future.delayed(Duration.zero);
+    _assetExtIdGroups.clear();
+    notifyListeners();
+  }
+
+  void addAssetExtIdGroupAsync(List<String> assetExtIds) async {
+    if (assetExtIds.isEmpty) {
+      return;
+    }
+    await Future.delayed(Duration.zero);
+    assetExtIds.sort((a, b) => a.compareTo(b));
+    _assetExtIdGroups.add(assetExtIds);
+    _assetExtIdGroups.sort((a, b) {
+      assert(_assetExtMap[a.first] != null && _assetExtMap[b.first] != null,
+          'assetExtMap must contain all assetExtIds');
+      return _assetExtMap[a.first]!.compareTo(_assetExtMap[b.first]!);
+    });
+    notifyListeners();
+  }
+
+  List<AssetExt> getAssetExtsByIds(List<String> assetExtIds) {
+    List<AssetExt> assetExts = <AssetExt>[];
+    for (String assetExtId in assetExtIds) {
+      AssetExt? assetExt = _assetExtMap[assetExtId];
+      if (assetExt != null) {
+        assetExts.add(assetExt);
+      }
+    }
+    return assetExts;
   }
 
   // TODO: addGpxFileFullPathsAsync
