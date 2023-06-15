@@ -20,6 +20,8 @@ class TravelTrack extends TravelData {
 
   List<TrksegExt> get trksegExts => List<TrksegExt>.unmodifiable(_trksegExts);
   List<AssetExt> get assetExts => List<AssetExt>.unmodifiable(_assetExts);
+  DateTime? get startTime => getTrksegExtsStartTime(_trksegExts);
+  DateTime? get endTime => getTrksegExtsEndTime(_trksegExts);
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = super.toJson();
@@ -103,35 +105,60 @@ class TravelTrack extends TravelData {
         gpx: gpx,
       ));
     }
+    wptExts.sort((a, b) => a.compareTo(b));
+    trksegExts.sort((a, b) => a.compareTo(b));
 
     if (autoAttachAssets) {
-      for (TrksegExt trksegExt in trksegExts) {
-        ExternalAssetManager externalAssetManager =
-            await ExternalAssetManager.FI;
-        DateTime? minDate, maxDate;
-        for (WptExt wptExt in trksegExt.trkpts) {
-          if (wptExt.time == null) {
+      DateTime? startTime = getTrksegExtsStartTime(trksegExts);
+      DateTime? endTime = getTrksegExtsEndTime(trksegExts);
+      assert(startTime != null && endTime != null,
+          'startTime and endTime must not be null');
+      ExternalAssetManager externalAssetManager = await ExternalAssetManager.FI;
+      List<AssetEntity>? assets =
+          await externalAssetManager.getAssetsBetweenTimeAsync(
+        minDate: startTime,
+        maxDate: endTime,
+      );
+      if (assets != null) {
+        int assetCount = assets.length;
+        int assetStartIndex = 0;
+        int assetEndIndex = 0;
+        int lastAssetEndIndex = 0;
+        for (TrksegExt trksegExt in trksegExts) {
+          DateTime? trksegExtStartTime = trksegExt.startTime;
+          DateTime? trksegExtEndTime = trksegExt.endTime;
+          if (trksegExtStartTime == null || trksegExtEndTime == null) {
             continue;
           }
-          if (minDate == null || minDate.isAfter(wptExt.time!)) {
-            minDate = wptExt.time;
+          while (assetStartIndex < assetCount) {
+            AssetEntity asset = assets[assetStartIndex];
+            DateTime assetDateTime = asset.createDateTime;
+            if (assetDateTime.isBefore(trksegExtStartTime)) {
+              assetStartIndex++;
+              continue;
+            }
+            break;
           }
-          if (maxDate == null || maxDate.isBefore(wptExt.time!)) {
-            maxDate = wptExt.time;
+          assetExts.addAll(await AssetExt.fromAssetEntitysAsync(
+            assets: assets.sublist(lastAssetEndIndex, assetStartIndex),
+          ));
+          assetEndIndex = assetStartIndex;
+          while (assetEndIndex < assetCount) {
+            AssetEntity asset = assets[assetEndIndex];
+            DateTime assetDateTime = asset.createDateTime;
+            if (assetDateTime.isBefore(trksegExtEndTime)) {
+              assetEndIndex++;
+              continue;
+            }
+            break;
           }
+          lastAssetEndIndex = assetEndIndex;
+          assetStartIndex = assetEndIndex;
+          assetExts.addAll(await AssetExt.fromAssetEntitiesWithTrksegExtAsync(
+            assets: assets.sublist(assetStartIndex, assetEndIndex),
+            trksegExt: trksegExt,
+          ));
         }
-        List<AssetEntity>? assets =
-            await externalAssetManager.getAssetsBetweenTimeAsync(
-          minDate: minDate,
-          maxDate: maxDate,
-        );
-        if (assets == null) {
-          continue;
-        }
-        assetExts.addAll(await AssetExt.fromAssetEntitiesWithTrksegExtAsync(
-          assets: assets,
-          trksegExt: trksegExt,
-        ));
       }
     }
     return TravelTrack._(

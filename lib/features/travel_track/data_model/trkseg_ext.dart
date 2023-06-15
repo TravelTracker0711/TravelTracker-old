@@ -80,3 +80,22 @@ class TrksegExt extends TravelData {
     return trksegs;
   }
 }
+
+DateTime? getTrksegExtsStartTime(List<TrksegExt> trksegExts) {
+  for (TrksegExt trksegExt in trksegExts) {
+    if (trksegExt.startTime != null) {
+      return trksegExt.startTime;
+    }
+  }
+  return null;
+}
+
+DateTime? getTrksegExtsEndTime(List<TrksegExt> trksegExts) {
+  for (int i = trksegExts.length - 1; i >= 0; i--) {
+    TrksegExt trksegExt = trksegExts[i];
+    if (trksegExt.endTime != null) {
+      return trksegExt.endTime;
+    }
+  }
+  return null;
+}

@@ -67,10 +67,8 @@ class AssetExt extends TravelData {
     );
   }
 
-  static Future<List<AssetExt>> fromAssetEntitiesWithTrksegExtAsync({
+  static fromAssetEntitysAsync({
     required List<AssetEntity> assets,
-    required TrksegExt trksegExt,
-    bool overrideAssetOriginCoordinates = true,
   }) async {
     List<AssetExt> assetExts = [];
     for (AssetEntity asset in assets) {
@@ -80,11 +78,19 @@ class AssetExt extends TravelData {
       if (assetExt == null) {
         continue;
       }
-      if (overrideAssetOriginCoordinates) {
-        assetExt.coordinates = null;
-      }
       assetExts.add(assetExt);
     }
+    return assetExts;
+  }
+
+  static Future<List<AssetExt>> fromAssetEntitiesWithTrksegExtAsync({
+    required List<AssetEntity> assets,
+    required TrksegExt trksegExt,
+    bool overrideAssetOriginCoordinates = true,
+  }) async {
+    List<AssetExt> assetExts = await fromAssetEntitysAsync(
+      assets: assets,
+    );
     int trkptIndex = 0;
     List<WptExt> trkpts = trksegExt.trkpts.where((trkpt) {
       return trkpt.time != null;
