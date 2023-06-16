@@ -2,7 +2,7 @@ class TravelConfig {
   late String name;
   String? description;
   final List<String> tags = [];
-  static int namePlaceholderCounter = 1;
+  Map<String, int> namePlaceholderCounterMap = {};
 
   TravelConfig({
     String? namePlaceholder,
@@ -13,8 +13,14 @@ class TravelConfig {
     if (name != null) {
       this.name = name;
     } else if (namePlaceholder != null) {
-      this.name = '$namePlaceholder $namePlaceholderCounter';
-      namePlaceholderCounter++;
+      if (namePlaceholderCounterMap.containsKey(namePlaceholder)) {
+        namePlaceholderCounterMap[namePlaceholder] =
+            namePlaceholderCounterMap[namePlaceholder]! + 1;
+      } else {
+        namePlaceholderCounterMap[namePlaceholder] = 1;
+      }
+      this.name =
+          '$namePlaceholder ${namePlaceholderCounterMap[namePlaceholder]}';
     } else {
       this.name = 'Unnamed Travel Data';
     }
