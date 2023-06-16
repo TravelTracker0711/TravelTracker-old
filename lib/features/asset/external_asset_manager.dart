@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:photo_manager/photo_manager.dart';
 
@@ -42,9 +43,12 @@ class ExternalAssetManager {
       maxDate: maxDate,
       isTimeAsc: isTimeAsc,
     );
+    debugPrint("minDate : ${minDate}\nmaxDate : $maxDate");
     AssetPathEntity? filteredPathEntity = await _getFilteredPathEntityAsync(
       filterOption: timeRangefilterOption,
     );
+    // debugPrint("asset : ${assets}");
+    debugPrint("filteredPathEntity : ${filteredPathEntity}");
     if (filteredPathEntity == null) {
       return null;
     }
@@ -66,6 +70,7 @@ class ExternalAssetManager {
       hasAll: true,
       onlyAll: true,
     );
+    debugPrint(pathEntities.toString());
     if (pathEntities.isEmpty) {
       return null;
     }
