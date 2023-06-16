@@ -17,7 +17,7 @@ class MapViewController with ChangeNotifier {
       ValueNotifier<FollowOnLocationUpdate>(FollowOnLocationUpdate.always);
   MapViewMode _mode = MapViewMode.normal;
   double? _partialTrackMiddlePercentage;
-  bool _isShowingAsset = false;
+  bool _isShowingAsset = true;
 
   MapViewMode get mode => _mode;
   double? get partialTrackMiddlePercentage => _partialTrackMiddlePercentage;

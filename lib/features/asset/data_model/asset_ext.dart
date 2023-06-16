@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:photo_manager/photo_manager.dart';
 import 'package:latlong2/latlong.dart' as latlong;
+import 'package:travel_tracker/features/asset/external_asset_manager.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_data.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_config.dart';
 import 'package:travel_tracker/features/travel_track/data_model/trkseg_ext.dart';
@@ -171,5 +172,38 @@ class AssetExt extends TravelData {
       json['attachedTrksegExtId'] = attachedTrksegExtId;
     }
     return json;
+  }
+
+  static Future<AssetExt> fromJson(Map<String, dynamic> json) async {
+    AssetEntity asset = (await ExternalAssetManager.FI).getAssetByPath(
+      json['fileFullPath'],
+    )!;
+    AssetExt assetExt = AssetExt._(
+      id: json['id'],
+      config:
+          json['config'] != null ? TravelConfig.fromJson(json['config']) : null,
+      asset: asset,
+      type: _getAssetExtTypeFromString(json['type']),
+      fileFullPath: json['fileFullPath'],
+      coordinates: json['coordinates'] != null
+          ? WptExt.fromJson(json['coordinates'])
+          : null,
+      attachedTrksegExtId: json['attachedTrksegExtId'],
+    );
+    return assetExt;
+  }
+
+  static AssetExtType _getAssetExtTypeFromString(String typeString) {
+    if (typeString == AssetExtType.audio.toString()) {
+      return AssetExtType.audio;
+    } else if (typeString == AssetExtType.video.toString()) {
+      return AssetExtType.video;
+    } else if (typeString == AssetExtType.image.toString()) {
+      return AssetExtType.image;
+    } else if (typeString == AssetExtType.text.toString()) {
+      return AssetExtType.text;
+    } else {
+      return AssetExtType.unknown;
+    }
   }
 }

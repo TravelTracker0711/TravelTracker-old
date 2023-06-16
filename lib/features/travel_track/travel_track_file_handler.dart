@@ -49,26 +49,29 @@ class TravelTrackFileHandler {
   }
 
   // read all travel tracks from storage and return
-  // Future<Map<String, TravelTrack>> readAll() async {
-  //   String documentsPath = await _documentsPath;
-  //   Directory documentsDir = Directory(documentsPath);
-  //   List<FileSystemEntity> travelTrackDirList = documentsDir.listSync();
-  //   Map<String, TravelTrack> travelTrackMap = <String, TravelTrack>{};
-  //   for (FileSystemEntity travelTrackDir in travelTrackDirList) {
-  //     if (travelTrackDir is Directory) {
-  //       String travelTrackJsonFilePath =
-  //           p.join(travelTrackDir.path, 'travel_track.json');
-  //       if (File(travelTrackJsonFilePath).existsSync()) {
-  //         String travelTrackJson =
-  //             File(travelTrackJsonFilePath).readAsStringSync();
-  //         TravelTrack travelTrack =
-  //             TravelTrack.fromJson(jsonDecode(travelTrackJson));
-  //         travelTrackMap[travelTrack.id] = travelTrack;
-  //       }
-  //     }
-  //   }
-  //   return travelTrackMap;
-  // }
+  Future<Map<String, TravelTrack>> readAll() async {
+    debugPrint('TravelTrackFileHandler.readAll()');
+    String documentsPath = await _documentsPath;
+    Directory documentsDir = Directory(documentsPath);
+    List<FileSystemEntity> travelTrackDirList = documentsDir.listSync();
+    debugPrint('travelTrackDirList: ${travelTrackDirList.length}');
+    Map<String, TravelTrack> travelTrackMap = <String, TravelTrack>{};
+    for (FileSystemEntity travelTrackDir in travelTrackDirList) {
+      if (travelTrackDir is Directory) {
+        String travelTrackJsonFilePath =
+            p.join(travelTrackDir.path, 'travel_track.json');
+        if (File(travelTrackJsonFilePath).existsSync()) {
+          String travelTrackJson =
+              File(travelTrackJsonFilePath).readAsStringSync();
+          TravelTrack travelTrack =
+              await TravelTrack.fromJson(jsonDecode(travelTrackJson));
+          travelTrackMap[travelTrack.id] = travelTrack;
+        }
+      }
+    }
+    debugPrint('travelTrackMap: ${travelTrackMap.length}');
+    return travelTrackMap;
+  }
 
   Future<void> _writeTravelTrackFile(
       TravelTrack travelTrack, String fullFilePath) async {

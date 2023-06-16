@@ -47,4 +47,12 @@ class TravelConfig {
     }
     return json;
   }
+
+  TravelConfig.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    description = json['description'];
+    if (json['tags'] != null) {
+      tags.addAll(json['tags']);
+    }
+  }
 }

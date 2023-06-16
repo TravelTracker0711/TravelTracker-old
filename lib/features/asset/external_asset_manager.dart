@@ -1,8 +1,16 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:external_path/external_path.dart';
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:watcher/watcher.dart';
 
 class ExternalAssetManager {
   AssetPathEntity? _allAssetsPathEntity;
+  Map<String, AssetEntity>? _allAssetsMap;
   bool _isInitialized = false;
   bool _isPermissionGranted = false;
 
@@ -26,6 +34,20 @@ class ExternalAssetManager {
     }
     _isPermissionGranted = true;
     _allAssetsPathEntity = await _getAllAssetPathAsync();
+    if (_allAssetsPathEntity != null) {
+      List<AssetEntity> assets = await _getAssetsAsync(
+        pathEntity: _allAssetsPathEntity!,
+      );
+      _allAssetsMap = {
+        for (AssetEntity asset in assets) (await asset.originFile)!.path: asset,
+      };
+
+      Map.fromIterable(
+        assets,
+        key: (asset) => asset.id,
+        value: (asset) => asset,
+      );
+    }
   }
 
   // TODO: refactor filter with filter options
@@ -52,6 +74,10 @@ class ExternalAssetManager {
       pathEntity: filteredPathEntity,
     );
     return assets;
+  }
+
+  AssetEntity? getAssetByPath(String path) {
+    return _allAssetsMap?[path];
   }
 
   Future<bool> _checkPermissionAsync() async {

@@ -35,6 +35,15 @@ class TrksegExt extends TravelData {
     return json;
   }
 
+  TrksegExt.fromJson(Map<String, dynamic> json)
+      : this._(
+          id: json['id'],
+          config: TravelConfig.fromJson(json['config']),
+          trkpts: (json['trkpts'] as List<dynamic>)
+              .map((e) => WptExt.fromJson(e))
+              .toList(),
+        );
+
   TrksegExt({
     TravelConfig? config,
     List<WptExt>? trkpts,

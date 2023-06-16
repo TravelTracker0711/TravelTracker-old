@@ -133,6 +133,15 @@ class WptExt extends TravelData {
     return json;
   }
 
+  WptExt.fromJson(Map<String, dynamic> json)
+      : latLng = latlng.LatLng(
+          json['lat'],
+          json['lon'],
+        ),
+        elevation = json['ele'],
+        time = json['time'] == null ? null : DateTime.parse(json['time']),
+        super.fromJson(json);
+
   String toString() {
     return 'WptExt(id: $id, latLng: $latLng, ele: $ele, time: $time)';
   }

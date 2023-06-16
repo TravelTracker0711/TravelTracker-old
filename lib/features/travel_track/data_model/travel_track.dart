@@ -41,11 +41,37 @@ class TravelTrack extends TravelData with ChangeNotifier {
     json.addAll({
       'wptExts': _wptExts.map((e) => e.toJson()).toList(),
       'trksegExts': _trksegExts.map((e) => e.toJson()).toList(),
-      'assetExts': assetExts.map((e) => e.toJson()).toList(),
+      'assetExtMap': _assetExtMap.map((key, value) => MapEntry(key, value)),
       'gpxFileFullPaths': _gpxFileFullPaths,
       'createDateTime': _createDateTime.toIso8601String(),
     });
     return json;
+  }
+
+  static Future<TravelTrack> fromJson(Map<String, dynamic> json) async {
+    Map<String, AssetExt> assetExtMap = {
+      for (String key in json['assetExtMap'].keys)
+        key: await AssetExt.fromJson(json['assetExtMap'][key])
+    };
+    TravelTrack travelTrack = TravelTrack._(
+      id: json['id'],
+      config: TravelConfig.fromJson(json['config']),
+      wptExts: (json['wptExts'] as List)
+          .map((e) => WptExt.fromJson(e))
+          .toList()
+          .cast<WptExt>(),
+      trksegExts: (json['trksegExts'] as List)
+          .map((e) => TrksegExt.fromJson(e))
+          .toList()
+          .cast<TrksegExt>(),
+      assetExtMap: assetExtMap,
+      gpxFileFullPaths: (json['gpxFileFullPaths'] as List)
+          .map((e) => e.toString())
+          .toList()
+          .cast<String>(),
+      createDateTime: DateTime.parse(json['createDateTime']),
+    );
+    return travelTrack;
   }
 
   Gpx toGpx() {
@@ -80,20 +106,6 @@ class TravelTrack extends TravelData with ChangeNotifier {
     return gpx;
   }
 
-  // TravelTrack.fromJson(Map<String, dynamic> json) {
-  //   id = json['id'];
-  //   name = json['name'];
-  //   description = json['description'];
-  //   _gpxExts = (json['gpxExts'] as List)
-  //       .map((e) => GpxExt.fromJson(e))
-  //       .toList()
-  //       .cast<GpxExt>();
-  //   _assetExts = (json['assetExts'] as List)
-  //       .map((e) => AssetExt.fromJson(e))
-  //       .toList()
-  //       .cast<AssetExt>();
-  // }
-
   TravelTrack({
     TravelConfig? config,
   }) : this._(
@@ -105,7 +117,7 @@ class TravelTrack extends TravelData with ChangeNotifier {
     TravelConfig? config,
     List<WptExt>? wptExts,
     List<TrksegExt>? trksegExts,
-    Map<String, AssetExt>? assetExts,
+    Map<String, AssetExt>? assetExtMap,
     List<String>? gpxFileFullPaths,
     DateTime? createDateTime,
   })  : _createDateTime = createDateTime ?? DateTime.now(),
@@ -121,8 +133,8 @@ class TravelTrack extends TravelData with ChangeNotifier {
       _trksegExts.addAll(trksegExts);
       _trksegExts.sort((a, b) => a.compareTo(b));
     }
-    if (assetExts != null) {
-      _assetExtMap.addAll(assetExts);
+    if (assetExtMap != null) {
+      _assetExtMap.addAll(assetExtMap);
     }
     if (gpxFileFullPaths != null) {
       _gpxFileFullPaths.addAll(gpxFileFullPaths);
@@ -139,6 +151,7 @@ class TravelTrack extends TravelData with ChangeNotifier {
   static Future<TravelTrack> fromGpxFileFullPathsAsync({
     required List<String> gpxFileFullPaths,
     bool autoAttachAssets = false,
+    TravelConfig? config,
   }) async {
     List<WptExt> wptExts = <WptExt>[];
     List<TrksegExt> trksegExts = <TrksegExt>[];
@@ -230,8 +243,9 @@ class TravelTrack extends TravelData with ChangeNotifier {
     return TravelTrack._(
       wptExts: wptExts,
       trksegExts: trksegExts,
-      assetExts: assetExtMap,
+      assetExtMap: assetExtMap,
       gpxFileFullPaths: gpxFileFullPaths,
+      config: config,
     );
   }
 

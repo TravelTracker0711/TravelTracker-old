@@ -28,4 +28,9 @@ class TravelData {
       'config': config.toJson(),
     };
   }
+
+  TravelData.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    config = TravelConfig.fromJson(json['config']);
+  }
 }

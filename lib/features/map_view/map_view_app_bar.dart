@@ -3,6 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_tracker/features/map_view/map_view_controller.dart';
+import 'package:travel_tracker/features/travel_track/data_model/travel_config.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_file_handler.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
@@ -98,10 +99,13 @@ class MapViewAppBar extends StatelessWidget implements PreferredSizeWidget {
             }
           }
           TravelTrack.fromGpxFileFullPathsAsync(
+            config: TravelConfig(namePlaceholder: 'New Travel Track'),
             gpxFileFullPaths: filePaths,
             autoAttachAssets: true,
           ).then((travelTrack) {
-            context.read<TravelTrackManager>().addTravelTrackAsync(travelTrack);
+            context.read<TravelTrackManager>()
+              ..addTravelTrackAsync(travelTrack)
+              ..setActiveTravelTrackId(travelTrack.id);
           });
         } else {
           debugPrint('Unhandle case: user cancel file picking');

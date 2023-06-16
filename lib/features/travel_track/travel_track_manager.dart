@@ -37,7 +37,9 @@ class TravelTrackManager with ChangeNotifier {
   }
 
   Future<void> _initAsync() async {
-    // TODO: load _travelTracks from storage
+    debugPrint("TravelTrackManager._initAsync()");
+    TravelTrackFileHandler travelTrackFileHandler = TravelTrackFileHandler();
+    _travelTrackMap.addAll(await travelTrackFileHandler.readAll());
     _isInitialized = true;
     notifyListeners();
   }
