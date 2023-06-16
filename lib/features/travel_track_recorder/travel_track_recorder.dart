@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get_it/get_it.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_config.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
+import 'package:travel_tracker/features/travel_track/travel_track_file_handler.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
 import 'package:travel_tracker/features/travel_track_recorder/gps_provider.dart';
 
@@ -54,12 +55,18 @@ class TravelTrackRecorder with ChangeNotifier {
     }
     GpsProvider.I.stopRecording();
     _isRecording = false;
+    if (TravelTrackManager.I.activeTravelTrack != null) {
+      TravelTrackFileHandler().write(TravelTrackManager.I.activeTravelTrack!);
+    }
     notifyListeners();
   }
 
   void stopRecording() {
     pauseRecording();
     _isActivated = false;
+    if (TravelTrackManager.I.activeTravelTrack != null) {
+      TravelTrackFileHandler().write(TravelTrackManager.I.activeTravelTrack!);
+    }
     TravelTrackManager.I.setActiveTravelTrackId(null);
     notifyListeners();
   }

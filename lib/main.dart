@@ -7,6 +7,7 @@ import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
 import 'package:travel_tracker/features/home_page/home_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:travel_tracker/features/travel_track_recorder/travel_track_recorder.dart';
+import 'package:travel_tracker/global.dart';
 
 void main() {
   GetIt.I.registerLazySingletonAsync<ExternalAssetManager>(
@@ -53,6 +54,7 @@ class MyApp extends StatelessWidget {
         builder: (context, travelTrackRecorder, child) => MaterialApp.router(
           routerConfig: _router,
           title: 'Travel Tracker',
+          scaffoldMessengerKey: snackbarKey,
           theme: ThemeData(
             primarySwatch: travelTrackRecorder.isRecording
                 ? Colors.yellow

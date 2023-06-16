@@ -71,8 +71,7 @@ class _MapViewMapState extends State<MapViewMap> with TickerProviderStateMixin {
           mapViewController.followOnLocationUpdateNotifier.value ==
               FollowOnLocationUpdate.always) {
         setState(() {
-          mapViewController.followOnLocationUpdateNotifier.value =
-              FollowOnLocationUpdate.never;
+          mapViewController.stopFollowingUser();
         });
       }
     });

@@ -142,21 +142,21 @@ class _TravelTrackListViewState extends State<TravelTrackListView> {
               )
             : Wrap(
                 children: [
-                  Flexible(
-                    child: IconButton(
-                      icon: TravelTrackManager.I
-                              .isTravelTrackVisible(travelTrack.id)
-                          ? const Icon(Icons.visibility)
-                          : const Icon(Icons.visibility_off),
-                      onPressed: () {
-                        TravelTrackManager.I.setTravelTrackVisible(
-                          travelTrackId: travelTrack.id,
-                          isVisible: !TravelTrackManager.I
-                              .isTravelTrackVisible(travelTrack.id),
-                        );
-                      },
-                    ),
-                  ),
+                  // Flexible(
+                  //   child: IconButton(
+                  //     icon: TravelTrackManager.I
+                  //             .isTravelTrackVisible(travelTrack.id)
+                  //         ? const Icon(Icons.visibility)
+                  //         : const Icon(Icons.visibility_off),
+                  //     onPressed: () {
+                  //       TravelTrackManager.I.setTravelTrackVisible(
+                  //         travelTrackId: travelTrack.id,
+                  //         isVisible: !TravelTrackManager.I
+                  //             .isTravelTrackVisible(travelTrack.id),
+                  //       );
+                  //     },
+                  //   ),
+                  // ),
                   Flexible(
                     child: IconButton(
                       icon: TravelTrackManager.I.activeTravelTrackId ==

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get_it/get_it.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_file_handler.dart';
+import 'package:travel_tracker/global.dart';
 
 class TravelTrackManager with ChangeNotifier {
   final Map<String, TravelTrack> _travelTrackMap = <String, TravelTrack>{};
@@ -38,9 +40,17 @@ class TravelTrackManager with ChangeNotifier {
 
   Future<void> _initAsync() async {
     debugPrint("TravelTrackManager._initAsync()");
+    SnackBar snackBar =
+        SnackBar(content: Text("Loading your travel tracks from storage..."));
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      snackbarKey.currentState?.showSnackBar(snackBar);
+    });
+
     TravelTrackFileHandler travelTrackFileHandler = TravelTrackFileHandler();
     _travelTrackMap.addAll(await travelTrackFileHandler.readAll());
     _isInitialized = true;
+    snackBar = SnackBar(content: Text("Your travel tracks are loaded!"));
+    snackbarKey.currentState?.showSnackBar(snackBar);
     notifyListeners();
   }
 

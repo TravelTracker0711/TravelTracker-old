@@ -34,6 +34,7 @@ class _TravelTrackTimelineState extends State<TravelTrackTimeline> {
   @override
   Widget build(BuildContext context) {
     mapViewController = context.watch<MapViewController>();
+    debugPrint('isFollowingUser: ${mapViewController.isFollowingUser}');
     return SizedBox(
       width: 88,
       child: Stack(
@@ -59,11 +60,11 @@ class _TravelTrackTimelineState extends State<TravelTrackTimeline> {
                 },
                 icon: mapViewController.isFollowingUser
                     ? const Icon(
-                        Icons.gps_not_fixed,
+                        Icons.gps_fixed,
                         color: Colors.white,
                       )
                     : const Icon(
-                        Icons.gps_fixed,
+                        Icons.gps_not_fixed,
                         color: Colors.white,
                       ),
               ),
