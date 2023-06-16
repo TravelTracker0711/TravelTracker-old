@@ -1,12 +1,12 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:gpx/gpx.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_data.dart';
-import 'package:latlong2/latlong.dart' as latlong;
+import 'package:latlong2/latlong.dart' as latlng;
 import 'package:travel_tracker/features/travel_track/data_model/travel_config.dart';
 import 'package:travel_tracker/utils/datetime.dart';
 
 class WptExt extends TravelData {
-  final latlong.LatLng latLng;
+  final latlng.LatLng latLng;
   final double? elevation;
   final DateTime? time;
   // TODO: add these, reference position.dart in geolocator package
@@ -22,10 +22,10 @@ class WptExt extends TravelData {
 
   WptExt({
     TravelConfig? config,
-    required latlong.LatLng latLng,
+    required latlng.LatLng latLng,
     this.elevation,
     this.time,
-  })  : latLng = latlong.LatLng(
+  })  : latLng = latlng.LatLng(
           latLng.latitude,
           latLng.longitude,
         ),
@@ -49,7 +49,7 @@ class WptExt extends TravelData {
   }
 
   WptExt.clone(WptExt other)
-      : latLng = latlong.LatLng(
+      : latLng = latlng.LatLng(
           other.latLng.latitude,
           other.latLng.longitude,
         ),
@@ -58,7 +58,7 @@ class WptExt extends TravelData {
         super.clone(other);
 
   static WptExt fromLatLng({
-    required latlong.LatLng latLngs,
+    required latlng.LatLng latLngs,
   }) {
     return WptExt(
       latLng: latLngs,
@@ -69,7 +69,7 @@ class WptExt extends TravelData {
     required Position position,
   }) {
     return WptExt(
-      latLng: latlong.LatLng(
+      latLng: latlng.LatLng(
         position.latitude,
         position.longitude,
       ),
@@ -87,7 +87,7 @@ class WptExt extends TravelData {
         continue;
       }
       wptExts.add(WptExt(
-        latLng: latlong.LatLng(
+        latLng: latlng.LatLng(
           wpt.lat!,
           wpt.lon!,
         ),
@@ -107,7 +107,7 @@ class WptExt extends TravelData {
         continue;
       }
       trkpts.add(WptExt(
-        latLng: latlong.LatLng(
+        latLng: latlng.LatLng(
           wpt.lat!,
           wpt.lon!,
         ),

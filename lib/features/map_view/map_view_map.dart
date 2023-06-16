@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_animations/flutter_map_animations.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:latlong2/latlong.dart' as latlng;
 import 'package:provider/provider.dart';
@@ -18,8 +19,8 @@ class MapViewMap extends StatefulWidget {
   State<MapViewMap> createState() => _MapViewMapState();
 }
 
-class _MapViewMapState extends State<MapViewMap> {
-  final MapController mapController = MapController();
+class _MapViewMapState extends State<MapViewMap> with TickerProviderStateMixin {
+  late final AnimatedMapController animatedMapController;
   final ValueNotifier<double> mapRotationNotifier = ValueNotifier<double>(0.0);
 
   MapOptions _getMapOptions() {
@@ -31,7 +32,7 @@ class _MapViewMapState extends State<MapViewMap> {
       maxZoom: 18,
       onPositionChanged: (position, hasGesture) {
         setState(() {
-          mapRotationNotifier.value = mapController.rotation;
+          mapRotationNotifier.value = animatedMapController.rotation;
         });
       },
       interactiveFlags: InteractiveFlag.all & ~InteractiveFlag.rotate,
@@ -53,7 +54,23 @@ class _MapViewMapState extends State<MapViewMap> {
   @override
   void initState() {
     super.initState();
-    context.read<MapViewController>().mapController = mapController;
+    MapViewController mapViewController = context.read<MapViewController>();
+    animatedMapController = AnimatedMapController(
+      vsync: this,
+      curve: Curves.linear,
+      duration: const Duration(milliseconds: 500),
+    );
+    mapViewController.animateMapController = animatedMapController;
+    animatedMapController.mapEventStream.listen((MapEvent mapEvent) {
+      if (mapEvent is MapEventMoveStart &&
+          mapViewController.followOnLocationUpdateNotifier.value ==
+              FollowOnLocationUpdate.always) {
+        setState(() {
+          mapViewController.followOnLocationUpdateNotifier.value =
+              FollowOnLocationUpdate.never;
+        });
+      }
+    });
   }
 
   @override
@@ -69,24 +86,29 @@ class _MapViewMapState extends State<MapViewMap> {
     );
     layers.addAll(travelTrackLayerBuilder.build(visibleTravelTracks));
 
-    return FlutterMap(
-      mapController: mapController,
-      options: _getMapOptions(),
-      // ignore: sort_child_properties_last
-      children: layers,
-      // nonRotatedChildren: <Widget>[
-      //   RichAttributionWidget(
-      //     attributions: [
-      //       TextSourceAttribution(
-      //         'OpenStreetMap contributors',
-      //         onTap: () => launchUrl(
-      //           Uri.parse('https://openstreetmap.org/copyright'),
-      //           mode: LaunchMode.externalApplication,
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      // ],
+    return ValueListenableBuilder(
+      valueListenable: mapViewController.followOnLocationUpdateNotifier,
+      builder: (context, followOnLocationUpdate, child) {
+        return FlutterMap(
+          mapController: animatedMapController,
+          options: _getMapOptions(),
+          // ignore: sort_child_properties_last
+          children: layers,
+          // nonRotatedChildren: <Widget>[
+          //   RichAttributionWidget(
+          //     attributions: [
+          //       TextSourceAttribution(
+          //         'OpenStreetMap contributors',
+          //         onTap: () => launchUrl(
+          //           Uri.parse('https://openstreetmap.org/copyright'),
+          //           mode: LaunchMode.externalApplication,
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ],
+        );
+      },
     );
   }
 }

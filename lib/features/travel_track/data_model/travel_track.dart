@@ -17,6 +17,7 @@ class TravelTrack extends TravelData with ChangeNotifier {
   final Map<String, AssetExt> _assetExtMap = <String, AssetExt>{};
   List<List<String>> _assetExtIdGroups = <List<String>>[];
   final List<String> _gpxFileFullPaths = <String>[];
+  final DateTime _createDateTime;
   bool isSelected = false;
   bool isVisible = true;
 
@@ -31,8 +32,9 @@ class TravelTrack extends TravelData with ChangeNotifier {
 
   List<List<String>> get assetExtIdGroups =>
       List<List<String>>.unmodifiable(_assetExtIdGroups);
-  DateTime? get startTime => getTrksegExtsStartTime(_trksegExts);
-  DateTime? get endTime => getTrksegExtsEndTime(_trksegExts);
+  DateTime get startTime =>
+      getTrksegExtsStartTime(_trksegExts) ?? _createDateTime;
+  DateTime get endTime => getTrksegExtsEndTime(_trksegExts) ?? _createDateTime;
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = super.toJson();
@@ -41,6 +43,7 @@ class TravelTrack extends TravelData with ChangeNotifier {
       'trksegExts': _trksegExts.map((e) => e.toJson()).toList(),
       'assetExts': assetExts.map((e) => e.toJson()).toList(),
       'gpxFileFullPaths': _gpxFileFullPaths,
+      'createDateTime': _createDateTime.toIso8601String(),
     });
     return json;
   }
@@ -93,7 +96,7 @@ class TravelTrack extends TravelData with ChangeNotifier {
 
   TravelTrack({
     TravelConfig? config,
-  }) : super(
+  }) : this._(
           config: config,
         );
 
@@ -104,7 +107,9 @@ class TravelTrack extends TravelData with ChangeNotifier {
     List<TrksegExt>? trksegExts,
     Map<String, AssetExt>? assetExts,
     List<String>? gpxFileFullPaths,
-  }) : super(
+    DateTime? createDateTime,
+  })  : _createDateTime = createDateTime ?? DateTime.now(),
+        super(
           id: id,
           config: config,
         ) {

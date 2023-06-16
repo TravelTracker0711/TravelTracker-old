@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:travel_tracker/features/stats_view/stats_list.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_list_view_options.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
@@ -93,10 +94,11 @@ class _TravelTrackListViewState extends State<TravelTrackListView> {
               travelTrack,
             );
           },
-          body: ListView(
-            shrinkWrap: true,
-            children: _buildTrksegExtListTiles(context, travelTrack),
-          ),
+          body: StatsList(travelTrack: travelTrack),
+          // body: ListView(
+          //   shrinkWrap: true,
+          //   children: _buildTrksegExtListTiles(context, travelTrack),
+          // ),
           canTapOnHeader: true,
           isExpanded:
               widget.options.isTravelTrackExpandedMap[travelTrack.id] ?? false,

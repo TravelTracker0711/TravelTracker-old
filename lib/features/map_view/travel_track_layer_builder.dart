@@ -28,12 +28,12 @@ class TravelTrackLayerBuilder {
     for (TravelTrack travelTrack in travelTracks) {
       layers.addAll(buildPolylineLayersByTravelTrack(travelTrack));
       travelTrack.clearAssetExtIdGroupsAsync();
-      layers.add(buildMarkerClusterLayerByAssetExts(travelTrack.assetExts,
-          travelTrack: travelTrack));
+      // layers.add(buildMarkerClusterLayerByAssetExts(travelTrack.assetExts,
+      //     travelTrack: travelTrack));
     }
-    // if (_controller.isShowingAsset) {
-    //   layers.add(buildMarkerClusterLayerByTravelTracks(travelTracks));
-    // }
+    if (_controller.isShowingAsset) {
+      layers.add(buildMarkerClusterLayerByTravelTracks(travelTracks));
+    }
     return layers;
   }
 

@@ -28,10 +28,6 @@ class HomePageBottomNavigationBar extends StatelessWidget {
           icon: Icon(Icons.calendar_month),
           label: 'Calendar',
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.bar_chart),
-          label: 'Stats',
-        ),
       ],
       onTap: (int index) {
         onPageTap(index);

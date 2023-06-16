@@ -44,6 +44,7 @@ dependencies:
       ref: upgrade_flutter_map_v4
   latlong2: ^0.8.1
   timeline_tile: ^2.0.0
+  flutter_map_animations: ^0.3.0
 
   geolocator: ^9.0.2
   url_launcher: ^6.1.11

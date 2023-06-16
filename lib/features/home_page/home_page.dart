@@ -6,7 +6,6 @@ import 'package:travel_tracker/features/map_view/map_view_controller.dart';
 import 'package:travel_tracker/features/map_view/map_view_floating_action_button.dart';
 import 'package:travel_tracker/features/map_view/map_view_page.dart';
 import 'package:travel_tracker/features/calendar_view/calendar_view_page.dart';
-import 'package:travel_tracker/features/stats_view/stats_view_page.dart';
 import 'package:travel_tracker/features/timeline_view/timeline_view.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_list_view.dart';
 import 'package:travel_tracker/features/home_page/home_page_bottom_navigation_bar.dart';
@@ -46,7 +45,6 @@ class _HomePageState extends State<HomePage> {
       ),
       const GalleryViewPage(),
       const CalendarViewPage(),
-      const StatsViewPage(),
     ];
 
     _appBars = <PreferredSizeWidget>[
@@ -56,14 +54,12 @@ class _HomePageState extends State<HomePage> {
       ),
       AppBar(title: const Text('Gallery')),
       AppBar(title: const Text('Calendar')),
-      AppBar(title: const Text('Stats')),
     ];
 
     _floatingActionButtons = <Widget>[
       MapViewFloatingActionButton(
         controller: mapViewController,
       ),
-      const SizedBox.shrink(),
       const SizedBox.shrink(),
       const SizedBox.shrink(),
     ];

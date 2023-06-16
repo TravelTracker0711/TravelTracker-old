@@ -1,28 +1,38 @@
+import 'package:latlong2/latlong.dart' as latlng;
 import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
+import 'package:travel_tracker/features/travel_track/data_model/trkseg_ext.dart';
+import 'package:travel_tracker/features/travel_track/data_model/wpt_ext.dart';
 
 class TravelTrackStatsHandler {
-  // TODO: cal totalDistance
-  double getTotalDistance(TravelTrack travelTrack) {
-    return 0.0;
+  double getTotalTrksegDistance(TravelTrack travelTrack) {
+    double totalDistance = 0.0;
+    List<WptExt> trkpts = [];
+    for (TrksegExt trksegExt in travelTrack.trksegExts) {
+      trkpts.addAll(trksegExt.trkpts);
+    }
+    const latlng.Distance distance = latlng.Distance();
+
+    for (int i = 0; i < trkpts.length - 1; ++i) {
+      totalDistance += distance(trkpts[i].latLng, trkpts[i + 1].latLng);
+    }
+    return totalDistance;
   }
 
-  // TODO: cal totalDuration
-  double getTotalDuration(TravelTrack travelTrack) {
-    return 0.0;
+  double getTotalTrksegExtDuration(TravelTrack travelTrack) {
+    double totalDuration = 0.0;
+    for (TrksegExt trksegExt in travelTrack.trksegExts) {
+      totalDuration +=
+          trksegExt.endTime?.difference(trksegExt.startTime!).inSeconds ?? 0.0;
+    }
+    return totalDuration;
   }
 
-  // TODO: cal averageSpeed
   double getAverageSpeed(TravelTrack travelTrack) {
-    return 0.0;
-  }
-
-  // TODO: get startTime
-  DateTime getStartTime(TravelTrack travelTrack) {
-    return DateTime.now();
-  }
-
-  // TODO: get endTime
-  DateTime getEndTime(TravelTrack travelTrack) {
-    return DateTime.now();
+    double averageSpeed = getTotalTrksegDistance(travelTrack) /
+        getTotalTrksegExtDuration(travelTrack);
+    if (averageSpeed.isNaN) {
+      averageSpeed = 0.0;
+    }
+    return averageSpeed;
   }
 }
