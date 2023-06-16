@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:travel_tracker/features/asset/asset_ext_thumbnail_button.dart';
 import 'package:travel_tracker/features/asset/data_model/asset_ext.dart';
+import 'package:travel_tracker/features/gallery_view/gallery_view_photo.dart';
 import 'package:travel_tracker/features/map_view/map_view_controller.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
 import 'package:travel_tracker/features/travel_track/data_model/trkseg_ext.dart';
@@ -94,7 +95,8 @@ class _TravelTrackTimelineState extends State<TravelTrackTimeline> {
       }
       lastTrksegId = assetExts[assetIndex].attachedTrksegExtId;
 
-      timelineTiles.add(_buildAssetExtTimelineTile(assetExts[assetIndex]));
+      timelineTiles.add(_buildAssetExtTimelineTile(
+          assetExts[assetIndex], assetExts, assetIndex));
     }
     // for (List<String> assetExtIds in travelTrack.assetExtIdGroups) {
     //   List<AssetExt> assetExts = travelTrack.getAssetExtsByIds(assetExtIds);
@@ -144,7 +146,8 @@ class _TravelTrackTimelineState extends State<TravelTrackTimeline> {
     );
   }
 
-  Widget _buildAssetExtTimelineTile(AssetExt assetExt) {
+  Widget _buildAssetExtTimelineTile(
+      AssetExt assetExt, List<AssetExt> assetExts, int index) {
     return TimelineTile(
       alignment: TimelineAlign.center,
       beforeLineStyle: const LineStyle(
@@ -156,7 +159,21 @@ class _TravelTrackTimelineState extends State<TravelTrackTimeline> {
         color: Colors.blue,
         indicator: AssetExtThumbnailButton(
           displayedAssetExt: assetExt,
-          onTap: () {},
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => Scaffold(
+                  appBar: AppBar(),
+                  body: GalleryViewPhoto(
+                    assetExts: assetExts.reversed.toList(),
+                    initialIndex: assetExts.length - 1 - index,
+                    thumbnailHeight: 64.0,
+                    thumbnailWidth: 48.0,
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
