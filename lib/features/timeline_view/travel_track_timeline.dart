@@ -1,27 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:travel_tracker/features/asset/asset_ext_thumbnail_button.dart';
 import 'package:travel_tracker/features/asset/data_model/asset_ext.dart';
+import 'package:travel_tracker/features/map_view/map_view_controller.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
 import 'package:travel_tracker/features/travel_track/data_model/trkseg_ext.dart';
 
-class TravelTrackTimelineBuilder {
-  final ScrollController scrollController;
-
-  TravelTrackTimelineBuilder({
+class TravelTrackTimeline extends StatefulWidget {
+  TravelTrackTimeline({
+    super.key,
     required this.scrollController,
+    required this.maxHeight,
+    required this.travelTrack,
   });
 
-  Widget build(TravelTrack travelTrack, {required double maxHeight}) {
+  final ScrollController scrollController;
+  final double maxHeight;
+  final TravelTrack travelTrack;
+
+  @override
+  State<TravelTrackTimeline> createState() => _TravelTrackTimelineState();
+}
+
+class _TravelTrackTimelineState extends State<TravelTrackTimeline> {
+  late MapViewController mapViewController;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    mapViewController = context.watch<MapViewController>();
     return SizedBox(
       width: 88,
       child: Stack(
         children: [
           ListView(
-            controller: scrollController,
+            controller: widget.scrollController,
             children: _buildTimelineTiles(
-              travelTrack,
-              maxHeight: maxHeight,
+              widget.travelTrack,
+              maxHeight: widget.maxHeight,
             ),
           ),
           Align(
@@ -33,11 +54,18 @@ class TravelTrackTimelineBuilder {
                 shape: BoxShape.circle,
               ),
               child: IconButton(
-                icon: const Icon(
-                  Icons.gps_fixed,
-                  color: Colors.white,
-                ),
-                onPressed: () {},
+                onPressed: () {
+                  mapViewController.followUser();
+                },
+                icon: mapViewController.isFollowingUser
+                    ? const Icon(
+                        Icons.gps_not_fixed,
+                        color: Colors.white,
+                      )
+                    : const Icon(
+                        Icons.gps_fixed,
+                        color: Colors.white,
+                      ),
               ),
             ),
           ),

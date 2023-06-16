@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:travel_tracker/features/timeline_view/travel_track_timeline_builder.dart';
+import 'package:travel_tracker/features/map_view/map_view_controller.dart';
+import 'package:travel_tracker/features/timeline_view/travel_track_timeline.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
 
 class TimelineView extends StatefulWidget {
   const TimelineView({
     super.key,
+    required this.mapViewController,
     // required this.controller,
   });
 
+  final MapViewController mapViewController;
   // final TimelineViewController controller;
 
   @override
@@ -35,26 +38,22 @@ class _TimelineViewState extends State<TimelineView> {
     if (activeTravelTrack == null) {
       return const SizedBox.shrink();
     } else {
-      return ChangeNotifierProvider<TravelTrack>.value(
-        value: activeTravelTrack,
-        child: Consumer<TravelTrack>(
-          builder: (context, travelTrack, child) {
-            return LayoutBuilder(
-              builder: (context, constraints) {
-                return _buildTimeline(travelTrack,
-                    maxHeight: constraints.maxHeight);
-              },
-            );
-          },
-        ),
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          return _buildTimeline(
+            activeTravelTrack,
+            maxHeight: constraints.maxHeight,
+          );
+        },
       );
     }
   }
 
   Widget _buildTimeline(TravelTrack travelTrack, {required double maxHeight}) {
-    TravelTrackTimelineBuilder travelTrackTimelineTileBuilder =
-        TravelTrackTimelineBuilder(scrollController: _scrollController);
-    return travelTrackTimelineTileBuilder.build(travelTrack,
-        maxHeight: maxHeight);
+    return TravelTrackTimeline(
+      scrollController: _scrollController,
+      maxHeight: maxHeight,
+      travelTrack: travelTrack,
+    );
   }
 }

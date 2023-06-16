@@ -15,13 +15,15 @@ class MapViewController with ChangeNotifier {
   AnimatedMapController? animateMapController;
   final ValueNotifier<FollowOnLocationUpdate> followOnLocationUpdateNotifier =
       ValueNotifier<FollowOnLocationUpdate>(FollowOnLocationUpdate.always);
-  MapViewMode _mode = MapViewMode.partialTrack;
+  MapViewMode _mode = MapViewMode.normal;
   double? _partialTrackMiddlePercentage;
   bool _isShowingAsset = false;
 
   MapViewMode get mode => _mode;
   double? get partialTrackMiddlePercentage => _partialTrackMiddlePercentage;
   bool get isShowingAsset => _isShowingAsset;
+  bool get isFollowingUser =>
+      followOnLocationUpdateNotifier.value == FollowOnLocationUpdate.always;
 
   set partialTrackMiddlePercentage(double? percentage) {
     _partialTrackMiddlePercentage = percentage;

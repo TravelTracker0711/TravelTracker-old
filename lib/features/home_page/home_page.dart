@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:travel_tracker/features/gallery_view/gallery_view_page.dart';
 import 'package:travel_tracker/features/home_page/home_page_floating_action_button.dart';
 import 'package:travel_tracker/features/map_view/map_view_app_bar.dart';
@@ -67,6 +68,17 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<MapViewController>.value(
+          value: mapViewController,
+        ),
+      ],
+      child: _buildScaffold(),
+    );
+  }
+
+  Widget _buildScaffold() {
     return Scaffold(
       appBar: _appBars.elementAt(_selectedPageIndex),
       body: Row(
@@ -77,7 +89,9 @@ class _HomePageState extends State<HomePage> {
               children: _bodyPages,
             ),
           ),
-          TimelineView(),
+          TimelineView(
+            mapViewController: mapViewController,
+          ),
         ],
       ),
       // bottomNavigationBar: _buildBottomAppBar(),

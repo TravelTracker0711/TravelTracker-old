@@ -64,6 +64,7 @@ class TravelTrackLayerBuilder {
     for (WptExt trkpt in trkpts) {
       points.add(latlng.LatLng(trkpt.lat, trkpt.lon));
     }
+    debugPrint('points.length: ${points.length}');
     PolylineLayer polylineLayer = PolylineLayer(
       polylines: <Polyline>[
         Polyline(

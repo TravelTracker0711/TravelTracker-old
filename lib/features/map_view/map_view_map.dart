@@ -22,11 +22,13 @@ class MapViewMap extends StatefulWidget {
 class _MapViewMapState extends State<MapViewMap> with TickerProviderStateMixin {
   late final AnimatedMapController animatedMapController;
   final ValueNotifier<double> mapRotationNotifier = ValueNotifier<double>(0.0);
+  late final VoidCallback _followOnLocationUpdateListener;
+  late MapViewController mapViewController;
 
   MapOptions _getMapOptions() {
     return MapOptions(
       center: latlng.LatLng(24, 121),
-      zoom: 8.2,
+      zoom: 15,
       rotation: mapRotationNotifier.value,
       minZoom: 3,
       maxZoom: 18,
@@ -39,7 +41,8 @@ class _MapViewMapState extends State<MapViewMap> with TickerProviderStateMixin {
     );
   }
 
-  List<Widget> _getBasicMapLayer() {
+  List<Widget> _getBasicMapLayer(
+      FollowOnLocationUpdate followOnLocationUpdate) {
     return <Widget>[
       TileLayer(
         urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -47,14 +50,16 @@ class _MapViewMapState extends State<MapViewMap> with TickerProviderStateMixin {
         // urlTemplate: 'http://mt0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
         userAgentPackageName: 'com.example.travel_tracker',
       ),
-      CurrentLocationLayer(),
+      CurrentLocationLayer(
+        followOnLocationUpdate: followOnLocationUpdate,
+      ),
     ];
   }
 
   @override
   void initState() {
     super.initState();
-    MapViewController mapViewController = context.read<MapViewController>();
+    mapViewController = context.read<MapViewController>();
     animatedMapController = AnimatedMapController(
       vsync: this,
       curve: Curves.linear,
@@ -71,46 +76,54 @@ class _MapViewMapState extends State<MapViewMap> with TickerProviderStateMixin {
         });
       }
     });
+    _followOnLocationUpdateListener = () => setState(() {});
+    mapViewController.followOnLocationUpdateNotifier
+        .addListener(_followOnLocationUpdateListener);
   }
 
   @override
   Widget build(BuildContext context) {
-    MapViewController mapViewController = context.watch<MapViewController>();
+    mapViewController = context.watch<MapViewController>();
 
-    List<Widget> layers = _getBasicMapLayer();
+    List<Widget> layers = [];
     TravelTrack? activeTravelTrack =
         context.watch<TravelTrackManager>().activeTravelTrack;
     TravelTrackLayerBuilder travelTrackLayerBuilder = TravelTrackLayerBuilder(
       mapRotationNotifier: mapRotationNotifier,
       mapViewController: mapViewController,
     );
+    layers.addAll(_getBasicMapLayer(
+        mapViewController.followOnLocationUpdateNotifier.value));
     if (activeTravelTrack != null) {
-      layers.addAll(travelTrackLayerBuilder.build([activeTravelTrack!]));
+      layers.addAll(travelTrackLayerBuilder.build([activeTravelTrack]));
     }
 
-    return ValueListenableBuilder(
-      valueListenable: mapViewController.followOnLocationUpdateNotifier,
-      builder: (context, followOnLocationUpdate, child) {
-        return FlutterMap(
-          mapController: animatedMapController,
-          options: _getMapOptions(),
-          // ignore: sort_child_properties_last
-          children: layers,
-          // nonRotatedChildren: <Widget>[
-          //   RichAttributionWidget(
-          //     attributions: [
-          //       TextSourceAttribution(
-          //         'OpenStreetMap contributors',
-          //         onTap: () => launchUrl(
-          //           Uri.parse('https://openstreetmap.org/copyright'),
-          //           mode: LaunchMode.externalApplication,
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ],
-        );
-      },
+    return FlutterMap(
+      mapController: animatedMapController,
+      options: _getMapOptions(),
+      // ignore: sort_child_properties_last
+      children: layers,
+      // nonRotatedChildren: <Widget>[
+      //   RichAttributionWidget(
+      //     attributions: [
+      //       TextSourceAttribution(
+      //         'OpenStreetMap contributors',
+      //         onTap: () => launchUrl(
+      //           Uri.parse('https://openstreetmap.org/copyright'),
+      //           mode: LaunchMode.externalApplication,
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // ],
     );
+  }
+
+  @override
+  void dispose() {
+    mapViewController.followOnLocationUpdateNotifier
+        .removeListener(_followOnLocationUpdateListener);
+    animatedMapController.dispose();
+    super.dispose();
   }
 }
