@@ -8,6 +8,7 @@ import 'package:travel_tracker/features/map_view/map_view_floating_action_button
 import 'package:travel_tracker/features/map_view/map_view_page.dart';
 import 'package:travel_tracker/features/calendar_view/calendar_view_page.dart';
 import 'package:travel_tracker/features/timeline_view/timeline_view.dart';
+import 'package:travel_tracker/features/timeline_view/timeline_view_controller.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_list_view.dart';
 import 'package:travel_tracker/features/home_page/home_page_bottom_navigation_bar.dart';
 
@@ -27,6 +28,7 @@ class _HomePageState extends State<HomePage> {
 
   late final TravelTrackListViewOptions _travelTrackListViewOptions;
   late final MapViewController mapViewController;
+  late final TimelineViewController timelineViewController;
   late final List<Widget> _bodyPages;
   late final List<PreferredSizeWidget> _appBars;
   late final List<Widget> _floatingActionButtons;
@@ -38,6 +40,7 @@ class _HomePageState extends State<HomePage> {
       title: widget.title,
     );
     mapViewController = MapViewController();
+    timelineViewController = TimelineViewController();
 
     // TODO: construct appropriate widgets
     _bodyPages = <Widget>[
@@ -91,6 +94,7 @@ class _HomePageState extends State<HomePage> {
           ),
           TimelineView(
             mapViewController: mapViewController,
+            controller: timelineViewController,
           ),
         ],
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_tracker/features/map_view/map_view_controller.dart';
+import 'package:travel_tracker/features/timeline_view/timeline_view_controller.dart';
 import 'package:travel_tracker/features/timeline_view/travel_track_timeline.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
@@ -9,11 +10,11 @@ class TimelineView extends StatefulWidget {
   const TimelineView({
     super.key,
     required this.mapViewController,
-    // required this.controller,
+    required this.controller,
   });
 
   final MapViewController mapViewController;
-  // final TimelineViewController controller;
+  final TimelineViewController controller;
 
   @override
   State<TimelineView> createState() => _TimelineViewState();
@@ -25,10 +26,7 @@ class _TimelineViewState extends State<TimelineView> {
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(() {
-      debugPrint(_scrollController.offset.toString());
-    });
-    // widget.controller._scrollController = _controller;
+    widget.controller.scrollController = _scrollController;
   }
 
   @override
