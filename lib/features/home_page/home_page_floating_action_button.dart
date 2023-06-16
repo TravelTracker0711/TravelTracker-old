@@ -24,8 +24,7 @@ class HomePageFloatingActionButton extends StatelessWidget {
               child: FittedBox(
                 child: FloatingActionButton(
                   onPressed: () {
-                    if (!travelTrackRecorder.isRecording ||
-                        travelTrackRecorder.isPaused) {
+                    if (!travelTrackRecorder.isRecording) {
                       travelTrackRecorder.startRecording();
                       return;
                     } else {
@@ -33,15 +32,14 @@ class HomePageFloatingActionButton extends StatelessWidget {
                       return;
                     }
                   },
-                  child: !travelTrackRecorder.isRecording ||
-                          travelTrackRecorder.isPaused
+                  child: !travelTrackRecorder.isRecording
                       ? const Icon(Icons.play_arrow)
                       : const Icon(Icons.pause),
                 ),
               ),
             ),
           ),
-          if (travelTrackRecorder.isRecording)
+          if (travelTrackRecorder.isActivated)
             Align(
               alignment: Alignment.bottomLeft,
               child: FloatingActionButton(

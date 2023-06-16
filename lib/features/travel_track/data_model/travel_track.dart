@@ -51,7 +51,8 @@ class TravelTrack extends TravelData with ChangeNotifier {
 
     List<Wpt> wpts = [];
     for (WptExt ext in _wptExts) {
-      Wpt wpt = Wpt(lat: ext.lat, lon: ext.lon, ele: ext.ele, time: ext.time);
+      Wpt wpt =
+          Wpt(lat: ext.lat, lon: ext.lon, ele: ext.elevation, time: ext.time);
       wpts.add(wpt);
     }
     gpx.wpts = wpts;
@@ -63,7 +64,7 @@ class TravelTrack extends TravelData with ChangeNotifier {
         Wpt wpt = Wpt(
             lat: wptext.lat,
             lon: wptext.lon,
-            ele: wptext.ele,
+            ele: wptext.elevation,
             time: wptext.time);
         wpts.add(wpt);
       }
@@ -247,6 +248,30 @@ class TravelTrack extends TravelData with ChangeNotifier {
           'assetExtMap must contain all assetExtIds');
       return _assetExtMap[a.first]!.compareTo(_assetExtMap[b.first]!);
     });
+    notifyListeners();
+  }
+
+  void addTrkseg() {
+    _trksegExts.add(
+      TrksegExt(
+        config: TravelConfig(
+          namePlaceholder: "New Track Segment",
+        ),
+      ),
+    );
+    notifyListeners();
+  }
+
+  void addWptExt(WptExt wptExt) {
+    _wptExts.add(wptExt);
+    notifyListeners();
+  }
+
+  void addTrkpt(WptExt wptExt) {
+    if (_trksegExts.isEmpty) {
+      addTrkseg();
+    }
+    _trksegExts.last.addTrkpt(wptExt);
     notifyListeners();
   }
 

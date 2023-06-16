@@ -54,9 +54,9 @@ class MyApp extends StatelessWidget {
           routerConfig: _router,
           title: 'Travel Tracker',
           theme: ThemeData(
-            primarySwatch: travelTrackRecorder.isPaused
+            primarySwatch: travelTrackRecorder.isRecording
                 ? Colors.yellow
-                : travelTrackRecorder.isRecording
+                : travelTrackRecorder.isActivated
                     ? Colors.green
                     : Colors.blue,
             splashFactory: InkRipple.splashFactory,

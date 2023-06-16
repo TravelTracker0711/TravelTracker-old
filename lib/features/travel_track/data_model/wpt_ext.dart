@@ -1,3 +1,4 @@
+import 'package:geolocator/geolocator.dart';
 import 'package:gpx/gpx.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_data.dart';
 import 'package:latlong2/latlong.dart' as latlong;
@@ -6,16 +7,23 @@ import 'package:travel_tracker/utils/datetime.dart';
 
 class WptExt extends TravelData {
   final latlong.LatLng latLng;
-  final double? ele;
+  final double? elevation;
   final DateTime? time;
+  // TODO: add these, reference position.dart in geolocator package
+  // final double? accuracy;
+  // final double? heading;
+  // final double? speed;
+  // final double? speedAccuracy;
+  // final int? floor;
 
   double get lat => latLng.latitude;
   double get lon => latLng.longitude;
+  double? get ele => elevation;
 
   WptExt({
     TravelConfig? config,
     required latlong.LatLng latLng,
-    this.ele,
+    this.elevation,
     this.time,
   })  : latLng = latlong.LatLng(
           latLng.latitude,
@@ -29,7 +37,7 @@ class WptExt extends TravelData {
     String? id,
     TravelConfig? config,
     required this.latLng,
-    this.ele,
+    this.elevation,
     this.time,
   }) : super(
           id: id,
@@ -45,7 +53,7 @@ class WptExt extends TravelData {
           other.latLng.latitude,
           other.latLng.longitude,
         ),
-        ele = other.ele,
+        elevation = other.ele,
         time = other.time,
         super.clone(other);
 
@@ -54,6 +62,19 @@ class WptExt extends TravelData {
   }) {
     return WptExt(
       latLng: latLngs,
+    );
+  }
+
+  static WptExt fromPosition({
+    required Position position,
+  }) {
+    return WptExt(
+      latLng: latlong.LatLng(
+        position.latitude,
+        position.longitude,
+      ),
+      elevation: position.altitude,
+      time: position.timestamp,
     );
   }
 
@@ -70,7 +91,7 @@ class WptExt extends TravelData {
           wpt.lat!,
           wpt.lon!,
         ),
-        ele: wpt.ele,
+        elevation: wpt.ele,
         time: wpt.time,
       ));
     }
@@ -90,7 +111,7 @@ class WptExt extends TravelData {
           wpt.lat!,
           wpt.lon!,
         ),
-        ele: wpt.ele,
+        elevation: wpt.ele,
         time: wpt.time,
       ));
     }

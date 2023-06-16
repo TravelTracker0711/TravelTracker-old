@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:travel_tracker/features/travel_track/data_model/wpt_ext.dart';
 
 class GpsProvider with ChangeNotifier {
   bool _isInitializing = false;
@@ -15,7 +16,11 @@ class GpsProvider with ChangeNotifier {
   StreamSubscription<Position>? _positionStream;
 
   Position? _position;
+  WptExt? _wptExt;
   Position? get position => _position;
+  WptExt? get wptExt {
+    return _wptExt;
+  }
 
   static GpsProvider get I {
     GpsProvider instance = GetIt.I<GpsProvider>();
@@ -53,6 +58,9 @@ class GpsProvider with ChangeNotifier {
           Geolocator.getPositionStream(locationSettings: locationSettings)
               .listen((Position? pos) {
         _position = pos;
+        if (pos != null) {
+          _wptExt = WptExt.fromPosition(position: pos);
+        }
         debugPrint(pos.toString());
         notifyListeners();
       });

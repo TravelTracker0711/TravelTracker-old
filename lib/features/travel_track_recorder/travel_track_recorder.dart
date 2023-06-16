@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_config.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
+import 'package:travel_tracker/features/travel_track_recorder/gps_provider.dart';
 
 class TravelTrackRecorder with ChangeNotifier {
   // ignore: non_constant_identifier_names
@@ -11,11 +12,12 @@ class TravelTrackRecorder with ChangeNotifier {
     return instance;
   }
 
+  bool _isActivated = false;
   bool _isRecording = false;
-  bool _isPaused = false;
+  VoidCallback? _gpsListener;
 
+  bool get isActivated => _isActivated;
   bool get isRecording => _isRecording;
-  bool get isPaused => _isPaused;
 
   void startRecording() {
     TravelTrack? travelTrack = TravelTrackManager.I.activeTravelTrack;
@@ -26,19 +28,34 @@ class TravelTrackRecorder with ChangeNotifier {
       TravelTrackManager.I.addTravelTrackAsync(travelTrack);
       TravelTrackManager.I.setActiveTravelTrackId(travelTrack.id);
     }
-    _isPaused = false;
+    travelTrack.addTrkseg();
+    _gpsListener = () {
+      if (GpsProvider.I.wptExt != null) {
+        travelTrack?.addTrkpt(GpsProvider.I.wptExt!);
+      }
+    };
+    GpsProvider.I.addListener(_gpsListener!);
+    _isActivated = true;
     _isRecording = true;
     notifyListeners();
   }
 
   void pauseRecording() {
-    _isPaused = true;
+    if (_gpsListener != null) {
+      GpsProvider.I.removeListener(_gpsListener!);
+      _gpsListener = null;
+    }
+    _isRecording = false;
     notifyListeners();
   }
 
   void stopRecording() {
+    if (_gpsListener != null) {
+      GpsProvider.I.removeListener(_gpsListener!);
+      _gpsListener = null;
+    }
+    _isActivated = false;
     _isRecording = false;
-    _isPaused = false;
     TravelTrackManager.I.setActiveTravelTrackId(null);
     notifyListeners();
   }

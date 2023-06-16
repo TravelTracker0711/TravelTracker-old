@@ -35,6 +35,14 @@ class TrksegExt extends TravelData {
     return json;
   }
 
+  TrksegExt({
+    TravelConfig? config,
+    List<WptExt>? trkpts,
+  }) : this._(
+          config: config,
+          trkpts: trkpts,
+        );
+
   TrksegExt._({
     String? id,
     TravelConfig? config,
@@ -78,6 +86,10 @@ class TrksegExt extends TravelData {
       }
     }
     return trksegs;
+  }
+
+  void addTrkpt(WptExt trkpt) {
+    _trkpts.add(trkpt);
   }
 }
 
