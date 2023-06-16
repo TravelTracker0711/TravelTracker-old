@@ -15,6 +15,10 @@ class StatsList extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         ListTile(
+          title: const Text('Total Track Segments'),
+          subtitle: Text('${travelTrack.trksegExts.length}'),
+        ),
+        ListTile(
           title: const Text('Total Distance'),
           subtitle: Text(
               '${(travelTrackStatsHandler.getTotalTrksegDistance(travelTrack) / 1000).toStringAsFixed(2)} kilometers'),

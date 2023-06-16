@@ -1,8 +1,9 @@
+import 'package:travel_tracker/utils/random.dart';
+
 class TravelConfig {
   late String name;
   String? description;
   final List<String> tags = [];
-  Map<String, int> namePlaceholderCounterMap = {};
 
   TravelConfig({
     String? namePlaceholder,
@@ -13,16 +14,9 @@ class TravelConfig {
     if (name != null) {
       this.name = name;
     } else if (namePlaceholder != null) {
-      if (namePlaceholderCounterMap.containsKey(namePlaceholder)) {
-        namePlaceholderCounterMap[namePlaceholder] =
-            namePlaceholderCounterMap[namePlaceholder]! + 1;
-      } else {
-        namePlaceholderCounterMap[namePlaceholder] = 1;
-      }
-      this.name =
-          '$namePlaceholder ${namePlaceholderCounterMap[namePlaceholder]}';
+      this.name = '$namePlaceholder ${getRandomString(4).toUpperCase()}';
     } else {
-      this.name = 'Unnamed Travel Data';
+      this.name = 'Unnamed Travel Data ${getRandomString(4).toUpperCase()}';
     }
     if (tags != null) {
       this.tags.addAll(tags);
