@@ -235,26 +235,26 @@ class TravelTrack extends TravelData with ChangeNotifier {
     );
   }
 
-  void clearAssetExtIdGroupsAsync() async {
-    await Future.delayed(Duration.zero);
-    _assetExtIdGroups.clear();
-    notifyListeners();
-  }
+  // void clearAssetExtIdGroupsAsync() async {
+  //   await Future.delayed(Duration.zero);
+  //   _assetExtIdGroups.clear();
+  //   notifyListeners();
+  // }
 
-  void addAssetExtIdGroupAsync(List<String> assetExtIds) async {
-    if (assetExtIds.isEmpty) {
-      return;
-    }
-    await Future.delayed(Duration.zero);
-    assetExtIds.sort((a, b) => a.compareTo(b));
-    _assetExtIdGroups.add(assetExtIds);
-    _assetExtIdGroups.sort((a, b) {
-      assert(_assetExtMap[a.first] != null && _assetExtMap[b.first] != null,
-          'assetExtMap must contain all assetExtIds');
-      return _assetExtMap[a.first]!.compareTo(_assetExtMap[b.first]!);
-    });
-    notifyListeners();
-  }
+  // void addAssetExtIdGroupAsync(List<String> assetExtIds) async {
+  //   if (assetExtIds.isEmpty) {
+  //     return;
+  //   }
+  //   await Future.delayed(Duration.zero);
+  //   assetExtIds.sort((a, b) => a.compareTo(b));
+  //   _assetExtIdGroups.add(assetExtIds);
+  //   _assetExtIdGroups.sort((a, b) {
+  //     assert(_assetExtMap[a.first] != null && _assetExtMap[b.first] != null,
+  //         'assetExtMap must contain all assetExtIds');
+  //     return _assetExtMap[a.first]!.compareTo(_assetExtMap[b.first]!);
+  //   });
+  //   notifyListeners();
+  // }
 
   void addTrkseg() {
     _trksegExts.add(
@@ -277,6 +277,7 @@ class TravelTrack extends TravelData with ChangeNotifier {
       addTrkseg();
     }
     _trksegExts.last.addTrkpt(wptExt);
+    debugPrint('addTrkpt: ${wptExt.time}');
     notifyListeners();
   }
 

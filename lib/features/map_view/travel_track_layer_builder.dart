@@ -27,7 +27,7 @@ class TravelTrackLayerBuilder {
     List<Widget> layers = <Widget>[];
     for (TravelTrack travelTrack in travelTracks) {
       layers.addAll(buildPolylineLayersByTravelTrack(travelTrack));
-      travelTrack.clearAssetExtIdGroupsAsync();
+      // travelTrack.clearAssetExtIdGroupsAsync();
       // layers.add(buildMarkerClusterLayerByAssetExts(travelTrack.assetExts,
       //     travelTrack: travelTrack));
     }
@@ -188,8 +188,8 @@ class TravelTrackLayerBuilder {
               assetExts.add(extraMarker.extra!);
             }
           }
-          travelTrack
-              ?.addAssetExtIdGroupAsync(assetExts.map((e) => e.id).toList());
+          // travelTrack
+          //     ?.addAssetExtIdGroupAsync(assetExts.map((e) => e.id).toList());
           return Transform.rotate(
             angle: -mapRotation * math.pi / 180,
             child: AssetExtThumbnailButton(

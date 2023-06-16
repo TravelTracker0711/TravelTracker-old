@@ -8,6 +8,7 @@ class TravelTrackManager with ChangeNotifier {
   String? _activeTravelTrackId;
   bool _isInitializing = false;
   bool _isInitialized = false;
+  VoidCallback? _travelTrackListener;
 
   bool get isInitialized => _isInitialized;
   bool get isAnyTravelTrackSelected => _travelTrackMap.values
@@ -79,6 +80,20 @@ class TravelTrackManager with ChangeNotifier {
   }
 
   void setActiveTravelTrackId(String? travelTrackId) {
+    if (_activeTravelTrackId != null) {
+      if (_travelTrackListener != null) {
+        _travelTrackMap[_activeTravelTrackId]
+            ?.removeListener(_travelTrackListener!);
+      }
+    }
+    if (travelTrackId != null && _travelTrackMap.containsKey(travelTrackId)) {
+      debugPrint('add travelTrackListener');
+      _travelTrackListener = () {
+        debugPrint('run travelTrackListener');
+        notifyListeners();
+      };
+      _travelTrackMap[travelTrackId]!.addListener(_travelTrackListener!);
+    }
     _activeTravelTrackId = travelTrackId;
     notifyListeners();
   }

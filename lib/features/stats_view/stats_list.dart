@@ -11,8 +11,6 @@ class StatsList extends StatelessWidget {
   Widget build(BuildContext context) {
     TravelTrackStatsHandler travelTrackStatsHandler = TravelTrackStatsHandler();
 
-    debugPrint('start time: ${travelTrack.startTime}');
-    debugPrint('end time: ${travelTrack.endTime}');
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[

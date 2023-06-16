@@ -53,6 +53,7 @@ class GpsProvider with ChangeNotifier {
 
   // if permission is true, then start getting the position
   void startRecording(LocationSettings locationSettings) async {
+    debugPrint('startRecording');
     if (await checkPermission() && !_isRecording) {
       _positionStream =
           Geolocator.getPositionStream(locationSettings: locationSettings)

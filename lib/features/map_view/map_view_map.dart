@@ -78,13 +78,15 @@ class _MapViewMapState extends State<MapViewMap> with TickerProviderStateMixin {
     MapViewController mapViewController = context.watch<MapViewController>();
 
     List<Widget> layers = _getBasicMapLayer();
-    List<TravelTrack> visibleTravelTracks =
-        context.watch<TravelTrackManager>().visibleTravelTracks;
+    TravelTrack? activeTravelTrack =
+        context.watch<TravelTrackManager>().activeTravelTrack;
     TravelTrackLayerBuilder travelTrackLayerBuilder = TravelTrackLayerBuilder(
       mapRotationNotifier: mapRotationNotifier,
       mapViewController: mapViewController,
     );
-    layers.addAll(travelTrackLayerBuilder.build(visibleTravelTracks));
+    if (activeTravelTrack != null) {
+      layers.addAll(travelTrackLayerBuilder.build([activeTravelTrack!]));
+    }
 
     return ValueListenableBuilder(
       valueListenable: mapViewController.followOnLocationUpdateNotifier,

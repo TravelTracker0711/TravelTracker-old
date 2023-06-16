@@ -25,7 +25,7 @@ class HomePageFloatingActionButton extends StatelessWidget {
                 child: FloatingActionButton(
                   onPressed: () {
                     if (!travelTrackRecorder.isRecording) {
-                      travelTrackRecorder.startRecording();
+                      travelTrackRecorder.startRecordingAsync();
                       return;
                     } else {
                       travelTrackRecorder.pauseRecording();

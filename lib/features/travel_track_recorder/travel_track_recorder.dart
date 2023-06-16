@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get_it/get_it.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_config.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
@@ -19,22 +20,28 @@ class TravelTrackRecorder with ChangeNotifier {
   bool get isActivated => _isActivated;
   bool get isRecording => _isRecording;
 
-  void startRecording() {
-    TravelTrack? travelTrack = TravelTrackManager.I.activeTravelTrack;
-    if (travelTrack == null) {
-      travelTrack = TravelTrack(
+  Future<void> startRecordingAsync() async {
+    TravelTrack? activeTravelTrack = TravelTrackManager.I.activeTravelTrack;
+    if (activeTravelTrack == null) {
+      activeTravelTrack = TravelTrack(
         config: TravelConfig(namePlaceholder: "New Travel Track"),
       );
-      TravelTrackManager.I.addTravelTrackAsync(travelTrack);
-      TravelTrackManager.I.setActiveTravelTrackId(travelTrack.id);
+      await TravelTrackManager.I.addTravelTrackAsync(activeTravelTrack);
+      TravelTrackManager.I.setActiveTravelTrackId(activeTravelTrack.id);
     }
-    travelTrack.addTrkseg();
+    activeTravelTrack.addTrkseg();
     _gpsListener = () {
       if (GpsProvider.I.wptExt != null) {
-        travelTrack?.addTrkpt(GpsProvider.I.wptExt!);
+        activeTravelTrack?.addTrkpt(GpsProvider.I.wptExt!);
       }
     };
     GpsProvider.I.addListener(_gpsListener!);
+    GpsProvider.I.startRecording(
+      const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 10,
+      ),
+    );
     _isActivated = true;
     _isRecording = true;
     notifyListeners();
@@ -45,17 +52,14 @@ class TravelTrackRecorder with ChangeNotifier {
       GpsProvider.I.removeListener(_gpsListener!);
       _gpsListener = null;
     }
+    GpsProvider.I.stopRecording();
     _isRecording = false;
     notifyListeners();
   }
 
   void stopRecording() {
-    if (_gpsListener != null) {
-      GpsProvider.I.removeListener(_gpsListener!);
-      _gpsListener = null;
-    }
+    pauseRecording();
     _isActivated = false;
-    _isRecording = false;
     TravelTrackManager.I.setActiveTravelTrackId(null);
     notifyListeners();
   }
