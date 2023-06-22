@@ -39,30 +39,36 @@ class MapViewAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Text(title),
       // bottom: appBarBottom,
       actions: <Widget>[
-        PopupMenuButton<PopupAction>(
-          onSelected: (PopupAction result) async {
-            switch (result) {
-              case PopupAction.test1:
-                TravelTrackFileHandler travelTrackFileHandler =
-                    TravelTrackFileHandler();
-                await travelTrackFileHandler.test();
-                break;
-              case PopupAction.addGpxFile:
-                _addGpxFileAsync(context);
-                break;
-            }
+        IconButton(
+          icon: const Icon(Icons.add),
+          onPressed: () {
+            _addGpxFileAsync(context);
           },
-          itemBuilder: (BuildContext context) => <PopupMenuEntry<PopupAction>>[
-            const PopupMenuItem<PopupAction>(
-              value: PopupAction.test1,
-              child: Text('test1'),
-            ),
-            const PopupMenuItem<PopupAction>(
-              value: PopupAction.addGpxFile,
-              child: Text('add GPX file'),
-            ),
-          ],
-        )
+        ),
+        // PopupMenuButton<PopupAction>(
+        //   onSelected: (PopupAction result) async {
+        //     switch (result) {
+        //       case PopupAction.test1:
+        //         TravelTrackFileHandler travelTrackFileHandler =
+        //             TravelTrackFileHandler();
+        //         await travelTrackFileHandler.test();
+        //         break;
+        //       case PopupAction.addGpxFile:
+        //         _addGpxFileAsync(context);
+        //         break;
+        //     }
+        //   },
+        //   itemBuilder: (BuildContext context) => <PopupMenuEntry<PopupAction>>[
+        //     const PopupMenuItem<PopupAction>(
+        //       value: PopupAction.test1,
+        //       child: Text('test1'),
+        //     ),
+        //     const PopupMenuItem<PopupAction>(
+        //       value: PopupAction.addGpxFile,
+        //       child: Text('add GPX file'),
+        //     ),
+        //   ],
+        // )
       ],
     );
   }

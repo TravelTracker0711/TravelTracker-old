@@ -53,11 +53,25 @@ class _TravelTrackListViewState extends State<TravelTrackListView> {
       decoration: const BoxDecoration(
         color: Colors.blue,
       ),
-      child: Text(
-        widget.options.title,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 24,
+      child: Center(
+        child: Column(
+          children: [
+            Text(
+              widget.options.title,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+              ),
+            ),
+            Spacer(),
+            Text(
+              '${travelTracks.length} travel tracks',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
+            ),
+          ],
         ),
       ),
     );
