@@ -81,7 +81,6 @@ class TrksegExtractor {
       partialTrack.add(trkpts[i]);
     }
 
-    debugPrint(partialTrack.length.toString());
     return partialTrack;
   }
 }

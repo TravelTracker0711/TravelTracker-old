@@ -39,7 +39,6 @@ class TravelTrackManager with ChangeNotifier {
   }
 
   Future<void> _initAsync() async {
-    debugPrint("TravelTrackManager._initAsync()");
     SnackBar snackBar =
         SnackBar(content: Text("Loading your travel tracks from storage..."));
     SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -99,9 +98,7 @@ class TravelTrackManager with ChangeNotifier {
       }
     }
     if (travelTrackId != null && _travelTrackMap.containsKey(travelTrackId)) {
-      debugPrint('add travelTrackListener');
       _travelTrackListener = () {
-        debugPrint('run travelTrackListener');
         notifyListeners();
       };
       _travelTrackMap[travelTrackId]!.addListener(_travelTrackListener!);

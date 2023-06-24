@@ -80,7 +80,6 @@ class MapViewController with ChangeNotifier {
     if (followOnLocationUpdateNotifier.value == FollowOnLocationUpdate.always) {
       followOnLocationUpdateNotifier.value = FollowOnLocationUpdate.never;
       notifyListeners();
-      debugPrint('notify!');
     }
   }
 }

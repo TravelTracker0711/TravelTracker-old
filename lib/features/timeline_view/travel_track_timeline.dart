@@ -35,7 +35,6 @@ class _TravelTrackTimelineState extends State<TravelTrackTimeline> {
   @override
   Widget build(BuildContext context) {
     mapViewController = context.watch<MapViewController>();
-    debugPrint('isFollowingUser: ${mapViewController.isFollowingUser}');
     return SizedBox(
       width: 88,
       child: Stack(
@@ -179,7 +178,6 @@ class _TravelTrackTimelineState extends State<TravelTrackTimeline> {
   }
 
   Widget _buildAssetsTimelineTile(List<Asset> assets) {
-    debugPrint('assets.length: ${assets.length}');
     return TimelineTile(
       alignment: TimelineAlign.center,
       beforeLineStyle: const LineStyle(

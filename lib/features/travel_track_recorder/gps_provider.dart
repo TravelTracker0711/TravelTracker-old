@@ -53,8 +53,8 @@ class GpsProvider with ChangeNotifier {
 
   // if permission is true, then start getting the position
   void startRecording(LocationSettings locationSettings) async {
-    debugPrint('startRecording');
     if (await checkPermission() && !_isRecording) {
+      debugPrint('startRecording');
       _positionStream =
           Geolocator.getPositionStream(locationSettings: locationSettings)
               .listen((Position? pos) {
@@ -62,18 +62,17 @@ class GpsProvider with ChangeNotifier {
         if (pos != null) {
           _wpt = WptFactory.fromPosition(position: pos);
         }
-        debugPrint(pos.toString());
         notifyListeners();
       });
       _isRecording = true;
     } else {
       // TODO: do sth if the permission is fucking denied or deniedForever
-      print("Permission denied");
     }
   }
 
   void stopRecording() {
     if (_isRecording) {
+      debugPrint("stopRecording");
       _positionStream?.cancel();
       _positionStream = null;
       _isRecording = false;
@@ -84,10 +83,8 @@ class GpsProvider with ChangeNotifier {
   // swap between stopRecording & startRecording
   void toggleRecording(LocationSettings locationSettings) {
     if (_isRecording) {
-      debugPrint("stopRecording");
       stopRecording();
     } else {
-      debugPrint("startRecording");
       startRecording(locationSettings);
     }
   }

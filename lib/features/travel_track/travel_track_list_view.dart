@@ -206,7 +206,7 @@ class _TravelTrackListViewState extends State<TravelTrackListView> {
           leading: const Icon(Icons.timeline),
           title: Text(trkseg.config.name),
           onTap: () {
-            debugPrint('Unimplemented: focus on trkseg');
+            // TODO: focus on trkseg
           },
         );
       }),

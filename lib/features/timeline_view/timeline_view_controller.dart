@@ -5,8 +5,6 @@ class TimelineViewController {
 
   set scrollController(ScrollController scrollController) {
     _scrollController = scrollController;
-    _scrollController!.addListener(() {
-      debugPrint(_scrollController!.offset.toString());
-    });
+    _scrollController!.addListener(() {});
   }
 }

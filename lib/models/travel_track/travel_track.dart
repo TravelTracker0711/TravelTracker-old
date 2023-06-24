@@ -289,7 +289,6 @@ class TravelTrack with ChangeNotifier {
       addTrkseg();
     }
     _trksegs.last.addTrkpt(wpt);
-    debugPrint('addTrkpt: ${wpt.time}');
     notifyListeners();
   }
 

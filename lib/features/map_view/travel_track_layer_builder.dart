@@ -64,7 +64,6 @@ class TravelTrackLayerBuilder {
     for (Wpt trkpt in trkpts) {
       points.add(latlng.LatLng(trkpt.lat, trkpt.lon));
     }
-    debugPrint('points.length: ${points.length}');
     PolylineLayer polylineLayer = PolylineLayer(
       polylines: <Polyline>[
         Polyline(
@@ -97,9 +96,7 @@ class TravelTrackLayerBuilder {
           ),
           padding: const EdgeInsets.all(0),
           color: Colors.red,
-          onPressed: () {
-            debugPrint('onPressed middlePointMarker');
-          },
+          onPressed: () {},
         );
       },
     );

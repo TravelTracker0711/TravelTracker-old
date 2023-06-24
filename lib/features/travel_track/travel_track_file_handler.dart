@@ -26,17 +26,13 @@ class TravelTrackFileHandler {
 
   Future<String> toDocumentsPath(String fileName) async {
     String fileFullPath = p.join(await _documentsPath, fileName);
-    debugPrint('fileFullPath: $fileFullPath');
     return fileFullPath;
   }
 
   Future<void> test() async {
     String documentsPath = await _documentsPath;
     Directory d = Directory(p.join(documentsPath));
-    debugPrint('d: $d');
-    d.list().forEach((element) {
-      debugPrint('element: $element');
-    });
+    d.list().forEach((element) {});
   }
 
   Future<void> write(TravelTrack travelTrack) async {
@@ -51,11 +47,9 @@ class TravelTrackFileHandler {
 
   // read all travel tracks from storage and return
   Future<Map<String, TravelTrack>> readAll() async {
-    debugPrint('TravelTrackFileHandler.readAll()');
     String documentsPath = await _documentsPath;
     Directory documentsDir = Directory(documentsPath);
     List<FileSystemEntity> travelTrackDirList = documentsDir.listSync();
-    debugPrint('travelTrackDirList: ${travelTrackDirList.length}');
     Map<String, TravelTrack> travelTrackMap = <String, TravelTrack>{};
     for (FileSystemEntity travelTrackDir in travelTrackDirList) {
       if (travelTrackDir is Directory) {
@@ -70,7 +64,6 @@ class TravelTrackFileHandler {
         }
       }
     }
-    debugPrint('travelTrackMap: ${travelTrackMap.length}');
     return travelTrackMap;
   }
 
