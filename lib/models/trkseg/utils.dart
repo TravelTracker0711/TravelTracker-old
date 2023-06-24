@@ -1,6 +1,6 @@
 part of 'trkseg.dart';
 
-extension TrksegListUtil on List<Trkseg> {
+extension TrksegsUtils on List<Trkseg> {
   /// expects a list of trksegs sorted by time
   DateTime? get startTime {
     for (Trkseg trkseg in this) {

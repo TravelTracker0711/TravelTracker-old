@@ -8,7 +8,7 @@ extension WptUtils on Wpt {
   }
 }
 
-extension WptListUtils on List<Wpt> {
+extension WptsUtils on List<Wpt> {
   /// expects a list of wpts sorted by time
   DateTime? get startTime {
     for (Wpt wpt in this) {

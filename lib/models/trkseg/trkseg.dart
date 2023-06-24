@@ -11,6 +11,7 @@ class Trkseg {
   final TravelConfig config;
   final List<Wpt> _trkpts = <Wpt>[];
 
+  /// Guarantee to be sorted by [Wpt.time] in ascending order.
   List<Wpt> get trkpts => List<Wpt>.unmodifiable(_trkpts);
   DateTime? get startTime => _trkpts.startTime;
   DateTime? get endTime => _trkpts.endTime;
