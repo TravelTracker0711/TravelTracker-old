@@ -13,10 +13,16 @@ class TravelConfig {
   }) {
     if (name != null) {
       this.name = name;
-    } else if (namePlaceholder != null) {
-      this.name = '$namePlaceholder ${getRandomString(4).toUpperCase()}';
     } else {
-      this.name = 'Unnamed Travel Data ${getRandomString(4).toUpperCase()}';
+      String randomString = RandomUtils.getRandomString(
+        length: 4,
+        type: RandomType.upperCaseAlphabet.value,
+      );
+      if (namePlaceholder != null) {
+        this.name = '$namePlaceholder $randomString';
+      } else {
+        this.name = 'Unnamed Travel Data $randomString';
+      }
     }
     if (tags != null) {
       this.tags.addAll(tags);
