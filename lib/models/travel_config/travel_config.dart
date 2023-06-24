@@ -1,3 +1,4 @@
+import 'package:photo_manager/photo_manager.dart';
 import 'package:travel_tracker/utils/random.dart';
 import 'package:uuid/uuid.dart';
 

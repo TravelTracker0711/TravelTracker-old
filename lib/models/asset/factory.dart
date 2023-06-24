@@ -1,27 +1,7 @@
 part of 'asset.dart';
 
-class AssetFactory {
-  static Future<Asset> fromJson(Map<String, dynamic> json) async {
-    pm.AssetEntity assetEntity =
-        (await ExternalAssetManager.FI).getAssetEntityByPath(
-      json['fileFullPath'],
-    )!;
-    Asset asset = Asset(
-      config: json['config'] != null
-          ? TravelConfigFactory.fromJson(json['config'])
-          : null,
-      assetEntity: assetEntity,
-      type: _getAssetTypeFromString(json['type']),
-      fileFullPath: json['fileFullPath'],
-      coordinates: json['coordinates'] != null
-          ? WptFactory.fromJson(json['coordinates'])
-          : null,
-      attachedTrksegId: json['attachedTrksegId'],
-    );
-    return asset;
-  }
-
-  static AssetType _getAssetTypeFromString(String typeString) {
+class _AssetTypeFactory {
+  static AssetType fromString(String typeString) {
     if (typeString == AssetType.audio.toString()) {
       return AssetType.audio;
     } else if (typeString == AssetType.video.toString()) {
@@ -35,15 +15,56 @@ class AssetFactory {
     }
   }
 
+  static AssetType fromPhotoManagerType(pm.AssetType type) {
+    if (type == pm.AssetType.audio) {
+      return AssetType.audio;
+    } else if (type == pm.AssetType.video) {
+      return AssetType.video;
+    } else if (type == pm.AssetType.image) {
+      return AssetType.image;
+    } else {
+      return AssetType.unknown;
+    }
+  }
+}
+
+extension StringAssetTypeConversion on String {
+  AssetType toAssetType() {
+    return _AssetTypeFactory.fromString(this);
+  }
+}
+
+extension PhotoManagerAssetTypeConversion on pm.AssetType {
+  AssetType toAssetType() {
+    return _AssetTypeFactory.fromPhotoManagerType(this);
+  }
+}
+
+class AssetFactory {
+  static Future<Asset> fromJson(Map<String, dynamic> json) async {
+    Asset asset = Asset(
+      config: TravelConfigFactory.fromJson(json['config']),
+      file: File(json['fileFullPath']),
+      type: (json['type'] as String).toAssetType(),
+      createdDateTime: DateTime.parse(json['createdDateTime']),
+      coordinates: json['coordinates'] != null
+          ? WptFactory.fromJson(json['coordinates'])
+          : null,
+      attachedTrksegId: json['attachedTrksegId'],
+    );
+    return asset;
+  }
+
   static Future<Asset?> fromAssetEntityAsync({
     required pm.AssetEntity assetEntity,
   }) async {
-    AssetType type = _getAssetType(assetEntity);
+    TravelConfig config = TravelConfigFactory.fromAssetEntity(assetEntity);
+    AssetType type = assetEntity.type.toAssetType();
     File? assetFile = await assetEntity.originFile;
-    String? fileFullPath = assetFile?.path;
-    if (fileFullPath == null) {
+    if (assetFile == null) {
       return null;
     }
+
     Wpt? coordinates;
     latlong.LatLng? latLng;
     latLng = (await assetEntity.latlngAsync()).toLatLong2();
@@ -55,10 +76,12 @@ class AssetFactory {
         latLng: latLng,
       );
     }
+
     return Asset(
-      assetEntity: assetEntity,
+      config: config,
+      file: assetFile,
       type: type,
-      fileFullPath: fileFullPath,
+      createdDateTime: assetEntity.createDateTime,
       coordinates: coordinates,
     );
   }
@@ -79,6 +102,7 @@ class AssetFactory {
     return assets;
   }
 
+  // TODO: refactor fromAssetEntitiesWithTrksegAsync
   static Future<List<Asset>> fromAssetEntitiesWithTrksegAsync({
     required List<pm.AssetEntity> assetEntities,
     required Trkseg trkseg,
@@ -97,7 +121,7 @@ class AssetFactory {
         continue;
       }
       while (trkptIndex < trkpts.length - 1 &&
-          (trkpts[trkptIndex + 1].time!.isBefore(asset.createDateTime))) {
+          (trkpts[trkptIndex + 1].time!.isBefore(asset.createdDateTime))) {
         trkptIndex++;
       }
       latlong.LatLng latLng = latlong.LatLng(
@@ -106,7 +130,7 @@ class AssetFactory {
       );
       if (trkptIndex < trkpts.length - 1) {
         double coordinatesRatio = 0;
-        int assetMilliseconds = asset.createDateTime.millisecondsSinceEpoch;
+        int assetMilliseconds = asset.createdDateTime.millisecondsSinceEpoch;
         int prevTrkptMilliseconds =
             trkpts[trkptIndex].time!.millisecondsSinceEpoch;
         int nextTrkptMilliseconds =

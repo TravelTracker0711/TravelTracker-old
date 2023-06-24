@@ -4,8 +4,9 @@ extension AssetConversion on Asset {
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {
       'config': config.toJson(),
-      'type': type.toString(),
       'fileFullPath': fileFullPath,
+      'type': type.toString(),
+      'createdDateTime': createdDateTime.toIso8601String(),
     };
     if (coordinates != null) {
       json['coordinates'] = coordinates!.toJson();

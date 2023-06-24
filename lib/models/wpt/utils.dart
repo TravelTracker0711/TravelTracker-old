@@ -1,5 +1,13 @@
 part of 'wpt.dart';
 
+extension WptUtils on Wpt {
+  static const latlng.Distance _distance = latlng.Distance();
+  double distanceTo(Wpt other) {
+    double distance = _distance(latLng, other.latLng);
+    return distance;
+  }
+}
+
 extension WptListUtils on List<Wpt> {
   /// expects a list of wpts sorted by time
   DateTime? get startTime {

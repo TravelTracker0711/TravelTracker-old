@@ -1,44 +1,67 @@
-// TODO: Implement AssetFilter
-import 'package:latlong2/latlong.dart' as latlng;
 import 'package:travel_tracker/models/asset/asset.dart';
 import 'package:travel_tracker/models/wpt/wpt.dart';
 
 class AssetFilter {
-  List<Asset> filterByTimeRange(
-      List<Asset> assets, DateTime startTime, DateTime endTime) {
+  List<Asset> filterByTimeRange({
+    required List<Asset> assets,
+    required DateTime startTime,
+    required DateTime endTime,
+  }) {
     return assets
         .where((asset) =>
-            asset.assetEntity.createDateTime.isAfter(startTime) &&
-            asset.assetEntity.createDateTime.isBefore(endTime))
+            asset.createdDateTime.isAfter(startTime) &&
+            asset.createdDateTime.isBefore(endTime))
         .toList();
   }
 
-  List<Asset> filterByType(List<Asset> assets, AssetType type) {
+  List<Asset> filterByType({
+    required List<Asset> assets,
+    required AssetType type,
+  }) {
     return assets.where((asset) => asset.type == type).toList();
   }
 
-  List<Asset> filterByTag(List<Asset> assets, String tag) {
-    return assets.where((asset) => asset.config.tags.contains(tag)).toList();
+  /// must contain all tags
+  List<Asset> filterByTags({
+    required List<Asset> assets,
+    required List<String> tags,
+  }) {
+    return assets.where((asset) {
+      List<String> assetTags = asset.config.tags;
+      for (String tag in tags) {
+        if (!assetTags.contains(tag)) return false;
+      }
+      return true;
+    }).toList();
   }
 
-  List<Asset> filterByLocationInCircle(
-      List<Asset> assets, Wpt center, double radiusMeter) {
+  List<Asset> filterByDistanceToCenter({
+    required List<Asset> assets,
+    required Wpt center,
+    required double radiusInMeter,
+  }) {
     return assets.where((asset) {
       Wpt? assetCoordinates = asset.coordinates;
-      if (assetCoordinates == null) return false;
-      const latlng.Distance distance = latlng.Distance();
-      double dis = distance(center.latLng, assetCoordinates.latLng);
-      if (dis <= radiusMeter) return true;
+      if (assetCoordinates == null) {
+        return false;
+      }
+      double dis = center.distanceTo(assetCoordinates);
+      if (dis <= radiusInMeter) {
+        return true;
+      }
       return false;
     }).toList();
   }
 
-  //filterByLocationInBound
-  List<Asset> filterByLocationInBound(List<Asset> assets, Wpt p1, Wpt p2) {
-    double minLatitude = p1.lat < p2.lat ? p1.lat : p2.lat;
-    double maxLatitude = p1.lat > p2.lat ? p1.lat : p2.lat;
-    double minLongitude = p1.lon < p2.lon ? p1.lon : p2.lon;
-    double maxLongitude = p1.lon > p2.lon ? p1.lon : p2.lon;
+  List<Asset> filterByCoordinatesInBound({
+    required List<Asset> assets,
+    required Wpt corner1,
+    required Wpt corner2,
+  }) {
+    double minLatitude = corner1.lat < corner2.lat ? corner1.lat : corner2.lat;
+    double maxLatitude = corner1.lat > corner2.lat ? corner1.lat : corner2.lat;
+    double minLongitude = corner1.lon < corner2.lon ? corner1.lon : corner2.lon;
+    double maxLongitude = corner1.lon > corner2.lon ? corner1.lon : corner2.lon;
     return assets.where((asset) {
       Wpt? assetCoordinates = asset.coordinates;
       if (assetCoordinates == null) return false;
@@ -51,7 +74,7 @@ class AssetFilter {
     }).toList();
   }
 
-  List<Asset> filterByTrkseg(List<Asset> assets, String trksegId) {
+  List<Asset> filterByTrksegId(List<Asset> assets, String trksegId) {
     return assets.where((asset) => asset.attachedTrksegId == trksegId).toList();
   }
 }
