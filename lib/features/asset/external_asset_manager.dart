@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:travel_tracker/features/permission/permission_manager.dart';
 import 'package:watcher/watcher.dart';
 
 class ExternalAssetManager {
@@ -29,7 +30,7 @@ class ExternalAssetManager {
       return;
     }
     _isInitialized = true;
-    if (!(await _checkPermissionAsync())) {
+    if (!(await PermissionManager.PhotoManagerRequestAsync())) {
       return;
     }
     _isPermissionGranted = true;
@@ -73,11 +74,6 @@ class ExternalAssetManager {
 
   AssetEntity? getAssetEntityByPath(String path) {
     return _allAssetEntitiesMap?[path];
-  }
-
-  Future<bool> _checkPermissionAsync() async {
-    final PermissionState ps = await PhotoManager.requestPermissionExtend();
-    return ps.isAuth;
   }
 
   Future<AssetPathEntity?> _getAllAssetsPathEntityAsync() async {

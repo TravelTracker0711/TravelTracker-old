@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:travel_tracker/features/permission/permission_manager.dart';
 import 'package:travel_tracker/models/travel_track/travel_track.dart';
 
 class TravelTrackFileHandler {
@@ -39,7 +40,7 @@ class TravelTrackFileHandler {
   }
 
   Future<void> write(TravelTrack travelTrack) async {
-    await Permission.manageExternalStorage.request();
+    await PermissionManager.requestAsync(Permission.manageExternalStorage);
     String travelTrackDirPath = await toDocumentsPath(travelTrack.config.name);
     Directory(travelTrackDirPath).createSync(recursive: true);
     _writeTravelTrackFile(
