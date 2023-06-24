@@ -35,6 +35,8 @@ extension AssetTypeConversion on AssetType {
         return Icons.text_fields;
       case AssetType.unknown:
         return Icons.help;
+      case AssetType.unset:
+        return Icons.error;
       default:
         return Icons.error;
     }

@@ -43,9 +43,9 @@ class ExternalAssetManager with ChangeNotifier {
     _isReady = true;
   }
 
-  Future<AssetEntity?> getAssetEntityAsync({
+  AssetEntity? getAssetEntity({
     required String id,
-  }) async {
+  }) {
     AssetEntity? assetEntity = _allAssetEntitiesMap[id];
     return assetEntity;
   }

@@ -50,17 +50,7 @@ class _GalleryViewGridState extends State<GalleryViewGrid> {
       margin: const EdgeInsets.all(0),
       child: InkWell(
         onTap: () => _onTapAsset(asset, index),
-        child: (asset.type != AssetType.image && asset.type != AssetType.video)
-            ? Text(
-                '${asset.fileFullPath}',
-              )
-            : Ink.image(
-                image: AssetEntityImageProvider(
-                  asset.assetEntity,
-                  isOriginal: false,
-                ),
-                fit: BoxFit.cover,
-              ),
+        child: asset.futureThumbnail,
       ),
     );
   }

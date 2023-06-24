@@ -65,17 +65,25 @@ class _GalleryViewPhotoState extends State<GalleryViewPhoto> {
         allowImplicitScrolling: true,
         itemCount: widget.assets.length,
         itemBuilder: (context, index) {
-          // background color black
+          Asset asset = widget.assets[index];
           return FractionallySizedBox(
             widthFactor: 1 / _imagePageController.viewportFraction,
-            child: PhotoView(
-              imageProvider:
-                  AssetEntityImageProvider(widget.assets[index].assetEntity),
-              minScale: PhotoViewComputedScale.contained,
-              scaleStateChangedCallback: (state) {
-                setState(() {
-                  _isPhotoScaled = state != PhotoViewScaleState.initial;
-                });
+            child: FutureBuilder(
+              future: asset.fetchEntityDataAsync(),
+              builder: (context, snapshot) {
+                if (asset.type.hasThumbnail && asset.entity != null) {
+                  return PhotoView(
+                    imageProvider: AssetEntityImageProvider(asset.entity!),
+                    minScale: PhotoViewComputedScale.contained,
+                    scaleStateChangedCallback: (state) {
+                      setState(() {
+                        _isPhotoScaled = state != PhotoViewScaleState.initial;
+                      });
+                    },
+                  );
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
               },
             ),
           );
@@ -116,6 +124,7 @@ class _GalleryViewPhotoState extends State<GalleryViewPhoto> {
           minCacheExtent: _thumbnailViewPortSize * 2,
           itemCount: widget.assets.length,
           itemBuilder: (context, index) {
+            Asset asset = widget.assets[index];
             double heigetFactor = 0.8;
             if (index == _currentIndex) {
               heigetFactor = 1.0;
@@ -129,16 +138,18 @@ class _GalleryViewPhotoState extends State<GalleryViewPhoto> {
                 child: Container(
                   width: widget.thumbnailWidth,
                   margin: const EdgeInsets.symmetric(horizontal: 2.0),
+                  clipBehavior: Clip.hardEdge,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
-                    image: DecorationImage(
-                      image: AssetEntityImageProvider(
-                        widget.assets[index].assetEntity,
-                        isOriginal: false,
-                      ),
-                      fit: BoxFit.cover,
-                    ),
+                    // image: DecorationImage(
+                    //   image: AssetEntityImageProvider(
+                    //     widget.assets[index].assetEntity,
+                    //     isOriginal: false,
+                    //   ),
+                    //   fit: BoxFit.cover,
+                    // ),
                   ),
+                  child: asset.futureThumbnail,
                 ),
               ),
             );

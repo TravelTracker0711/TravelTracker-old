@@ -19,7 +19,8 @@ enum AssetType {
   video,
   audio,
   text,
-  unknown;
+  unknown,
+  unset;
 
   @override
   String toString() {
@@ -34,6 +35,8 @@ enum AssetType {
         return 'AssetType.text';
       case AssetType.unknown:
         return 'AssetType.unknown';
+      case AssetType.unset:
+        return 'AssetType.unset';
       default:
         return 'AssetType.unknown';
     }
@@ -44,52 +47,53 @@ class Asset {
   final TravelConfig config;
   final String? assetEntityId;
   String? attachedTrksegId;
-  AssetType _type;
   Wpt? coordinates;
+
+  pm.AssetEntity? _entity;
+  AssetType _type;
   DateTime? _createdDateTime;
 
+  /// run [fetchEntityDataAsync] before using [entity]
+  pm.AssetEntity? get entity => _entity;
+
+  /// run [fetchEntityDataAsync] before using [type]
   AssetType get type => _type;
+
+  /// run [fetchEntityDataAsync] before using [createdDateTime]
   DateTime? get createdDateTime => _createdDateTime;
 
-  Future<pm.AssetEntity?> get entityAsync async {
-    if (assetEntityId == null) {
-      return null;
-    }
-    return await ExternalAssetManager.FI.then((eam) async {
-      return await eam.getAssetEntityAsync(id: assetEntityId!);
-    });
-  }
-
+  /// run [fetchEntityDataAsync] before using [fileAsync]
   Future<File?> get fileAsync async {
-    pm.AssetEntity? entity = await entityAsync;
     return await entity?.file;
   }
 
+  /// run [fetchEntityDataAsync] before using [fileFullPathAsync]
   Future<String?> get fileFullPathAsync async {
     File? file = await fileAsync;
     return file?.path;
   }
 
-  /// Returns type if it have already been set
-  /// Otherwise, sets and returns type from entity
-  Future<AssetType> get typeAsync async {
-    if (_type != AssetType.unknown) {
-      return _type;
+  /// fetches entity data(entity, type, createdDateTime) from assetEntityId
+  /// with [force] set to true, it will fetch data even if it has already been fetched
+  Future<void> fetchEntityDataAsync({
+    bool force = false,
+  }) async {
+    if (assetEntityId == null) {
+      return;
     }
-    pm.AssetEntity? entity = await entityAsync;
-    _type = entity?.type.toAssetType() ?? AssetType.unknown;
-    return _type;
-  }
-
-  /// Returns createdDateTime if it have already been set
-  /// Otherwise, sets and returns createDateTime from entity
-  Future<DateTime?> get createdDateTimeAsync async {
-    if (_createdDateTime != null) {
-      return _createdDateTime;
+    if (_entity == null || force) {
+      _entity = await ExternalAssetManager.FI.then((eam) async {
+        return eam.getAssetEntity(id: assetEntityId!);
+      });
     }
-    pm.AssetEntity? entity = await entityAsync;
-    _createdDateTime = entity?.createDateTime;
-    return _createdDateTime;
+    if (_entity != null) {
+      if (_type == AssetType.unset || force) {
+        _type = _entity!.type.toAssetType();
+      }
+      if (_createdDateTime == null || force) {
+        _createdDateTime = _entity!.createDateTime;
+      }
+    }
   }
 
   Asset({
@@ -100,7 +104,7 @@ class Asset {
     Wpt? coordinates,
     DateTime? createdDateTime,
   })  : config = config?.clone() ?? TravelConfig(),
-        _type = type ?? AssetType.unknown,
+        _type = type ?? AssetType.unset,
         coordinates = coordinates?.clone(),
         _createdDateTime = createdDateTime;
 

@@ -23,7 +23,7 @@ class AssetFilter {
     return assets.where((asset) => asset.type == type).toList();
   }
 
-  /// must contain all tags
+  /// Guarantee contains all tags
   List<Asset> filterByTags({
     required List<Asset> assets,
     required List<String> tags,

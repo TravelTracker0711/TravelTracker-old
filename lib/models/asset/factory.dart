@@ -10,6 +10,10 @@ class _AssetTypeFactory {
       return AssetType.image;
     } else if (typeString == AssetType.text.toString()) {
       return AssetType.text;
+    } else if (typeString == AssetType.unknown.toString()) {
+      return AssetType.unknown;
+    } else if (typeString == AssetType.unset.toString()) {
+      return AssetType.unset;
     } else {
       return AssetType.unknown;
     }
@@ -22,6 +26,8 @@ class _AssetTypeFactory {
       return AssetType.video;
     } else if (type == pm.AssetType.image) {
       return AssetType.image;
+    } else if (type == pm.AssetType.other) {
+      return AssetType.unknown;
     } else {
       return AssetType.unknown;
     }

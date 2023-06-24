@@ -13,9 +13,41 @@ extension AssetTypeUtils on AssetType {
         return false;
       case AssetType.unknown:
         return false;
+      case AssetType.unset:
+        return false;
       default:
         return false;
     }
+  }
+}
+
+extension AssetUtils on Asset {
+  FutureBuilder get futureThumbnail {
+    return FutureBuilder<void>(
+      future: fetchEntityDataAsync(),
+      builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (entity != null) {
+            if (!type.hasThumbnail) {
+              return Icon(
+                type.icon,
+              );
+            }
+            return Image(
+              image: pm.AssetEntityImageProvider(
+                entity!,
+                isOriginal: false,
+              ),
+              fit: BoxFit.cover,
+            );
+          }
+          return Icon(
+            type.icon,
+          );
+        }
+        return const CircularProgressIndicator();
+      },
+    );
   }
 }
 

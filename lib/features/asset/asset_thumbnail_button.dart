@@ -51,13 +51,13 @@ class AssetThumbnailButton extends StatelessWidget {
       return _buildIconWithCount(context);
     }
     return FutureBuilder(
-      future: displayedAsset?.entityAsync,
-      builder: (BuildContext context, AsyncSnapshot<pm.AssetEntity?> snapshot) {
+      future: displayedAsset?.fetchEntityDataAsync(),
+      builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasData) {
+          if (displayedAsset?.entity != null) {
             return _buildAssetEntityWithCount(
               context,
-              assetEntity: snapshot.data!,
+              assetEntity: displayedAsset!.entity!,
             );
           }
           return _buildIconWithCount(context);
