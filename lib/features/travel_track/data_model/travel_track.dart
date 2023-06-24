@@ -8,30 +8,29 @@ import 'package:travel_tracker/features/travel_track/data_model/travel_data.dart
 import 'package:travel_tracker/features/travel_track/data_model/travel_config.dart';
 import 'package:travel_tracker/features/travel_track/data_model/trkseg.dart';
 import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
-import 'package:travel_tracker/features/asset/data_model/asset_ext.dart';
+import 'package:travel_tracker/features/asset/data_model/asset.dart';
 import 'package:travel_tracker/utils/datetime.dart';
 
 class TravelTrack extends TravelData with ChangeNotifier {
   final List<Wpt> _wpts = <Wpt>[];
   final List<Trkseg> _trksegs = <Trkseg>[];
-  final Map<String, AssetExt> _assetExtMap = <String, AssetExt>{};
-  List<List<String>> _assetExtIdGroups = <List<String>>[];
+  final Map<String, Asset> _assetMap = <String, Asset>{};
+  List<List<String>> _assetIdGroups = <List<String>>[];
   final List<String> _gpxFileFullPaths = <String>[];
   final DateTime _createDateTime;
   bool isSelected = false;
   bool isVisible = true;
 
   List<Trkseg> get trksegs => List<Trkseg>.unmodifiable(_trksegs);
-  Map<String, AssetExt> get assetExtMap =>
-      Map<String, AssetExt>.unmodifiable(_assetExtMap);
-  List<AssetExt> get assetExts {
-    List<AssetExt> assetExts = _assetExtMap.values.toList();
-    assetExts.sort((a, b) => a.compareTo(b));
-    return List<AssetExt>.unmodifiable(assetExts);
+  Map<String, Asset> get assetMap => Map<String, Asset>.unmodifiable(_assetMap);
+  List<Asset> get assets {
+    List<Asset> assets = _assetMap.values.toList();
+    assets.sort((a, b) => a.compareTo(b));
+    return List<Asset>.unmodifiable(assets);
   }
 
-  List<List<String>> get assetExtIdGroups =>
-      List<List<String>>.unmodifiable(_assetExtIdGroups);
+  List<List<String>> get assetIdGroups =>
+      List<List<String>>.unmodifiable(_assetIdGroups);
   DateTime get startTime => getTrksegsStartTime(_trksegs) ?? _createDateTime;
   DateTime get endTime => getTrksegsEndTime(_trksegs) ?? _createDateTime;
 
@@ -40,7 +39,7 @@ class TravelTrack extends TravelData with ChangeNotifier {
     json.addAll({
       'wpts': _wpts.map((e) => e.toJson()).toList(),
       'trksegs': _trksegs.map((e) => e.toJson()).toList(),
-      'assetExtMap': _assetExtMap.map((key, value) => MapEntry(key, value)),
+      'assetMap': _assetMap.map((key, value) => MapEntry(key, value)),
       'gpxFileFullPaths': _gpxFileFullPaths,
       'createDateTime': _createDateTime.toIso8601String(),
     });
@@ -48,9 +47,9 @@ class TravelTrack extends TravelData with ChangeNotifier {
   }
 
   static Future<TravelTrack> fromJson(Map<String, dynamic> json) async {
-    Map<String, AssetExt> assetExtMap = {
-      for (String key in json['assetExtMap'].keys)
-        key: await AssetExt.fromJson(json['assetExtMap'][key])
+    Map<String, Asset> assetMap = {
+      for (String key in json['assetMap'].keys)
+        key: await Asset.fromJson(json['assetMap'][key])
     };
     TravelTrack travelTrack = TravelTrack._(
       id: json['id'],
@@ -63,7 +62,7 @@ class TravelTrack extends TravelData with ChangeNotifier {
           .map((e) => Trkseg.fromJson(e))
           .toList()
           .cast<Trkseg>(),
-      assetExtMap: assetExtMap,
+      assetMap: assetMap,
       gpxFileFullPaths: (json['gpxFileFullPaths'] as List)
           .map((e) => e.toString())
           .toList()
@@ -116,7 +115,7 @@ class TravelTrack extends TravelData with ChangeNotifier {
     TravelConfig? config,
     List<Wpt>? wpts,
     List<Trkseg>? trksegs,
-    Map<String, AssetExt>? assetExtMap,
+    Map<String, Asset>? assetMap,
     List<String>? gpxFileFullPaths,
     DateTime? createDateTime,
   })  : _createDateTime = createDateTime ?? DateTime.now(),
@@ -132,8 +131,8 @@ class TravelTrack extends TravelData with ChangeNotifier {
       _trksegs.addAll(trksegs);
       _trksegs.sort((a, b) => a.compareTo(b));
     }
-    if (assetExtMap != null) {
-      _assetExtMap.addAll(assetExtMap);
+    if (assetMap != null) {
+      _assetMap.addAll(assetMap);
     }
     if (gpxFileFullPaths != null) {
       _gpxFileFullPaths.addAll(gpxFileFullPaths);
@@ -154,7 +153,7 @@ class TravelTrack extends TravelData with ChangeNotifier {
   }) async {
     List<Wpt> wpts = <Wpt>[];
     List<Trkseg> trksegs = <Trkseg>[];
-    Map<String, AssetExt> assetExtMap = <String, AssetExt>{};
+    Map<String, Asset> assetMap = <String, Asset>{};
     for (String gpxFilePath in gpxFileFullPaths) {
       File gpxFile = File(gpxFilePath);
       if (!await gpxFile.exists()) {
@@ -204,12 +203,12 @@ class TravelTrack extends TravelData with ChangeNotifier {
             }
             break;
           }
-          assetExtMap.addAll({
-            for (AssetExt assetExt in await AssetExt.fromAssetEntitiesAsync(
+          assetMap.addAll({
+            for (Asset asset in await Asset.fromAssetEntitiesAsync(
               assetEntities:
                   assetEntities.sublist(lastAssetEndIndex, assetStartIndex),
             ))
-              assetExt.id: assetExt,
+              asset.id: asset,
           });
           assetEndIndex = assetStartIndex;
           while (assetEndIndex < assetCount) {
@@ -222,51 +221,50 @@ class TravelTrack extends TravelData with ChangeNotifier {
             break;
           }
           lastAssetEndIndex = assetEndIndex;
-          assetExtMap.addAll({
-            for (AssetExt assetExt
-                in await AssetExt.fromAssetEntitiesWithTrksegAsync(
+          assetMap.addAll({
+            for (Asset asset in await Asset.fromAssetEntitiesWithTrksegAsync(
               assetEntities:
                   assetEntities.sublist(assetStartIndex, assetEndIndex),
               trkseg: trkseg,
             ))
-              assetExt.id: assetExt,
+              asset.id: asset,
           });
           assetStartIndex = assetEndIndex;
         }
-        assetExtMap.addAll({
-          for (AssetExt assetExt in await AssetExt.fromAssetEntitiesAsync(
+        assetMap.addAll({
+          for (Asset asset in await Asset.fromAssetEntitiesAsync(
             assetEntities: assetEntities.sublist(lastAssetEndIndex, assetCount),
           ))
-            assetExt.id: assetExt,
+            asset.id: asset,
         });
       }
     }
     return TravelTrack._(
       wpts: wpts,
       trksegs: trksegs,
-      assetExtMap: assetExtMap,
+      assetMap: assetMap,
       gpxFileFullPaths: gpxFileFullPaths,
       config: config,
     );
   }
 
-  // void clearAssetExtIdGroupsAsync() async {
+  // void clearAssetIdGroupsAsync() async {
   //   await Future.delayed(Duration.zero);
-  //   _assetExtIdGroups.clear();
+  //   _assetIdGroups.clear();
   //   notifyListeners();
   // }
 
-  // void addAssetExtIdGroupAsync(List<String> assetExtIds) async {
-  //   if (assetExtIds.isEmpty) {
+  // void addAssetIdGroupAsync(List<String> assetIds) async {
+  //   if (assetIds.isEmpty) {
   //     return;
   //   }
   //   await Future.delayed(Duration.zero);
-  //   assetExtIds.sort((a, b) => a.compareTo(b));
-  //   _assetExtIdGroups.add(assetExtIds);
-  //   _assetExtIdGroups.sort((a, b) {
-  //     assert(_assetExtMap[a.first] != null && _assetExtMap[b.first] != null,
-  //         'assetExtMap must contain all assetExtIds');
-  //     return _assetExtMap[a.first]!.compareTo(_assetExtMap[b.first]!);
+  //   assetIds.sort((a, b) => a.compareTo(b));
+  //   _assetIdGroups.add(assetIds);
+  //   _assetIdGroups.sort((a, b) {
+  //     assert(_assetMap[a.first] != null && _assetMap[b.first] != null,
+  //         'assetMap must contain all assetIds');
+  //     return _assetMap[a.first]!.compareTo(_assetMap[b.first]!);
   //   });
   //   notifyListeners();
   // }
@@ -296,15 +294,15 @@ class TravelTrack extends TravelData with ChangeNotifier {
     notifyListeners();
   }
 
-  List<AssetExt> getAssetExtsByIds(List<String> assetExtIds) {
-    List<AssetExt> assetExts = <AssetExt>[];
-    for (String assetExtId in assetExtIds) {
-      AssetExt? assetExt = _assetExtMap[assetExtId];
-      if (assetExt != null) {
-        assetExts.add(assetExt);
+  List<Asset> getAssetsByIds(List<String> assetIds) {
+    List<Asset> assets = <Asset>[];
+    for (String assetId in assetIds) {
+      Asset? asset = _assetMap[assetId];
+      if (asset != null) {
+        assets.add(asset);
       }
     }
-    return assetExts;
+    return assets;
   }
 
   // TODO: addGpxFileFullPathsAsync

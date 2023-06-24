@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:photo_manager/photo_manager.dart';
+import 'package:photo_manager/photo_manager.dart' hide AssetType;
 import 'package:travel_tracker/features/gallery_view/gallery_view_photo.dart';
 import 'package:travel_tracker/features/gallery_view/gallery_view_controller.dart';
-import 'package:travel_tracker/features/asset/data_model/asset_ext.dart';
+import 'package:travel_tracker/features/asset/data_model/asset.dart';
 
 class GalleryViewGrid extends StatefulWidget {
   const GalleryViewGrid({
     super.key,
     required this.controller,
-    required this.assetExts,
+    required this.assets,
   });
 
   final GalleryViewController controller;
-  final List<AssetExt>? assetExts;
+  final List<Asset>? assets;
 
   @override
   State<GalleryViewGrid> createState() => _GalleryViewGridState();
@@ -21,13 +21,13 @@ class GalleryViewGrid extends StatefulWidget {
 class _GalleryViewGridState extends State<GalleryViewGrid> {
   @override
   Widget build(BuildContext context) {
-    if (widget.assetExts == null) {
+    if (widget.assets == null) {
       return const Center(child: Text('Nothing to show'));
     }
-    return _buildGridView(widget.assetExts!);
+    return _buildGridView(widget.assets!);
   }
 
-  Widget _buildGridView(List<AssetExt> assetExts) {
+  Widget _buildGridView(List<Asset> assets) {
     return Scrollbar(
       child: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -36,28 +36,27 @@ class _GalleryViewGridState extends State<GalleryViewGrid> {
           crossAxisSpacing: 3.0,
         ),
         padding: const EdgeInsets.all(10.0),
-        itemCount: assetExts.length,
+        itemCount: assets.length,
         itemBuilder: (BuildContext context, int index) {
-          AssetExt assetExt = assetExts[index];
-          return _buildAssetThumbnail(assetExt, index);
+          Asset asset = assets[index];
+          return _buildAssetThumbnail(asset, index);
         },
       ),
     );
   }
 
-  Widget _buildAssetThumbnail(AssetExt assetExt, int index) {
+  Widget _buildAssetThumbnail(Asset asset, int index) {
     return Card(
       margin: const EdgeInsets.all(0),
       child: InkWell(
-        onTap: () => _onTapAsset(assetExt, index),
-        child: (assetExt.type != AssetExtType.image &&
-                assetExt.type != AssetExtType.video)
+        onTap: () => _onTapAsset(asset, index),
+        child: (asset.type != AssetType.image && asset.type != AssetType.video)
             ? Text(
-                '${assetExt.fileFullPath}',
+                '${asset.fileFullPath}',
               )
             : Ink.image(
                 image: AssetEntityImageProvider(
-                  assetExt.assetEntity,
+                  asset.assetEntity,
                   isOriginal: false,
                 ),
                 fit: BoxFit.cover,
@@ -66,15 +65,15 @@ class _GalleryViewGridState extends State<GalleryViewGrid> {
     );
   }
 
-  void _onTapAsset(AssetExt assetExt, int index) {
+  void _onTapAsset(Asset asset, int index) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => Scaffold(
           appBar: AppBar(),
-          body: widget.assetExts == null
+          body: widget.assets == null
               ? const Center(child: Text('Nothing to show'))
               : GalleryViewPhoto(
-                  assetExts: widget.assetExts!,
+                  assets: widget.assets!,
                   initialIndex: index,
                   thumbnailHeight: 64.0,
                   thumbnailWidth: 48.0,

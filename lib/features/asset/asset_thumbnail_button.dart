@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:travel_tracker/features/asset/data_model/asset_ext.dart';
+import 'package:travel_tracker/features/asset/data_model/asset.dart';
 
-class AssetExtThumbnailButton extends StatelessWidget {
-  const AssetExtThumbnailButton({
+class AssetThumbnailButton extends StatelessWidget {
+  const AssetThumbnailButton({
     super.key,
-    this.displayedAssetExt,
+    this.displayedAsset,
     this.onTap,
     this.assetCount,
   });
 
-  final AssetExt? displayedAssetExt;
+  final Asset? displayedAsset;
   final int? assetCount;
   final VoidCallback? onTap;
 
@@ -27,11 +27,11 @@ class AssetExtThumbnailButton extends StatelessWidget {
               color: Colors.white,
               width: 2,
             ),
-            image: displayedAssetExt == null
+            image: displayedAsset == null
                 ? null
                 : DecorationImage(
                     image: AssetEntityImageProvider(
-                      displayedAssetExt!.assetEntity,
+                      displayedAsset!.assetEntity,
                       isOriginal: false,
                     ),
                     fit: BoxFit.cover,
@@ -44,7 +44,7 @@ class AssetExtThumbnailButton extends StatelessWidget {
             child: assetCount != null && assetCount! > 1
                 ? Stack(
                     children: <Widget>[
-                      displayedAssetExt == null
+                      displayedAsset == null
                           ? const Icon(
                               Icons.photo,
                               color: Colors.white,
@@ -53,8 +53,8 @@ class AssetExtThumbnailButton extends StatelessWidget {
                       Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: Colors.black.withOpacity(
-                              displayedAssetExt == null ? 0.5 : 0.3),
+                          color: Colors.black
+                              .withOpacity(displayedAsset == null ? 0.5 : 0.3),
                         ),
                       ),
                       Center(
@@ -68,7 +68,7 @@ class AssetExtThumbnailButton extends StatelessWidget {
                       ),
                     ],
                   )
-                : displayedAssetExt == null
+                : displayedAsset == null
                     ? Stack(
                         children: <Widget>[
                           Container(

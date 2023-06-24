@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:timeline_tile/timeline_tile.dart';
-import 'package:travel_tracker/features/asset/asset_ext_thumbnail_button.dart';
-import 'package:travel_tracker/features/asset/data_model/asset_ext.dart';
+import 'package:travel_tracker/features/asset/asset_thumbnail_button.dart';
+import 'package:travel_tracker/features/asset/data_model/asset.dart';
 import 'package:travel_tracker/features/gallery_view/gallery_view_photo.dart';
 import 'package:travel_tracker/features/map_view/map_view_controller.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
@@ -83,24 +83,24 @@ class _TravelTrackTimelineState extends State<TravelTrackTimeline> {
     List<Widget> timelineTiles = [];
     int trksegIndex = 0;
     String? lastTrksegId;
-    List<AssetExt> assetExts = travelTrack.assetExts;
+    List<Asset> assets = travelTrack.assets;
     List<Trkseg> trksegs = travelTrack.trksegs;
-    for (int assetIndex = assetExts.length - 1; assetIndex >= 0; assetIndex--) {
+    for (int assetIndex = assets.length - 1; assetIndex >= 0; assetIndex--) {
       if (lastTrksegId == null) {
         timelineTiles.add(_buildTimelineHead());
-      } else if (assetExts[assetIndex].attachedTrksegId != null &&
-          assetExts[assetIndex].attachedTrksegId != lastTrksegId) {
+      } else if (assets[assetIndex].attachedTrksegId != null &&
+          assets[assetIndex].attachedTrksegId != lastTrksegId) {
         trksegIndex++;
         timelineTiles.add(_buildTrksegTimelineHead(trksegs[trksegIndex]));
       }
-      lastTrksegId = assetExts[assetIndex].attachedTrksegId;
+      lastTrksegId = assets[assetIndex].attachedTrksegId;
 
-      timelineTiles.add(_buildAssetExtTimelineTile(
-          assetExts[assetIndex], assetExts, assetIndex));
+      timelineTiles
+          .add(_buildAssetTimelineTile(assets[assetIndex], assets, assetIndex));
     }
-    // for (List<String> assetExtIds in travelTrack.assetExtIdGroups) {
-    //   List<AssetExt> assetExts = travelTrack.getAssetExtsByIds(assetExtIds);
-    //   timelineTiles.add(_buildAssetExtsTimelineTile(assetExts));
+    // for (List<String> assetIds in travelTrack.assetIdGroups) {
+    //   List<Asset> assets = travelTrack.getAssetsByIds(assetIds);
+    //   timelineTiles.add(_buildAssetsTimelineTile(assets));
     // }
     // 建立一個空白的container讓最底下的tile可以被滑到上面
     timelineTiles.add(
@@ -146,8 +146,7 @@ class _TravelTrackTimelineState extends State<TravelTrackTimeline> {
     );
   }
 
-  Widget _buildAssetExtTimelineTile(
-      AssetExt assetExt, List<AssetExt> assetExts, int index) {
+  Widget _buildAssetTimelineTile(Asset asset, List<Asset> assets, int index) {
     return TimelineTile(
       alignment: TimelineAlign.center,
       beforeLineStyle: const LineStyle(
@@ -157,16 +156,16 @@ class _TravelTrackTimelineState extends State<TravelTrackTimeline> {
         width: 56,
         height: 56,
         color: Colors.blue,
-        indicator: AssetExtThumbnailButton(
-          displayedAssetExt: assetExt,
+        indicator: AssetThumbnailButton(
+          displayedAsset: asset,
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => Scaffold(
                   appBar: AppBar(),
                   body: GalleryViewPhoto(
-                    assetExts: assetExts.reversed.toList(),
-                    initialIndex: assetExts.length - 1 - index,
+                    assets: assets.reversed.toList(),
+                    initialIndex: assets.length - 1 - index,
                     thumbnailHeight: 64.0,
                     thumbnailWidth: 48.0,
                   ),
@@ -179,8 +178,8 @@ class _TravelTrackTimelineState extends State<TravelTrackTimeline> {
     );
   }
 
-  Widget _buildAssetExtsTimelineTile(List<AssetExt> assetExts) {
-    debugPrint('assetExts.length: ${assetExts.length}');
+  Widget _buildAssetsTimelineTile(List<Asset> assets) {
+    debugPrint('assets.length: ${assets.length}');
     return TimelineTile(
       alignment: TimelineAlign.center,
       beforeLineStyle: const LineStyle(
@@ -190,8 +189,8 @@ class _TravelTrackTimelineState extends State<TravelTrackTimeline> {
         width: 56,
         height: 56,
         color: Colors.blue,
-        indicator: AssetExtThumbnailButton(
-          displayedAssetExt: assetExts[0],
+        indicator: AssetThumbnailButton(
+          displayedAsset: assets[0],
           assetCount: 1,
           onTap: () {},
         ),

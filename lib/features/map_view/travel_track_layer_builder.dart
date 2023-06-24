@@ -2,14 +2,14 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' as latlng;
-import 'package:travel_tracker/features/asset/asset_ext_thumbnail_button.dart';
+import 'package:travel_tracker/features/asset/asset_thumbnail_button.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:travel_tracker/features/map_view/map_view_controller.dart';
 import 'package:travel_tracker/features/map_view/marker_ext.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:travel_tracker/features/map_view/trkseg_extractor.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
-import 'package:travel_tracker/features/asset/data_model/asset_ext.dart';
+import 'package:travel_tracker/features/asset/data_model/asset.dart';
 import 'package:travel_tracker/features/travel_track/data_model/trkseg.dart';
 import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
 
@@ -27,8 +27,8 @@ class TravelTrackLayerBuilder {
     List<Widget> layers = <Widget>[];
     for (TravelTrack travelTrack in travelTracks) {
       layers.addAll(buildPolylineLayersByTravelTrack(travelTrack));
-      // travelTrack.clearAssetExtIdGroupsAsync();
-      // layers.add(buildMarkerClusterLayerByAssetExts(travelTrack.assetExts,
+      // travelTrack.clearAssetIdGroupsAsync();
+      // layers.add(buildMarkerClusterLayerByAssets(travelTrack.assets,
       //     travelTrack: travelTrack));
     }
     if (_controller.isShowingAsset) {
@@ -111,22 +111,21 @@ class TravelTrackLayerBuilder {
 
   MarkerClusterLayerWidget buildMarkerClusterLayerByTravelTracks(
       List<TravelTrack> travelTracks) {
-    List<AssetExt> assetExts = <AssetExt>[];
+    List<Asset> assets = <Asset>[];
     for (TravelTrack travelTrack in travelTracks) {
-      assetExts.addAll(travelTrack.assetExts);
+      assets.addAll(travelTrack.assets);
     }
-    MarkerClusterLayerWidget layer =
-        buildMarkerClusterLayerByAssetExts(assetExts);
+    MarkerClusterLayerWidget layer = buildMarkerClusterLayerByAssets(assets);
     return layer;
   }
 
-  MarkerClusterLayerWidget buildMarkerClusterLayerByAssetExts(
-    List<AssetExt> assetExts, {
+  MarkerClusterLayerWidget buildMarkerClusterLayerByAssets(
+    List<Asset> assets, {
     TravelTrack? travelTrack,
   }) {
-    List<MarkerExt<AssetExt>> markerExts = <MarkerExt<AssetExt>>[];
-    for (AssetExt assetExt in assetExts) {
-      MarkerExt<AssetExt>? markerExt = buildMarkerByAssetExt(assetExt);
+    List<MarkerExt<Asset>> markerExts = <MarkerExt<Asset>>[];
+    for (Asset asset in assets) {
+      MarkerExt<Asset>? markerExt = buildMarkerByAsset(asset);
       if (markerExt != null) {
         markerExts.add(markerExt);
       }
@@ -134,24 +133,24 @@ class TravelTrackLayerBuilder {
     return buildMarkerClusterByMarkers(markerExts, travelTrack: travelTrack);
   }
 
-  MarkerExt<AssetExt>? buildMarkerByAssetExt(AssetExt assetExt) {
-    if (assetExt.coordinates == null) {
+  MarkerExt<Asset>? buildMarkerByAsset(Asset asset) {
+    if (asset.coordinates == null) {
       return null;
     }
     double mapRotation = _mapRotationNotifier.value;
-    return MarkerExt<AssetExt>(
+    return MarkerExt<Asset>(
       width: 70,
       height: 70,
-      point: assetExt.coordinates!.latLng,
+      point: asset.coordinates!.latLng,
       rotate: false,
-      extra: assetExt,
+      extra: asset,
       builder: (BuildContext context) {
         return Transform.rotate(
           angle: -mapRotation * math.pi / 180,
-          child: AssetExtThumbnailButton(
-            displayedAssetExt: assetExt,
+          child: AssetThumbnailButton(
+            displayedAsset: asset,
             onTap: () {
-              debugPrint('onPressed ${assetExt.assetEntity.title}');
+              debugPrint('onPressed ${asset.assetEntity.title}');
               // TODO: show asset
               // Navigator.pushNamed(context, '/asset');
             },
@@ -162,7 +161,7 @@ class TravelTrackLayerBuilder {
   }
 
   MarkerClusterLayerWidget buildMarkerClusterByMarkers(
-    List<MarkerExt<AssetExt>> markerExts, {
+    List<MarkerExt<Asset>> markerExts, {
     TravelTrack? travelTrack,
   }) {
     double mapRotation = _mapRotationNotifier.value;
@@ -181,20 +180,19 @@ class TravelTrackLayerBuilder {
         zoomToBoundsOnClick: false,
         markers: markerExts,
         builder: (context, markers) {
-          List<MarkerExt<AssetExt>> extraMarkers =
-              _castMarkerToMarkerExt(markers);
-          List<AssetExt> assetExts = [];
-          for (MarkerExt<AssetExt> extraMarker in extraMarkers) {
+          List<MarkerExt<Asset>> extraMarkers = _castMarkerToMarkerExt(markers);
+          List<Asset> assets = [];
+          for (MarkerExt<Asset> extraMarker in extraMarkers) {
             if (extraMarker.extra != null) {
-              assetExts.add(extraMarker.extra!);
+              assets.add(extraMarker.extra!);
             }
           }
           // travelTrack
-          //     ?.addAssetExtIdGroupAsync(assetExts.map((e) => e.id).toList());
+          //     ?.addAssetIdGroupAsync(assets.map((e) => e.id).toList());
           return Transform.rotate(
             angle: -mapRotation * math.pi / 180,
-            child: AssetExtThumbnailButton(
-              displayedAssetExt: assetExts.isEmpty ? null : assetExts.first,
+            child: AssetThumbnailButton(
+              displayedAsset: assets.isEmpty ? null : assets.first,
               assetCount: extraMarkers.length,
             ),
           );
@@ -203,9 +201,9 @@ class TravelTrackLayerBuilder {
     );
   }
 
-  List<MarkerExt<AssetExt>> _castMarkerToMarkerExt(List<Marker> markers) {
-    List<MarkerExt<AssetExt>> extraMarkers =
-        markers.map((marker) => marker as MarkerExt<AssetExt>).toList();
+  List<MarkerExt<Asset>> _castMarkerToMarkerExt(List<Marker> markers) {
+    List<MarkerExt<Asset>> extraMarkers =
+        markers.map((marker) => marker as MarkerExt<Asset>).toList();
     return extraMarkers;
   }
 }

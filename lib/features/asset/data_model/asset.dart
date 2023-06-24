@@ -9,7 +9,7 @@ import 'package:travel_tracker/features/travel_track/data_model/trkseg.dart';
 import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
 import 'package:travel_tracker/utils/latlng.dart';
 
-enum AssetExtType {
+enum AssetType {
   image,
   video,
   audio,
@@ -17,16 +17,16 @@ enum AssetExtType {
   unknown,
 }
 
-class AssetExt extends TravelData {
+class Asset extends TravelData {
   final AssetEntity assetEntity;
-  final AssetExtType type;
+  final AssetType type;
   final String fileFullPath;
   Wpt? coordinates;
   String? attachedTrksegId;
 
   DateTime get createDateTime => assetEntity.createDateTime;
 
-  AssetExt._({
+  Asset._({
     String? id,
     TravelConfig? config,
     required this.assetEntity,
@@ -39,14 +39,14 @@ class AssetExt extends TravelData {
           config: config,
         );
 
-  int compareTo(AssetExt other) {
+  int compareTo(Asset other) {
     return createDateTime.compareTo(other.createDateTime);
   }
 
-  static Future<AssetExt?> fromAssetEntityAsync({
+  static Future<Asset?> fromAssetEntityAsync({
     required AssetEntity assetEntity,
   }) async {
-    AssetExtType type = _getAssetType(assetEntity);
+    AssetType type = _getAssetType(assetEntity);
     File? assetFile = await assetEntity.originFile;
     String? fileFullPath = assetFile?.path;
     if (fileFullPath == null) {
@@ -63,7 +63,7 @@ class AssetExt extends TravelData {
         latLng: latLng,
       );
     }
-    return AssetExt._(
+    return Asset._(
       assetEntity: assetEntity,
       type: type,
       fileFullPath: fileFullPath,
@@ -71,41 +71,41 @@ class AssetExt extends TravelData {
     );
   }
 
-  static Future<List<AssetExt>> fromAssetEntitiesAsync({
+  static Future<List<Asset>> fromAssetEntitiesAsync({
     required List<AssetEntity> assetEntities,
   }) async {
-    List<AssetExt> assetExts = [];
+    List<Asset> assets = [];
     for (AssetEntity assetEntity in assetEntities) {
-      AssetExt? assetExt = await fromAssetEntityAsync(
+      Asset? asset = await fromAssetEntityAsync(
         assetEntity: assetEntity,
       );
-      if (assetExt == null) {
+      if (asset == null) {
         continue;
       }
-      assetExts.add(assetExt);
+      assets.add(asset);
     }
-    return assetExts;
+    return assets;
   }
 
-  static Future<List<AssetExt>> fromAssetEntitiesWithTrksegAsync({
+  static Future<List<Asset>> fromAssetEntitiesWithTrksegAsync({
     required List<AssetEntity> assetEntities,
     required Trkseg trkseg,
     bool overrideAssetOriginCoordinates = true,
   }) async {
-    List<AssetExt> assetExts = await fromAssetEntitiesAsync(
+    List<Asset> assets = await fromAssetEntitiesAsync(
       assetEntities: assetEntities,
     );
     int trkptIndex = 0;
     List<Wpt> trkpts = trkseg.trkpts.where((trkpt) {
       return trkpt.time != null;
     }).toList();
-    for (AssetExt assetExt in assetExts) {
+    for (Asset asset in assets) {
       if (overrideAssetOriginCoordinates == false &&
-          assetExt.coordinates != null) {
+          asset.coordinates != null) {
         continue;
       }
       while (trkptIndex < trkpts.length - 1 &&
-          (trkpts[trkptIndex + 1].time!.isBefore(assetExt.createDateTime))) {
+          (trkpts[trkptIndex + 1].time!.isBefore(asset.createDateTime))) {
         trkptIndex++;
       }
       latlong.LatLng latLng = latlong.LatLng(
@@ -114,7 +114,7 @@ class AssetExt extends TravelData {
       );
       if (trkptIndex < trkpts.length - 1) {
         double coordinatesRatio = 0;
-        int assetMilliseconds = assetExt.createDateTime.millisecondsSinceEpoch;
+        int assetMilliseconds = asset.createDateTime.millisecondsSinceEpoch;
         int prevTrkptMilliseconds =
             trkpts[trkptIndex].time!.millisecondsSinceEpoch;
         int nextTrkptMilliseconds =
@@ -132,30 +132,30 @@ class AssetExt extends TravelData {
                   coordinatesRatio,
         );
       }
-      assetExt.coordinates = Wpt(
+      asset.coordinates = Wpt(
         latLng: latLng,
       );
-      assetExt.attachedTrksegId = trkseg.id;
+      asset.attachedTrksegId = trkseg.id;
     }
-    return assetExts;
+    return assets;
   }
 
   // TODO: fromFilePathAsync
-  static Future<AssetExt?> fromFilePathAsync({
+  static Future<Asset?> fromFilePathAsync({
     required String filePath,
   }) async {
     throw UnimplementedError();
   }
 
-  static AssetExtType _getAssetType(AssetEntity assetEntity) {
+  static AssetType _getAssetType(AssetEntity assetEntity) {
     if (assetEntity.type == AssetType.audio) {
-      return AssetExtType.audio;
+      return AssetType.audio;
     } else if (assetEntity.type == AssetType.video) {
-      return AssetExtType.video;
+      return AssetType.video;
     } else if (assetEntity.type == AssetType.image) {
-      return AssetExtType.image;
+      return AssetType.image;
     } else {
-      return AssetExtType.unknown;
+      return AssetType.unknown;
     }
   }
 
@@ -174,37 +174,37 @@ class AssetExt extends TravelData {
     return json;
   }
 
-  static Future<AssetExt> fromJson(Map<String, dynamic> json) async {
+  static Future<Asset> fromJson(Map<String, dynamic> json) async {
     AssetEntity assetEntity =
         (await ExternalAssetManager.FI).getAssetEntityByPath(
       json['fileFullPath'],
     )!;
-    AssetExt assetExt = AssetExt._(
+    Asset asset = Asset._(
       id: json['id'],
       config:
           json['config'] != null ? TravelConfig.fromJson(json['config']) : null,
       assetEntity: assetEntity,
-      type: _getAssetExtTypeFromString(json['type']),
+      type: _getAssetTypeFromString(json['type']),
       fileFullPath: json['fileFullPath'],
       coordinates: json['coordinates'] != null
           ? Wpt.fromJson(json['coordinates'])
           : null,
       attachedTrksegId: json['attachedTrksegId'],
     );
-    return assetExt;
+    return asset;
   }
 
-  static AssetExtType _getAssetExtTypeFromString(String typeString) {
-    if (typeString == AssetExtType.audio.toString()) {
-      return AssetExtType.audio;
-    } else if (typeString == AssetExtType.video.toString()) {
-      return AssetExtType.video;
-    } else if (typeString == AssetExtType.image.toString()) {
-      return AssetExtType.image;
-    } else if (typeString == AssetExtType.text.toString()) {
-      return AssetExtType.text;
+  static AssetType _getAssetTypeFromString(String typeString) {
+    if (typeString == AssetType.audio.toString()) {
+      return AssetType.audio;
+    } else if (typeString == AssetType.video.toString()) {
+      return AssetType.video;
+    } else if (typeString == AssetType.image.toString()) {
+      return AssetType.image;
+    } else if (typeString == AssetType.text.toString()) {
+      return AssetType.text;
     } else {
-      return AssetExtType.unknown;
+      return AssetType.unknown;
     }
   }
 }

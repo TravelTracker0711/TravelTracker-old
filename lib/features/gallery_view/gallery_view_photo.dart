@@ -4,18 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:travel_tracker/features/asset/data_model/asset_ext.dart';
+import 'package:travel_tracker/features/asset/data_model/asset.dart';
 
 class GalleryViewPhoto extends StatefulWidget {
   const GalleryViewPhoto({
     super.key,
-    required this.assetExts,
+    required this.assets,
     this.thumbnailHeight = 48.0,
     this.thumbnailWidth = 48.0,
     this.initialIndex = 0,
   });
 
-  final List<AssetExt> assetExts;
+  final List<Asset> assets;
   final double thumbnailHeight;
   final double thumbnailWidth;
   final int initialIndex;
@@ -63,14 +63,14 @@ class _GalleryViewPhotoState extends State<GalleryViewPhoto> {
         physics: _isPhotoScaled ? NeverScrollableScrollPhysics() : null,
         onPageChanged: _onImagePageChanged,
         allowImplicitScrolling: true,
-        itemCount: widget.assetExts.length,
+        itemCount: widget.assets.length,
         itemBuilder: (context, index) {
           // background color black
           return FractionallySizedBox(
             widthFactor: 1 / _imagePageController.viewportFraction,
             child: PhotoView(
               imageProvider:
-                  AssetEntityImageProvider(widget.assetExts[index].assetEntity),
+                  AssetEntityImageProvider(widget.assets[index].assetEntity),
               minScale: PhotoViewComputedScale.contained,
               scaleStateChangedCallback: (state) {
                 setState(() {
@@ -114,7 +114,7 @@ class _GalleryViewPhotoState extends State<GalleryViewPhoto> {
           ),
           scrollDirection: Axis.horizontal,
           minCacheExtent: _thumbnailViewPortSize * 2,
-          itemCount: widget.assetExts.length,
+          itemCount: widget.assets.length,
           itemBuilder: (context, index) {
             double heigetFactor = 0.8;
             if (index == _currentIndex) {
@@ -133,7 +133,7 @@ class _GalleryViewPhotoState extends State<GalleryViewPhoto> {
                     borderRadius: BorderRadius.circular(5),
                     image: DecorationImage(
                       image: AssetEntityImageProvider(
-                        widget.assetExts[index].assetEntity,
+                        widget.assets[index].assetEntity,
                         isOriginal: false,
                       ),
                       fit: BoxFit.cover,
