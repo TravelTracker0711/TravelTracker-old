@@ -1,5 +1,24 @@
 part of 'asset.dart';
 
+extension AssetTypeUtils on AssetType {
+  bool get hasThumbnail {
+    switch (this) {
+      case AssetType.image:
+        return true;
+      case AssetType.video:
+        return true;
+      case AssetType.audio:
+        return false;
+      case AssetType.text:
+        return false;
+      case AssetType.unknown:
+        return false;
+      default:
+        return false;
+    }
+  }
+}
+
 extension AssetsUtils on List<Asset> {
   void setCoordinatesByTrkseg({
     required Trkseg trkseg,
