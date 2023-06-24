@@ -3,7 +3,7 @@ part of 'wpt.dart';
 class WptFactory {
   static Wpt fromJson(Map<String, dynamic> json) {
     return Wpt(
-      config: TravelConfig.fromJson(json['config']),
+      config: TravelConfigFactory.fromJson(json['config']),
       latLng: latlng.LatLng(
         json['lat'],
         json['lon'],

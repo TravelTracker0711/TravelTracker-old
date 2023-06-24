@@ -176,8 +176,9 @@ class Asset {
       json['fileFullPath'],
     )!;
     Asset asset = Asset._(
-      config:
-          json['config'] != null ? TravelConfig.fromJson(json['config']) : null,
+      config: json['config'] != null
+          ? TravelConfigFactory.fromJson(json['config'])
+          : null,
       assetEntity: assetEntity,
       type: _getAssetTypeFromString(json['type']),
       fileFullPath: json['fileFullPath'],

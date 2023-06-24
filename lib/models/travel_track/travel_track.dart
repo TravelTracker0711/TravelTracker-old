@@ -52,7 +52,7 @@ class TravelTrack with ChangeNotifier {
         key: await Asset.fromJson(json['assetMap'][key])
     };
     TravelTrack travelTrack = TravelTrack._(
-      config: TravelConfig.fromJson(json['config']),
+      config: TravelConfigFactory.fromJson(json['config']),
       wpts: (json['wpts'] as List)
           .map((e) => WptFactory.fromJson(e))
           .toList()

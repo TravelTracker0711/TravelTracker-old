@@ -3,7 +3,7 @@ part of 'trkseg.dart';
 class TrksegFactory {
   static Trkseg fromJson(Map<String, dynamic> json) {
     return Trkseg(
-      config: TravelConfig.fromJson(json['config']),
+      config: TravelConfigFactory.fromJson(json['config']),
       trkpts: (json['trkpts'] as List<Map<String, dynamic>>)
           .map((e) => WptFactory.fromJson(e))
           .toList(),

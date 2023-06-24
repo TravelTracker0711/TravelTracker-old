@@ -1,6 +1,9 @@
 import 'package:travel_tracker/utils/random.dart';
 import 'package:uuid/uuid.dart';
 
+part 'conversion.dart';
+part 'factory.dart';
+
 class TravelConfig {
   late final String id;
   late String name;
@@ -41,28 +44,5 @@ class TravelConfig {
       description: description,
       tags: tags,
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {
-      'id': id,
-      'name': name,
-    };
-    if (description != null) {
-      json['description'] = description;
-    }
-    if (tags.isNotEmpty) {
-      json['tags'] = tags;
-    }
-    return json;
-  }
-
-  TravelConfig.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    description = json['description'];
-    if (json['tags'] != null) {
-      tags.addAll(json['tags']);
-    }
   }
 }
