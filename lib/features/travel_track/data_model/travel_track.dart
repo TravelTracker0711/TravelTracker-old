@@ -73,34 +73,37 @@ class TravelTrack extends TravelData with ChangeNotifier {
   }
 
   gpx_pkg.Gpx toGpx() {
-    // Wpt, Trkseg
     gpx_pkg.Gpx gpx = gpx_pkg.Gpx();
 
-    List<gpx_pkg.Wpt> wpts = [];
-    for (Wpt ext in _wpts) {
-      gpx_pkg.Wpt wpt = gpx_pkg.Wpt(
-          lat: ext.lat, lon: ext.lon, ele: ext.elevation, time: ext.time);
-      wpts.add(wpt);
+    List<gpx_pkg.Wpt> gpxWpts = [];
+    for (Wpt wpt in _wpts) {
+      gpx_pkg.Wpt gpxWpt = gpx_pkg.Wpt(
+        lat: wpt.lat,
+        lon: wpt.lon,
+        ele: wpt.elevation,
+        time: wpt.time,
+      );
+      gpxWpts.add(gpxWpt);
     }
-    gpx.wpts = wpts;
+    gpx.wpts = gpxWpts;
 
-    List<gpx_pkg.Trkseg> trksegs = [];
-    for (Trkseg trkext in _trksegs) {
-      List<gpx_pkg.Wpt> wpts = [];
-      for (Wpt wptext in trkext.trkpts) {
-        gpx_pkg.Wpt wpt = gpx_pkg.Wpt(
-            lat: wptext.lat,
-            lon: wptext.lon,
-            ele: wptext.elevation,
-            time: wptext.time);
-        wpts.add(wpt);
+    List<gpx_pkg.Trkseg> gpxTrksegs = [];
+    for (Trkseg trkseg in _trksegs) {
+      List<gpx_pkg.Wpt> gpxTrkpts = [];
+      for (Wpt wpt in trkseg.trkpts) {
+        gpx_pkg.Wpt gpxWpt = gpx_pkg.Wpt(
+          lat: wpt.lat,
+          lon: wpt.lon,
+          ele: wpt.elevation,
+          time: wpt.time,
+        );
+        gpxTrkpts.add(gpxWpt);
       }
-      gpx_pkg.Trkseg trkseg = gpx_pkg.Trkseg(trkpts: wpts);
-      trksegs.add(trkseg);
+      gpx_pkg.Trkseg gpxTrkseg = gpx_pkg.Trkseg(trkpts: gpxTrkpts);
+      gpxTrksegs.add(gpxTrkseg);
     }
-    gpx_pkg.Trk trk = gpx_pkg.Trk(trksegs: trksegs);
-    List<gpx_pkg.Trk> trks = [trk];
-    gpx.trks = trks;
+    gpx_pkg.Trk gpxTrk = gpx_pkg.Trk(trksegs: gpxTrksegs);
+    gpx.trks = [gpxTrk];
     return gpx;
   }
 
