@@ -54,7 +54,7 @@ class TravelTrack with ChangeNotifier {
     TravelTrack travelTrack = TravelTrack._(
       config: TravelConfig.fromJson(json['config']),
       wpts: (json['wpts'] as List)
-          .map((e) => Wpt.fromJson(e))
+          .map((e) => WptFactory.fromJson(e))
           .toList()
           .cast<Wpt>(),
       trksegs: (json['trksegs'] as List)
@@ -160,8 +160,8 @@ class TravelTrack with ChangeNotifier {
       String gpxString = await gpxFile.readAsString();
       gpx_pkg.Gpx gpx = gpx_pkg.GpxReader().fromString(gpxString);
 
-      wpts.addAll(Wpt.fromGpx(
-        gpx: gpx,
+      wpts.addAll(WptFactory.fromGpxWpts(
+        gpxWpts: gpx.wpts,
       ));
       trksegs.addAll(Trkseg.fromGpx(
         gpx: gpx,

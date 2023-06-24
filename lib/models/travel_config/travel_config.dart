@@ -33,11 +33,14 @@ class TravelConfig {
     }
   }
 
-  TravelConfig.clone(TravelConfig other)
-      : id = const Uuid().v4(),
-        name = other.name,
-        description = other.description {
-    tags.addAll(other.tags);
+  TravelConfig clone() {
+    String newId = const Uuid().v4();
+    return TravelConfig(
+      id: newId,
+      name: name,
+      description: description,
+      tags: tags,
+    );
   }
 
   Map<String, dynamic> toJson() {

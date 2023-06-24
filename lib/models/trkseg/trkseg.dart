@@ -39,7 +39,7 @@ class Trkseg {
       : this._(
           config: TravelConfig.fromJson(json['config']),
           trkpts: (json['trkpts'] as List<dynamic>)
-              .map((e) => Wpt.fromJson(e))
+              .map((e) => WptFactory.fromJson(e))
               .toList(),
         );
 
@@ -68,7 +68,7 @@ class Trkseg {
   factory Trkseg.fromTrkseg({
     required gpx_pkg.Trkseg trkseg,
   }) {
-    List<Wpt> trkpts = Wpt.fromTrkseg(
+    List<Wpt> trkpts = WptFactory.fromTrkseg(
       trkseg: trkseg,
     );
     return Trkseg._(

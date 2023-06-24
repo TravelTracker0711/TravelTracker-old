@@ -21,3 +21,12 @@ extension PhotoManagerToLatLong2 on LatLng {
     );
   }
 }
+
+extension LatLong2Clone on latlng.LatLng {
+  latlng.LatLng clone() {
+    return latlng.LatLng(
+      latitude,
+      longitude,
+    );
+  }
+}

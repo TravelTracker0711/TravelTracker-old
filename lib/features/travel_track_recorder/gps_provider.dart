@@ -60,7 +60,7 @@ class GpsProvider with ChangeNotifier {
               .listen((Position? pos) {
         _position = pos;
         if (pos != null) {
-          _wpt = Wpt.fromPosition(position: pos);
+          _wpt = WptFactory.fromPosition(position: pos);
         }
         debugPrint(pos.toString());
         notifyListeners();

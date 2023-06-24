@@ -182,7 +182,7 @@ class Asset {
       type: _getAssetTypeFromString(json['type']),
       fileFullPath: json['fileFullPath'],
       coordinates: json['coordinates'] != null
-          ? Wpt.fromJson(json['coordinates'])
+          ? WptFactory.fromJson(json['coordinates'])
           : null,
       attachedTrksegId: json['attachedTrksegId'],
     );
