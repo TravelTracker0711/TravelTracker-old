@@ -1,104 +1,103 @@
-import 'dart:async';
-import 'dart:io';
-
-import 'package:external_path/external_path.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:travel_tracker/features/asset/photo_manager_extension.dart';
 import 'package:travel_tracker/features/permission/permission_manager.dart';
-import 'package:watcher/watcher.dart';
 
-class ExternalAssetManager {
+class ExternalAssetManager with ChangeNotifier {
+  bool _isInitializing = false;
+  bool _isReady = false;
   AssetPathEntity? _allAssetsPathEntity;
-  Map<String, AssetEntity>? _allAssetEntitiesMap;
-  bool _isInitialized = false;
-  bool _isPermissionGranted = false;
+  List<AssetEntity> _allAssetEntities = [];
+  Map<String, AssetEntity> _allAssetEntitiesMap = {};
 
-  bool get isInitialized => _isInitialized;
-  bool get isPermissionGranted => _isPermissionGranted;
+  bool get isReady => _isReady;
+  AssetPathEntity? get allAssetsPathEntity => _allAssetsPathEntity;
+  List<AssetEntity> get allAssetEntities => List<AssetEntity>.unmodifiable(
+        _allAssetEntities,
+      );
+  Map<String, AssetEntity> get allAssetEntitiesMap =>
+      Map<String, AssetEntity>.unmodifiable(
+        _allAssetEntitiesMap,
+      );
 
   // ignore: non_constant_identifier_names
   static Future<ExternalAssetManager> get FI async {
-    return await GetIt.I
-        .isReady<ExternalAssetManager>()
-        .then((_) => GetIt.I<ExternalAssetManager>());
+    return GetIt.I.getAsync<ExternalAssetManager>();
   }
 
   Future<void> initAsync() async {
-    if (_isInitialized) {
+    if (_isInitializing) {
       return;
     }
-    _isInitialized = true;
+    _isInitializing = true;
+
     if (!(await PermissionManager.PhotoManagerRequestAsync())) {
       return;
     }
-    _isPermissionGranted = true;
-    _allAssetsPathEntity = await _getAllAssetsPathEntityAsync();
-    if (_allAssetsPathEntity != null) {
-      List<AssetEntity> assetEntities = await _getAssetEntitiesAsync(
-        pathEntity: _allAssetsPathEntity!,
-      );
-      _allAssetEntitiesMap = {
-        for (AssetEntity assetEntity in assetEntities)
-          (await assetEntity.originFile)!.path: assetEntity,
-      };
-    }
+
+    await fetchAllAssetEntitiesAsync();
+    PhotoManager.addChangeCallback((value) async {
+      await fetchAllAssetEntitiesAsync();
+    });
+    _isReady = true;
   }
 
-  // TODO: refactor filter with filter options
+  Future<AssetEntity?> getAssetEntityAsync({
+    required String id,
+  }) async {
+    AssetEntity? assetEntity = _allAssetEntitiesMap[id];
+    return assetEntity;
+  }
+
+  Future<List<AssetEntity>?> getFilteredAssetEntitiesAsync({
+    required FilterOptionGroup filterOptionGroup,
+  }) async {
+    AssetPathEntity? filteredPathEntity =
+        await _allAssetsPathEntity?.fetchPathProperties(
+      filterOptionGroup: filterOptionGroup,
+    );
+    List<AssetEntity>? assetEntities =
+        await filteredPathEntity?.getAllAssetEntitiesAsync();
+    return assetEntities;
+  }
+
   Future<List<AssetEntity>?> getAssetEntitiesBetweenTimeAsync({
     DateTime? minDate,
     DateTime? maxDate,
     bool isTimeAsc = true,
   }) async {
-    if (!_isAllAssetsPathEntityReady()) {
-      return null;
-    }
-    FilterOptionGroup timeRangefilterOption = _getTimeRangeFilterOption(
+    FilterOptionGroup timeRangefilterOption = _getTimeRangeFilterOptionGroup(
       minDate: minDate,
       maxDate: maxDate,
       isTimeAsc: isTimeAsc,
     );
-    AssetPathEntity? filteredPathEntity = await _getFilteredPathEntityAsync(
-      filterOption: timeRangefilterOption,
-    );
-    if (filteredPathEntity == null) {
-      return null;
-    }
-    List<AssetEntity> assetEntities = await _getAssetEntitiesAsync(
-      pathEntity: filteredPathEntity,
+    List<AssetEntity>? assetEntities = await getFilteredAssetEntitiesAsync(
+      filterOptionGroup: timeRangefilterOption,
     );
     return assetEntities;
   }
 
-  AssetEntity? getAssetEntityByPath(String path) {
-    return _allAssetEntitiesMap?[path];
-  }
-
-  Future<AssetPathEntity?> _getAllAssetsPathEntityAsync() async {
-    final List<AssetPathEntity> pathEntities =
-        await PhotoManager.getAssetPathList(
-      type: RequestType.all,
-      hasAll: true,
-      onlyAll: true,
-    );
-    if (pathEntities.isEmpty) {
-      return null;
+  Future<void> fetchAllAssetEntitiesAsync() async {
+    _allAssetsPathEntity =
+        await PhotoManagerExtension.getAllAssetsPathEntityAsync();
+    if (_allAssetsPathEntity == null) {
+      _allAssetEntities = [];
+      _allAssetEntitiesMap = {};
+    } else {
+      _allAssetEntities =
+          await _allAssetsPathEntity!.getAllAssetEntitiesAsync();
+      _allAssetEntitiesMap = _allAssetEntities.toMap();
     }
-    return pathEntities[0];
+    notifyListeners();
   }
 
-  bool _isAllAssetsPathEntityReady() {
-    return _allAssetsPathEntity != null;
-  }
-
-  FilterOptionGroup _getTimeRangeFilterOption({
+  FilterOptionGroup _getTimeRangeFilterOptionGroup({
     DateTime? minDate,
     DateTime? maxDate,
     required bool isTimeAsc,
   }) {
-    final FilterOptionGroup filterOption = FilterOptionGroup(
+    final FilterOptionGroup filterOptionGroup = FilterOptionGroup(
       updateTimeCond: DateTimeCond(
         min: minDate ?? DateTime.fromMillisecondsSinceEpoch(0),
         max: maxDate ?? DateTime.now(),
@@ -110,26 +109,6 @@ class ExternalAssetManager {
         ),
       ],
     );
-    return filterOption;
-  }
-
-  Future<AssetPathEntity?> _getFilteredPathEntityAsync({
-    required FilterOptionGroup filterOption,
-  }) async {
-    AssetPathEntity? filteredPathEntity =
-        await _allAssetsPathEntity?.fetchPathProperties(
-      filterOptionGroup: filterOption,
-    );
-    return filteredPathEntity;
-  }
-
-  Future<List<AssetEntity>> _getAssetEntitiesAsync({
-    required AssetPathEntity pathEntity,
-  }) async {
-    List<AssetEntity> assetEntities = await pathEntity.getAssetListRange(
-      start: 0,
-      end: await pathEntity.assetCountAsync,
-    );
-    return assetEntities;
+    return filterOptionGroup;
   }
 }
