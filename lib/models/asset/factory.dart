@@ -55,31 +55,14 @@ class AssetFactory {
     required pm.AssetEntity assetEntity,
   }) async {
     TravelConfig config = TravelConfigFactory.fromAssetEntity(assetEntity);
-    AssetType type = assetEntity.type.toAssetType();
-    File? assetFile = await assetEntity.originFile;
-    if (assetFile == null) {
-      return null;
-    }
-
-    Wpt? coordinates;
-    latlong.LatLng? latLng;
-    latLng = (await assetEntity.latlngAsync()).toLatLong2();
-    if (latLng == latlong.LatLng(0, 0)) {
-      latLng = null;
-    }
-    if (latLng != null) {
-      coordinates = Wpt(
-        latLng: latLng,
-      );
-    }
-
-    return Asset(
+    Asset asset = Asset(
       config: config,
-      type: type,
       assetEntityId: assetEntity.id,
-      coordinates: coordinates,
-      createdDateTime: assetEntity.createDateTime,
     );
+    await asset.fetchEntityDataAsync(
+      entity: assetEntity,
+    );
+    return asset;
   }
 
   /// Guaranteed to sort by [Asset.createdDateTime] in ascending order.

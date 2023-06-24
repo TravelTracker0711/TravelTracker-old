@@ -47,14 +47,17 @@ class Asset {
   final TravelConfig config;
   final String? assetEntityId;
   String? attachedTrksegId;
-  Wpt? coordinates;
 
   pm.AssetEntity? _entity;
+  Wpt? _coordinates;
   AssetType _type;
   DateTime? _createdDateTime;
 
   /// run [fetchEntityDataAsync] before using [entity]
   pm.AssetEntity? get entity => _entity;
+
+  /// run [fetchEntityDataAsync] before using [coordinates]
+  Wpt? get coordinates => _coordinates;
 
   /// run [fetchEntityDataAsync] before using [type]
   AssetType get type => _type;
@@ -75,18 +78,34 @@ class Asset {
 
   /// fetches entity data(entity, type, createdDateTime) from assetEntityId
   /// with [force] set to true, it will fetch data even if it has already been fetched
+  /// with [entity] set, it will use that instead of fetching from assetEntityId
   Future<void> fetchEntityDataAsync({
     bool force = false,
+    pm.AssetEntity? entity,
   }) async {
     if (assetEntityId == null) {
       return;
     }
-    if (_entity == null || force) {
+    if (entity != null) {
+      _entity = entity;
+    } else if (_entity == null || force) {
       _entity = await ExternalAssetManager.FI.then((eam) async {
         return eam.getAssetEntity(id: assetEntityId!);
       });
     }
     if (_entity != null) {
+      if (_coordinates == null || force) {
+        latlong.LatLng? latLng;
+        latLng = (await _entity!.latlngAsync()).toLatLong2();
+        if (latLng == latlong.LatLng(0, 0)) {
+          latLng = null;
+        }
+        if (latLng != null) {
+          _coordinates = Wpt(
+            latLng: latLng,
+          );
+        }
+      }
       if (_type == AssetType.unset || force) {
         _type = _entity!.type.toAssetType();
       }
@@ -105,7 +124,7 @@ class Asset {
     DateTime? createdDateTime,
   })  : config = config?.clone() ?? TravelConfig(),
         _type = type ?? AssetType.unset,
-        coordinates = coordinates?.clone(),
+        _coordinates = coordinates?.clone(),
         _createdDateTime = createdDateTime;
 
   int compareTo(Asset other) {

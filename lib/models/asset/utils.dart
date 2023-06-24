@@ -74,7 +74,7 @@ extension AssetsUtils on List<Asset> {
         trkptIndex: trkptIndex,
         asset: asset,
       );
-      asset.coordinates = Wpt(
+      asset._coordinates = Wpt(
         latLng: latLng,
       );
       asset.attachedTrksegId = trkseg.config.id;
