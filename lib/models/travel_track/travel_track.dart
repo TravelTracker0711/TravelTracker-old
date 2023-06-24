@@ -31,8 +31,8 @@ class TravelTrack with ChangeNotifier {
 
   List<List<String>> get assetIdGroups =>
       List<List<String>>.unmodifiable(_assetIdGroups);
-  DateTime get startTime => getTrksegsStartTime(_trksegs) ?? _createDateTime;
-  DateTime get endTime => getTrksegsEndTime(_trksegs) ?? _createDateTime;
+  DateTime get startTime => _trksegs.startTime ?? _createDateTime;
+  DateTime get endTime => _trksegs.endTime ?? _createDateTime;
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {
@@ -58,7 +58,7 @@ class TravelTrack with ChangeNotifier {
           .toList()
           .cast<Wpt>(),
       trksegs: (json['trksegs'] as List)
-          .map((e) => Trkseg.fromJson(e))
+          .map((e) => TrksegFactory.fromJson(e))
           .toList()
           .cast<Trkseg>(),
       assetMap: assetMap,
@@ -163,7 +163,7 @@ class TravelTrack with ChangeNotifier {
       wpts.addAll(WptFactory.fromGpxWpts(
         gpxWpts: gpx.wpts,
       ));
-      trksegs.addAll(Trkseg.fromGpx(
+      trksegs.addAll(TrksegFactory.fromGpx(
         gpx: gpx,
       ));
     }
@@ -171,8 +171,8 @@ class TravelTrack with ChangeNotifier {
     trksegs.sort((a, b) => a.compareTo(b));
 
     if (autoAttachAssets) {
-      DateTime? startTime = getTrksegsStartTime(trksegs);
-      DateTime? endTime = getTrksegsEndTime(trksegs);
+      DateTime? startTime = trksegs.startTime;
+      DateTime? endTime = trksegs.endTime;
       assert(startTime != null && endTime != null,
           'startTime and endTime must not be null');
       ExternalAssetManager externalAssetManager = await ExternalAssetManager.FI;
