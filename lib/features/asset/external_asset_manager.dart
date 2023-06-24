@@ -10,7 +10,7 @@ import 'package:watcher/watcher.dart';
 
 class ExternalAssetManager {
   AssetPathEntity? _allAssetsPathEntity;
-  Map<String, AssetEntity>? _allAssetsMap;
+  Map<String, AssetEntity>? _allAssetEntitiesMap;
   bool _isInitialized = false;
   bool _isPermissionGranted = false;
 
@@ -33,25 +33,20 @@ class ExternalAssetManager {
       return;
     }
     _isPermissionGranted = true;
-    _allAssetsPathEntity = await _getAllAssetPathAsync();
+    _allAssetsPathEntity = await _getAllAssetsPathEntityAsync();
     if (_allAssetsPathEntity != null) {
-      List<AssetEntity> assets = await _getAssetsAsync(
+      List<AssetEntity> assetEntities = await _getAssetEntitiesAsync(
         pathEntity: _allAssetsPathEntity!,
       );
-      _allAssetsMap = {
-        for (AssetEntity asset in assets) (await asset.originFile)!.path: asset,
+      _allAssetEntitiesMap = {
+        for (AssetEntity assetEntity in assetEntities)
+          (await assetEntity.originFile)!.path: assetEntity,
       };
-
-      Map.fromIterable(
-        assets,
-        key: (asset) => asset.id,
-        value: (asset) => asset,
-      );
     }
   }
 
   // TODO: refactor filter with filter options
-  Future<List<AssetEntity>?> getAssetsBetweenTimeAsync({
+  Future<List<AssetEntity>?> getAssetEntitiesBetweenTimeAsync({
     DateTime? minDate,
     DateTime? maxDate,
     bool isTimeAsc = true,
@@ -70,14 +65,14 @@ class ExternalAssetManager {
     if (filteredPathEntity == null) {
       return null;
     }
-    List<AssetEntity> assets = await _getAssetsAsync(
+    List<AssetEntity> assetEntities = await _getAssetEntitiesAsync(
       pathEntity: filteredPathEntity,
     );
-    return assets;
+    return assetEntities;
   }
 
-  AssetEntity? getAssetByPath(String path) {
-    return _allAssetsMap?[path];
+  AssetEntity? getAssetEntityByPath(String path) {
+    return _allAssetEntitiesMap?[path];
   }
 
   Future<bool> _checkPermissionAsync() async {
@@ -85,7 +80,7 @@ class ExternalAssetManager {
     return ps.isAuth;
   }
 
-  Future<AssetPathEntity?> _getAllAssetPathAsync() async {
+  Future<AssetPathEntity?> _getAllAssetsPathEntityAsync() async {
     final List<AssetPathEntity> pathEntities =
         await PhotoManager.getAssetPathList(
       type: RequestType.all,
@@ -132,13 +127,13 @@ class ExternalAssetManager {
     return filteredPathEntity;
   }
 
-  Future<List<AssetEntity>> _getAssetsAsync({
+  Future<List<AssetEntity>> _getAssetEntitiesAsync({
     required AssetPathEntity pathEntity,
   }) async {
-    List<AssetEntity> assets = await pathEntity.getAssetListRange(
+    List<AssetEntity> assetEntities = await pathEntity.getAssetListRange(
       start: 0,
       end: await pathEntity.assetCountAsync,
     );
-    return assets;
+    return assetEntities;
   }
 }

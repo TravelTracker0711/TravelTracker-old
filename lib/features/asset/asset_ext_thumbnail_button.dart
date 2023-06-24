@@ -31,7 +31,7 @@ class AssetExtThumbnailButton extends StatelessWidget {
                 ? null
                 : DecorationImage(
                     image: AssetEntityImageProvider(
-                      displayedAssetExt!.asset,
+                      displayedAssetExt!.assetEntity,
                       isOriginal: false,
                     ),
                     fit: BoxFit.cover,

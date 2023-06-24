@@ -151,7 +151,7 @@ class TravelTrackLayerBuilder {
           child: AssetExtThumbnailButton(
             displayedAssetExt: assetExt,
             onTap: () {
-              debugPrint('onPressed ${assetExt.asset.title}');
+              debugPrint('onPressed ${assetExt.assetEntity.title}');
               // TODO: show asset
               // Navigator.pushNamed(context, '/asset');
             },

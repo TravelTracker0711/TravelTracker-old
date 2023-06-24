@@ -57,7 +57,7 @@ class _GalleryViewGridState extends State<GalleryViewGrid> {
               )
             : Ink.image(
                 image: AssetEntityImageProvider(
-                  assetExt.asset,
+                  assetExt.assetEntity,
                   isOriginal: false,
                 ),
                 fit: BoxFit.cover,

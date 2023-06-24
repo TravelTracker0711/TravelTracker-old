@@ -8,8 +8,8 @@ class AssetExtFilter {
       List<AssetExt> assetExts, DateTime startTime, DateTime endTime) {
     return assetExts
         .where((assetExt) =>
-            assetExt.asset.createDateTime.isAfter(startTime) &&
-            assetExt.asset.createDateTime.isBefore(endTime))
+            assetExt.assetEntity.createDateTime.isAfter(startTime) &&
+            assetExt.assetEntity.createDateTime.isBefore(endTime))
         .toList();
   }
 

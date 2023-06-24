@@ -18,18 +18,18 @@ enum AssetExtType {
 }
 
 class AssetExt extends TravelData {
-  final AssetEntity asset;
+  final AssetEntity assetEntity;
   final AssetExtType type;
   final String fileFullPath;
   Wpt? coordinates;
   String? attachedTrksegId;
 
-  DateTime get createDateTime => asset.createDateTime;
+  DateTime get createDateTime => assetEntity.createDateTime;
 
   AssetExt._({
     String? id,
     TravelConfig? config,
-    required this.asset,
+    required this.assetEntity,
     required this.type,
     required this.fileFullPath,
     this.coordinates,
@@ -44,17 +44,17 @@ class AssetExt extends TravelData {
   }
 
   static Future<AssetExt?> fromAssetEntityAsync({
-    required AssetEntity asset,
+    required AssetEntity assetEntity,
   }) async {
-    AssetExtType type = _getAssetType(asset);
-    File? assetFile = await asset.originFile;
+    AssetExtType type = _getAssetType(assetEntity);
+    File? assetFile = await assetEntity.originFile;
     String? fileFullPath = assetFile?.path;
     if (fileFullPath == null) {
       return null;
     }
     Wpt? coordinates;
     latlong.LatLng? latLng;
-    latLng = (await asset.latlngAsync()).toLatLong2();
+    latLng = (await assetEntity.latlngAsync()).toLatLong2();
     if (latLng == latlong.LatLng(0, 0)) {
       latLng = null;
     }
@@ -64,7 +64,7 @@ class AssetExt extends TravelData {
       );
     }
     return AssetExt._(
-      asset: asset,
+      assetEntity: assetEntity,
       type: type,
       fileFullPath: fileFullPath,
       coordinates: coordinates,
@@ -72,12 +72,12 @@ class AssetExt extends TravelData {
   }
 
   static Future<List<AssetExt>> fromAssetEntitiesAsync({
-    required List<AssetEntity> assets,
+    required List<AssetEntity> assetEntities,
   }) async {
     List<AssetExt> assetExts = [];
-    for (AssetEntity asset in assets) {
+    for (AssetEntity assetEntity in assetEntities) {
       AssetExt? assetExt = await fromAssetEntityAsync(
-        asset: asset,
+        assetEntity: assetEntity,
       );
       if (assetExt == null) {
         continue;
@@ -88,12 +88,12 @@ class AssetExt extends TravelData {
   }
 
   static Future<List<AssetExt>> fromAssetEntitiesWithTrksegAsync({
-    required List<AssetEntity> assets,
+    required List<AssetEntity> assetEntities,
     required Trkseg trkseg,
     bool overrideAssetOriginCoordinates = true,
   }) async {
     List<AssetExt> assetExts = await fromAssetEntitiesAsync(
-      assets: assets,
+      assetEntities: assetEntities,
     );
     int trkptIndex = 0;
     List<Wpt> trkpts = trkseg.trkpts.where((trkpt) {
@@ -147,12 +147,12 @@ class AssetExt extends TravelData {
     throw UnimplementedError();
   }
 
-  static AssetExtType _getAssetType(AssetEntity asset) {
-    if (asset.type == AssetType.audio) {
+  static AssetExtType _getAssetType(AssetEntity assetEntity) {
+    if (assetEntity.type == AssetType.audio) {
       return AssetExtType.audio;
-    } else if (asset.type == AssetType.video) {
+    } else if (assetEntity.type == AssetType.video) {
       return AssetExtType.video;
-    } else if (asset.type == AssetType.image) {
+    } else if (assetEntity.type == AssetType.image) {
       return AssetExtType.image;
     } else {
       return AssetExtType.unknown;
@@ -175,14 +175,15 @@ class AssetExt extends TravelData {
   }
 
   static Future<AssetExt> fromJson(Map<String, dynamic> json) async {
-    AssetEntity asset = (await ExternalAssetManager.FI).getAssetByPath(
+    AssetEntity assetEntity =
+        (await ExternalAssetManager.FI).getAssetEntityByPath(
       json['fileFullPath'],
     )!;
     AssetExt assetExt = AssetExt._(
       id: json['id'],
       config:
           json['config'] != null ? TravelConfig.fromJson(json['config']) : null,
-      asset: asset,
+      assetEntity: assetEntity,
       type: _getAssetExtTypeFromString(json['type']),
       fileFullPath: json['fileFullPath'],
       coordinates: json['coordinates'] != null

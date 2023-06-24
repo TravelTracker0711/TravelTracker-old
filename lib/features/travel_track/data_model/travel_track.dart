@@ -179,13 +179,13 @@ class TravelTrack extends TravelData with ChangeNotifier {
       assert(startTime != null && endTime != null,
           'startTime and endTime must not be null');
       ExternalAssetManager externalAssetManager = await ExternalAssetManager.FI;
-      List<AssetEntity>? assets =
-          await externalAssetManager.getAssetsBetweenTimeAsync(
+      List<AssetEntity>? assetEntities =
+          await externalAssetManager.getAssetEntitiesBetweenTimeAsync(
         minDate: startTime,
         maxDate: endTime,
       );
-      if (assets != null) {
-        int assetCount = assets.length;
+      if (assetEntities != null) {
+        int assetCount = assetEntities.length;
         int assetStartIndex = 0;
         int assetEndIndex = 0;
         int lastAssetEndIndex = 0;
@@ -196,8 +196,8 @@ class TravelTrack extends TravelData with ChangeNotifier {
             continue;
           }
           while (assetStartIndex < assetCount) {
-            AssetEntity asset = assets[assetStartIndex];
-            DateTime assetDateTime = asset.createDateTime;
+            AssetEntity assetEntity = assetEntities[assetStartIndex];
+            DateTime assetDateTime = assetEntity.createDateTime;
             if (assetDateTime.isBefore(trksegStartTime)) {
               assetStartIndex++;
               continue;
@@ -206,14 +206,15 @@ class TravelTrack extends TravelData with ChangeNotifier {
           }
           assetExtMap.addAll({
             for (AssetExt assetExt in await AssetExt.fromAssetEntitiesAsync(
-              assets: assets.sublist(lastAssetEndIndex, assetStartIndex),
+              assetEntities:
+                  assetEntities.sublist(lastAssetEndIndex, assetStartIndex),
             ))
               assetExt.id: assetExt,
           });
           assetEndIndex = assetStartIndex;
           while (assetEndIndex < assetCount) {
-            AssetEntity asset = assets[assetEndIndex];
-            DateTime assetDateTime = asset.createDateTime;
+            AssetEntity assetEntity = assetEntities[assetEndIndex];
+            DateTime assetDateTime = assetEntity.createDateTime;
             if (assetDateTime.isBefore(trksegEndTime)) {
               assetEndIndex++;
               continue;
@@ -224,7 +225,8 @@ class TravelTrack extends TravelData with ChangeNotifier {
           assetExtMap.addAll({
             for (AssetExt assetExt
                 in await AssetExt.fromAssetEntitiesWithTrksegAsync(
-              assets: assets.sublist(assetStartIndex, assetEndIndex),
+              assetEntities:
+                  assetEntities.sublist(assetStartIndex, assetEndIndex),
               trkseg: trkseg,
             ))
               assetExt.id: assetExt,
@@ -233,7 +235,7 @@ class TravelTrack extends TravelData with ChangeNotifier {
         }
         assetExtMap.addAll({
           for (AssetExt assetExt in await AssetExt.fromAssetEntitiesAsync(
-            assets: assets.sublist(lastAssetEndIndex, assetCount),
+            assetEntities: assetEntities.sublist(lastAssetEndIndex, assetCount),
           ))
             assetExt.id: assetExt,
         });

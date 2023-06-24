@@ -70,7 +70,7 @@ class _GalleryViewPhotoState extends State<GalleryViewPhoto> {
             widthFactor: 1 / _imagePageController.viewportFraction,
             child: PhotoView(
               imageProvider:
-                  AssetEntityImageProvider(widget.assetExts[index].asset),
+                  AssetEntityImageProvider(widget.assetExts[index].assetEntity),
               minScale: PhotoViewComputedScale.contained,
               scaleStateChangedCallback: (state) {
                 setState(() {
@@ -133,7 +133,7 @@ class _GalleryViewPhotoState extends State<GalleryViewPhoto> {
                     borderRadius: BorderRadius.circular(5),
                     image: DecorationImage(
                       image: AssetEntityImageProvider(
-                        widget.assetExts[index].asset,
+                        widget.assetExts[index].assetEntity,
                         isOriginal: false,
                       ),
                       fit: BoxFit.cover,
