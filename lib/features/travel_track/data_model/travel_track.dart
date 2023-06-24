@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:gpx/gpx.dart';
+import 'package:gpx/gpx.dart' as gpx_pkg;
 import 'package:photo_manager/photo_manager.dart';
 import 'package:travel_tracker/features/asset/external_asset_manager.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_data.dart';
@@ -74,34 +74,34 @@ class TravelTrack extends TravelData with ChangeNotifier {
     return travelTrack;
   }
 
-  Gpx toGpx() {
+  gpx_pkg.Gpx toGpx() {
     // WptExt, TrksegExt
-    Gpx gpx = Gpx();
+    gpx_pkg.Gpx gpx = gpx_pkg.Gpx();
 
-    List<Wpt> wpts = [];
+    List<gpx_pkg.Wpt> wpts = [];
     for (WptExt ext in _wptExts) {
-      Wpt wpt =
-          Wpt(lat: ext.lat, lon: ext.lon, ele: ext.elevation, time: ext.time);
+      gpx_pkg.Wpt wpt = gpx_pkg.Wpt(
+          lat: ext.lat, lon: ext.lon, ele: ext.elevation, time: ext.time);
       wpts.add(wpt);
     }
     gpx.wpts = wpts;
 
-    List<Trkseg> trksegs = [];
+    List<gpx_pkg.Trkseg> trksegs = [];
     for (TrksegExt trkext in _trksegExts) {
-      List<Wpt> wpts = [];
+      List<gpx_pkg.Wpt> wpts = [];
       for (WptExt wptext in trkext.trkpts) {
-        Wpt wpt = Wpt(
+        gpx_pkg.Wpt wpt = gpx_pkg.Wpt(
             lat: wptext.lat,
             lon: wptext.lon,
             ele: wptext.elevation,
             time: wptext.time);
         wpts.add(wpt);
       }
-      Trkseg trkseg = Trkseg(trkpts: wpts);
+      gpx_pkg.Trkseg trkseg = gpx_pkg.Trkseg(trkpts: wpts);
       trksegs.add(trkseg);
     }
-    Trk trk = Trk(trksegs: trksegs);
-    List<Trk> trks = [trk];
+    gpx_pkg.Trk trk = gpx_pkg.Trk(trksegs: trksegs);
+    List<gpx_pkg.Trk> trks = [trk];
     gpx.trks = trks;
     return gpx;
   }
@@ -162,7 +162,7 @@ class TravelTrack extends TravelData with ChangeNotifier {
         continue;
       }
       String gpxString = await gpxFile.readAsString();
-      Gpx gpx = GpxReader().fromString(gpxString);
+      gpx_pkg.Gpx gpx = gpx_pkg.GpxReader().fromString(gpxString);
 
       wptExts.addAll(WptExt.fromGpx(
         gpx: gpx,

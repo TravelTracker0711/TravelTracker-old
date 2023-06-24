@@ -1,4 +1,4 @@
-import 'package:gpx/gpx.dart';
+import 'package:gpx/gpx.dart' as gpx_pkg;
 import 'package:travel_tracker/features/travel_track/data_model/travel_data.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_config.dart';
 import 'package:travel_tracker/features/travel_track/data_model/wpt_ext.dart';
@@ -71,7 +71,7 @@ class TrksegExt extends TravelData {
   }
 
   factory TrksegExt.fromTrkseg({
-    required Trkseg trkseg,
+    required gpx_pkg.Trkseg trkseg,
   }) {
     List<WptExt> trkpts = WptExt.fromTrkseg(
       trkseg: trkseg,
@@ -82,11 +82,11 @@ class TrksegExt extends TravelData {
   }
 
   static List<TrksegExt> fromGpx({
-    required Gpx gpx,
+    required gpx_pkg.Gpx gpx,
   }) {
     List<TrksegExt> trksegs = [];
-    for (Trk trk in gpx.trks) {
-      for (Trkseg trkseg in trk.trksegs) {
+    for (gpx_pkg.Trk trk in gpx.trks) {
+      for (gpx_pkg.Trkseg trkseg in trk.trksegs) {
         trksegs.add(
           TrksegExt.fromTrkseg(
             trkseg: trkseg,

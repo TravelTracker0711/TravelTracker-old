@@ -1,5 +1,5 @@
 import 'package:geolocator/geolocator.dart';
-import 'package:gpx/gpx.dart';
+import 'package:gpx/gpx.dart' as gpx_pkg;
 import 'package:travel_tracker/features/travel_track/data_model/travel_data.dart';
 import 'package:latlong2/latlong.dart' as latlng;
 import 'package:travel_tracker/features/travel_track/data_model/travel_config.dart';
@@ -79,10 +79,10 @@ class WptExt extends TravelData {
   }
 
   static List<WptExt> fromGpx({
-    required Gpx gpx,
+    required gpx_pkg.Gpx gpx,
   }) {
     List<WptExt> wptExts = [];
-    for (Wpt wpt in gpx.wpts) {
+    for (gpx_pkg.Wpt wpt in gpx.wpts) {
       if (wpt.lat == null || wpt.lon == null) {
         continue;
       }
@@ -99,10 +99,10 @@ class WptExt extends TravelData {
   }
 
   static List<WptExt> fromTrkseg({
-    required Trkseg trkseg,
+    required gpx_pkg.Trkseg trkseg,
   }) {
     List<WptExt> trkpts = [];
-    for (Wpt wpt in trkseg.trkpts) {
+    for (gpx_pkg.Wpt wpt in trkseg.trkpts) {
       if (wpt.lat == null || wpt.lon == null) {
         continue;
       }
