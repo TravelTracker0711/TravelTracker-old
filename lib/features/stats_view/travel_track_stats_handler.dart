@@ -1,12 +1,12 @@
 import 'package:latlong2/latlong.dart' as latlng;
 import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
 import 'package:travel_tracker/features/travel_track/data_model/trkseg_ext.dart';
-import 'package:travel_tracker/features/travel_track/data_model/wpt_ext.dart';
+import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
 
 class TravelTrackStatsHandler {
   double getTotalTrksegDistance(TravelTrack travelTrack) {
     double totalDistance = 0.0;
-    List<WptExt> trkpts = [];
+    List<Wpt> trkpts = [];
     for (TrksegExt trksegExt in travelTrack.trksegExts) {
       trkpts.addAll(trksegExt.trkpts);
     }

@@ -4,7 +4,7 @@ import 'package:flutter_map_animations/flutter_map_animations.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:latlong2/latlong.dart' as latlng;
 import 'package:travel_tracker/features/travel_track/data_model/trkseg_ext.dart';
-import 'package:travel_tracker/features/travel_track/data_model/wpt_ext.dart';
+import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
 
 enum MapViewMode {
   normal,
@@ -35,26 +35,26 @@ class MapViewController with ChangeNotifier {
   }
 
   void locateToTrksegExt(TrksegExt trksegExt) {
-    locateToWptExts(trksegExt.trkpts);
+    locateToWpts(trksegExt.trkpts);
   }
 
-  void locateToWptExts(List<WptExt> wptExts) {
-    double minLat = wptExts[0].lat;
-    double maxLat = wptExts[0].lat;
-    double minLon = wptExts[0].lon;
-    double maxLon = wptExts[0].lon;
-    for (WptExt wptExt in wptExts) {
-      if (wptExt.lat < minLat) {
-        minLat = wptExt.lat;
+  void locateToWpts(List<Wpt> wpts) {
+    double minLat = wpts[0].lat;
+    double maxLat = wpts[0].lat;
+    double minLon = wpts[0].lon;
+    double maxLon = wpts[0].lon;
+    for (Wpt wpt in wpts) {
+      if (wpt.lat < minLat) {
+        minLat = wpt.lat;
       }
-      if (wptExt.lat > maxLat) {
-        maxLat = wptExt.lat;
+      if (wpt.lat > maxLat) {
+        maxLat = wpt.lat;
       }
-      if (wptExt.lon < minLon) {
-        minLon = wptExt.lon;
+      if (wpt.lon < minLon) {
+        minLon = wpt.lon;
       }
-      if (wptExt.lon > maxLon) {
-        maxLon = wptExt.lon;
+      if (wpt.lon > maxLon) {
+        maxLon = wpt.lon;
       }
     }
     LatLngBounds bounds = LatLngBounds(

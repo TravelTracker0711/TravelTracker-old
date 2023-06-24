@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:travel_tracker/features/travel_track/data_model/wpt_ext.dart';
+import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
 import 'dart:math';
 
 class TrksegExtExtractor {
@@ -19,7 +19,7 @@ class TrksegExtExtractor {
     return false;
   }
 
-  bool _intersects(List<WptExt> wpts, WptExt w1, WptExt w2) {
+  bool _intersects(List<Wpt> wpts, Wpt w1, Wpt w2) {
     if (wpts.length < 2) {
       return false;
     }
@@ -58,10 +58,10 @@ class TrksegExtExtractor {
     return false;
   }
 
-  List<WptExt> getPartialTrkpts(List<WptExt> trkpts, double percentage) {
+  List<Wpt> getPartialTrkpts(List<Wpt> trkpts, double percentage) {
     int index = (percentage * trkpts.length).truncate();
 
-    List<WptExt> partialTrack = [];
+    List<Wpt> partialTrack = [];
     partialTrack.add(trkpts[index]);
 
     // 向左延伸

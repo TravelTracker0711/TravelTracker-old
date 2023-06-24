@@ -1,15 +1,15 @@
 import 'package:gpx/gpx.dart' as gpx_pkg;
 import 'package:travel_tracker/features/travel_track/data_model/travel_data.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_config.dart';
-import 'package:travel_tracker/features/travel_track/data_model/wpt_ext.dart';
+import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
 import 'package:travel_tracker/utils/datetime.dart';
 
 class TrksegExt extends TravelData {
-  final List<WptExt> _trkpts = <WptExt>[];
+  final List<Wpt> _trkpts = <Wpt>[];
 
-  List<WptExt> get trkpts => List<WptExt>.unmodifiable(_trkpts);
+  List<Wpt> get trkpts => List<Wpt>.unmodifiable(_trkpts);
   DateTime? get startTime {
-    for (WptExt trkpt in trkpts) {
+    for (Wpt trkpt in trkpts) {
       if (trkpt.time != null) {
         return trkpt.time;
       }
@@ -19,7 +19,7 @@ class TrksegExt extends TravelData {
 
   DateTime? get endTime {
     for (int i = trkpts.length - 1; i >= 0; i--) {
-      WptExt trkpt = trkpts[i];
+      Wpt trkpt = trkpts[i];
       if (trkpt.time != null) {
         return trkpt.time;
       }
@@ -40,13 +40,13 @@ class TrksegExt extends TravelData {
           id: json['id'],
           config: TravelConfig.fromJson(json['config']),
           trkpts: (json['trkpts'] as List<dynamic>)
-              .map((e) => WptExt.fromJson(e))
+              .map((e) => Wpt.fromJson(e))
               .toList(),
         );
 
   TrksegExt({
     TravelConfig? config,
-    List<WptExt>? trkpts,
+    List<Wpt>? trkpts,
   }) : this._(
           config: config,
           trkpts: trkpts,
@@ -55,7 +55,7 @@ class TrksegExt extends TravelData {
   TrksegExt._({
     String? id,
     TravelConfig? config,
-    List<WptExt>? trkpts,
+    List<Wpt>? trkpts,
   }) : super(
           id: id,
           config: config,
@@ -73,7 +73,7 @@ class TrksegExt extends TravelData {
   factory TrksegExt.fromTrkseg({
     required gpx_pkg.Trkseg trkseg,
   }) {
-    List<WptExt> trkpts = WptExt.fromTrkseg(
+    List<Wpt> trkpts = Wpt.fromTrkseg(
       trkseg: trkseg,
     );
     return TrksegExt._(
@@ -97,7 +97,7 @@ class TrksegExt extends TravelData {
     return trksegs;
   }
 
-  void addTrkpt(WptExt trkpt) {
+  void addTrkpt(Wpt trkpt) {
     _trkpts.add(trkpt);
   }
 }

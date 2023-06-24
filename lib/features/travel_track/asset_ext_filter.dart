@@ -1,7 +1,7 @@
 // TODO: Implement AssetExtFilter
 import 'package:latlong2/latlong.dart' as latlng;
 import 'package:travel_tracker/features/asset/data_model/asset_ext.dart';
-import 'package:travel_tracker/features/travel_track/data_model/wpt_ext.dart';
+import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
 
 class AssetExtFilter {
   List<AssetExt> filterByTimeRange(
@@ -24,9 +24,9 @@ class AssetExtFilter {
   }
 
   List<AssetExt> filterByLocationInCircle(
-      List<AssetExt> assetExts, WptExt center, double radiusMeter) {
+      List<AssetExt> assetExts, Wpt center, double radiusMeter) {
     return assetExts.where((assetExt) {
-      WptExt? assetCoordinates = assetExt.coordinates;
+      Wpt? assetCoordinates = assetExt.coordinates;
       if (assetCoordinates == null) return false;
       const latlng.Distance distance = latlng.Distance();
       double dis = distance(center.latLng, assetCoordinates.latLng);
@@ -37,13 +37,13 @@ class AssetExtFilter {
 
   //filterByLocationInBound
   List<AssetExt> filterByLocationInBound(
-      List<AssetExt> assetExts, WptExt p1, WptExt p2) {
+      List<AssetExt> assetExts, Wpt p1, Wpt p2) {
     double minLatitude = p1.lat < p2.lat ? p1.lat : p2.lat;
     double maxLatitude = p1.lat > p2.lat ? p1.lat : p2.lat;
     double minLongitude = p1.lon < p2.lon ? p1.lon : p2.lon;
     double maxLongitude = p1.lon > p2.lon ? p1.lon : p2.lon;
     return assetExts.where((assetExt) {
-      WptExt? assetCoordinates = assetExt.coordinates;
+      Wpt? assetCoordinates = assetExt.coordinates;
       if (assetCoordinates == null) return false;
       double latitude = assetCoordinates.lat;
       double longitude = assetCoordinates.lon;

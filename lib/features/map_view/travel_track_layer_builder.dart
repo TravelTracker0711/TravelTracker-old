@@ -11,7 +11,7 @@ import 'package:travel_tracker/features/map_view/trkseg_ext_extractor.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
 import 'package:travel_tracker/features/asset/data_model/asset_ext.dart';
 import 'package:travel_tracker/features/travel_track/data_model/trkseg_ext.dart';
-import 'package:travel_tracker/features/travel_track/data_model/wpt_ext.dart';
+import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
 
 class TravelTrackLayerBuilder {
   final ValueNotifier<double> _mapRotationNotifier;
@@ -50,7 +50,7 @@ class TravelTrackLayerBuilder {
   }
 
   PolylineLayer buildPolylineLayerByTrksegExt(TrksegExt trksegExt) {
-    List<WptExt> trkpts = trksegExt.trkpts;
+    List<Wpt> trkpts = trksegExt.trkpts;
     if (_controller.mode == MapViewMode.partialTrack &&
         _controller.partialTrackMiddlePercentage != null) {
       TrksegExtExtractor trksegExtExtractor = TrksegExtExtractor();
@@ -61,7 +61,7 @@ class TravelTrackLayerBuilder {
     }
 
     List<latlng.LatLng> points = <latlng.LatLng>[];
-    for (WptExt trkpt in trkpts) {
+    for (Wpt trkpt in trkpts) {
       points.add(latlng.LatLng(trkpt.lat, trkpt.lon));
     }
     debugPrint('points.length: ${points.length}');
@@ -78,10 +78,10 @@ class TravelTrackLayerBuilder {
   }
 
   Widget buildMiddlePointLayerByTrksegExt(TrksegExt trksegExt) {
-    List<WptExt> trkpts = trksegExt.trkpts;
+    List<Wpt> trkpts = trksegExt.trkpts;
 
     /// TODO: fix the bug of index out of range.(round() -> truncate() ?)
-    WptExt middlePoint = trkpts[
+    Wpt middlePoint = trkpts[
         (trkpts.length * _controller.partialTrackMiddlePercentage!).round()];
 
     Marker middlePointMarker = Marker(

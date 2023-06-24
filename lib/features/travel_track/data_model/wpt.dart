@@ -5,7 +5,7 @@ import 'package:latlong2/latlong.dart' as latlng;
 import 'package:travel_tracker/features/travel_track/data_model/travel_config.dart';
 import 'package:travel_tracker/utils/datetime.dart';
 
-class WptExt extends TravelData {
+class Wpt extends TravelData {
   final latlng.LatLng latLng;
   final double? elevation;
   final DateTime? time;
@@ -20,7 +20,7 @@ class WptExt extends TravelData {
   double get lon => latLng.longitude;
   double? get ele => elevation;
 
-  WptExt({
+  Wpt({
     TravelConfig? config,
     required latlng.LatLng latLng,
     this.elevation,
@@ -33,7 +33,7 @@ class WptExt extends TravelData {
           config: config,
         );
 
-  WptExt._({
+  Wpt._({
     String? id,
     TravelConfig? config,
     required this.latLng,
@@ -44,11 +44,11 @@ class WptExt extends TravelData {
           config: config,
         );
 
-  int compareTo(WptExt other) {
+  int compareTo(Wpt other) {
     return nullableDateTimeCompare(time, other.time);
   }
 
-  WptExt.clone(WptExt other)
+  Wpt.clone(Wpt other)
       : latLng = latlng.LatLng(
           other.latLng.latitude,
           other.latLng.longitude,
@@ -57,18 +57,18 @@ class WptExt extends TravelData {
         time = other.time,
         super.clone(other);
 
-  static WptExt fromLatLng({
+  static Wpt fromLatLng({
     required latlng.LatLng latLngs,
   }) {
-    return WptExt(
+    return Wpt(
       latLng: latLngs,
     );
   }
 
-  static WptExt fromPosition({
+  static Wpt fromPosition({
     required Position position,
   }) {
-    return WptExt(
+    return Wpt(
       latLng: latlng.LatLng(
         position.latitude,
         position.longitude,
@@ -78,15 +78,15 @@ class WptExt extends TravelData {
     );
   }
 
-  static List<WptExt> fromGpx({
+  static List<Wpt> fromGpx({
     required gpx_pkg.Gpx gpx,
   }) {
-    List<WptExt> wptExts = [];
+    List<Wpt> wpts = [];
     for (gpx_pkg.Wpt wpt in gpx.wpts) {
       if (wpt.lat == null || wpt.lon == null) {
         continue;
       }
-      wptExts.add(WptExt(
+      wpts.add(Wpt(
         latLng: latlng.LatLng(
           wpt.lat!,
           wpt.lon!,
@@ -95,18 +95,18 @@ class WptExt extends TravelData {
         time: wpt.time,
       ));
     }
-    return wptExts;
+    return wpts;
   }
 
-  static List<WptExt> fromTrkseg({
+  static List<Wpt> fromTrkseg({
     required gpx_pkg.Trkseg trkseg,
   }) {
-    List<WptExt> trkpts = [];
+    List<Wpt> trkpts = [];
     for (gpx_pkg.Wpt wpt in trkseg.trkpts) {
       if (wpt.lat == null || wpt.lon == null) {
         continue;
       }
-      trkpts.add(WptExt(
+      trkpts.add(Wpt(
         latLng: latlng.LatLng(
           wpt.lat!,
           wpt.lon!,
@@ -133,7 +133,7 @@ class WptExt extends TravelData {
     return json;
   }
 
-  WptExt.fromJson(Map<String, dynamic> json)
+  Wpt.fromJson(Map<String, dynamic> json)
       : latLng = latlng.LatLng(
           json['lat'],
           json['lon'],
@@ -143,6 +143,6 @@ class WptExt extends TravelData {
         super.fromJson(json);
 
   String toString() {
-    return 'WptExt(id: $id, latLng: $latLng, ele: $ele, time: $time)';
+    return 'Wpt(id: $id, latLng: $latLng, ele: $ele, time: $time)';
   }
 }

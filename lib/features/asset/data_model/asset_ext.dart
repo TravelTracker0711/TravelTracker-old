@@ -6,7 +6,7 @@ import 'package:travel_tracker/features/asset/external_asset_manager.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_data.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_config.dart';
 import 'package:travel_tracker/features/travel_track/data_model/trkseg_ext.dart';
-import 'package:travel_tracker/features/travel_track/data_model/wpt_ext.dart';
+import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
 import 'package:travel_tracker/utils/latlng.dart';
 
 enum AssetExtType {
@@ -21,7 +21,7 @@ class AssetExt extends TravelData {
   final AssetEntity asset;
   final AssetExtType type;
   final String fileFullPath;
-  WptExt? coordinates;
+  Wpt? coordinates;
   String? attachedTrksegExtId;
 
   DateTime get createDateTime => asset.createDateTime;
@@ -52,14 +52,14 @@ class AssetExt extends TravelData {
     if (fileFullPath == null) {
       return null;
     }
-    WptExt? coordinates;
+    Wpt? coordinates;
     latlong.LatLng? latLng;
     latLng = (await asset.latlngAsync()).toLatLong2();
     if (latLng == latlong.LatLng(0, 0)) {
       latLng = null;
     }
     if (latLng != null) {
-      coordinates = WptExt(
+      coordinates = Wpt(
         latLng: latLng,
       );
     }
@@ -96,7 +96,7 @@ class AssetExt extends TravelData {
       assets: assets,
     );
     int trkptIndex = 0;
-    List<WptExt> trkpts = trksegExt.trkpts.where((trkpt) {
+    List<Wpt> trkpts = trksegExt.trkpts.where((trkpt) {
       return trkpt.time != null;
     }).toList();
     for (AssetExt assetExt in assetExts) {
@@ -132,7 +132,7 @@ class AssetExt extends TravelData {
                   coordinatesRatio,
         );
       }
-      assetExt.coordinates = WptExt(
+      assetExt.coordinates = Wpt(
         latLng: latLng,
       );
       assetExt.attachedTrksegExtId = trksegExt.id;
@@ -186,7 +186,7 @@ class AssetExt extends TravelData {
       type: _getAssetExtTypeFromString(json['type']),
       fileFullPath: json['fileFullPath'],
       coordinates: json['coordinates'] != null
-          ? WptExt.fromJson(json['coordinates'])
+          ? Wpt.fromJson(json['coordinates'])
           : null,
       attachedTrksegExtId: json['attachedTrksegExtId'],
     );
