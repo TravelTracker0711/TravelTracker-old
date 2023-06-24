@@ -49,7 +49,7 @@ class TravelTrack with ChangeNotifier {
   static Future<TravelTrack> fromJson(Map<String, dynamic> json) async {
     Map<String, Asset> assetMap = {
       for (String key in json['assetMap'].keys)
-        key: await Asset.fromJson(json['assetMap'][key])
+        key: await AssetFactory.fromJson(json['assetMap'][key])
     };
     TravelTrack travelTrack = TravelTrack._(
       config: TravelConfigFactory.fromJson(json['config']),
@@ -202,7 +202,7 @@ class TravelTrack with ChangeNotifier {
             break;
           }
           assetMap.addAll({
-            for (Asset asset in await Asset.fromAssetEntitiesAsync(
+            for (Asset asset in await AssetFactory.fromAssetEntitiesAsync(
               assetEntities:
                   assetEntities.sublist(lastAssetEndIndex, assetStartIndex),
             ))
@@ -220,7 +220,8 @@ class TravelTrack with ChangeNotifier {
           }
           lastAssetEndIndex = assetEndIndex;
           assetMap.addAll({
-            for (Asset asset in await Asset.fromAssetEntitiesWithTrksegAsync(
+            for (Asset asset
+                in await AssetFactory.fromAssetEntitiesWithTrksegAsync(
               assetEntities:
                   assetEntities.sublist(assetStartIndex, assetEndIndex),
               trkseg: trkseg,
@@ -230,7 +231,7 @@ class TravelTrack with ChangeNotifier {
           assetStartIndex = assetEndIndex;
         }
         assetMap.addAll({
-          for (Asset asset in await Asset.fromAssetEntitiesAsync(
+          for (Asset asset in await AssetFactory.fromAssetEntitiesAsync(
             assetEntities: assetEntities.sublist(lastAssetEndIndex, assetCount),
           ))
             asset.config.id: asset,
