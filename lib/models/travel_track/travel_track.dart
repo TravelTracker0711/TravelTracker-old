@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:gpx/gpx.dart' as gpx_pkg;
 import 'package:photo_manager/photo_manager.dart';
 import 'package:travel_tracker/features/asset/external_asset_manager.dart';
-import 'package:travel_tracker/features/travel_track/data_model/travel_config.dart';
-import 'package:travel_tracker/features/travel_track/data_model/trkseg.dart';
-import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
-import 'package:travel_tracker/features/asset/data_model/asset.dart';
+import 'package:travel_tracker/models/travel_config/travel_config.dart';
+import 'package:travel_tracker/models/trkseg/trkseg.dart';
+import 'package:travel_tracker/models/wpt/wpt.dart';
+import 'package:travel_tracker/models/asset/asset.dart';
 import 'package:travel_tracker/utils/datetime.dart';
 
 class TravelTrack with ChangeNotifier {

@@ -1,7 +1,7 @@
 import 'package:latlong2/latlong.dart' as latlng;
-import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
-import 'package:travel_tracker/features/travel_track/data_model/trkseg.dart';
-import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
+import 'package:travel_tracker/models/travel_track/travel_track.dart';
+import 'package:travel_tracker/models/trkseg/trkseg.dart';
+import 'package:travel_tracker/models/wpt/wpt.dart';
 
 class TravelTrackStatsHandler {
   double getTotalTrksegDistance(TravelTrack travelTrack) {

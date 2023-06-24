@@ -3,8 +3,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_tracker/features/map_view/map_view_controller.dart';
-import 'package:travel_tracker/features/travel_track/data_model/travel_config.dart';
-import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
+import 'package:travel_tracker/models/travel_config/travel_config.dart';
+import 'package:travel_tracker/models/travel_track/travel_track.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_file_handler.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
 

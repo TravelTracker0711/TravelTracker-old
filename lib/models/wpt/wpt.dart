@@ -1,7 +1,7 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:gpx/gpx.dart' as gpx_pkg;
 import 'package:latlong2/latlong.dart' as latlng;
-import 'package:travel_tracker/features/travel_track/data_model/travel_config.dart';
+import 'package:travel_tracker/models/travel_config/travel_config.dart';
 import 'package:travel_tracker/utils/datetime.dart';
 
 class Wpt {

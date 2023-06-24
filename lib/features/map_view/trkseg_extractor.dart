@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
+import 'package:travel_tracker/models/wpt/wpt.dart';
 import 'dart:math';
 
 class TrksegExtractor {

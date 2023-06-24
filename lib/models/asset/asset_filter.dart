@@ -1,7 +1,7 @@
 // TODO: Implement AssetFilter
 import 'package:latlong2/latlong.dart' as latlng;
-import 'package:travel_tracker/features/asset/data_model/asset.dart';
-import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
+import 'package:travel_tracker/models/asset/asset.dart';
+import 'package:travel_tracker/models/wpt/wpt.dart';
 
 class AssetFilter {
   List<Asset> filterByTimeRange(

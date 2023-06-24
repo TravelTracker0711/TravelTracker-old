@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:travel_tracker/features/asset/data_model/asset.dart';
+import 'package:travel_tracker/models/asset/asset.dart';
 
 class GalleryViewPhoto extends StatefulWidget {
   const GalleryViewPhoto({

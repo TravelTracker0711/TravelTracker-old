@@ -8,10 +8,10 @@ import 'package:travel_tracker/features/map_view/map_view_controller.dart';
 import 'package:travel_tracker/features/map_view/marker_ext.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:travel_tracker/features/map_view/trkseg_extractor.dart';
-import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
-import 'package:travel_tracker/features/asset/data_model/asset.dart';
-import 'package:travel_tracker/features/travel_track/data_model/trkseg.dart';
-import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
+import 'package:travel_tracker/models/travel_track/travel_track.dart';
+import 'package:travel_tracker/models/asset/asset.dart';
+import 'package:travel_tracker/models/trkseg/trkseg.dart';
+import 'package:travel_tracker/models/wpt/wpt.dart';
 
 class TravelTrackLayerBuilder {
   final ValueNotifier<double> _mapRotationNotifier;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
+import 'package:travel_tracker/models/travel_track/travel_track.dart';
 import 'package:travel_tracker/features/stats_view/travel_track_stats_handler.dart';
 
 class StatsList extends StatelessWidget {

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
+import 'package:travel_tracker/models/wpt/wpt.dart';
 
 class GpsProvider with ChangeNotifier {
   bool _isInitializing = false;

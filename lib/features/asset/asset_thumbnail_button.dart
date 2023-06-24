@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:travel_tracker/features/asset/data_model/asset.dart';
+import 'package:travel_tracker/models/asset/asset.dart';
 
 class AssetThumbnailButton extends StatelessWidget {
   const AssetThumbnailButton({

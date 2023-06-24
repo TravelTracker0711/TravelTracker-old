@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:latlong2/latlong.dart' as latlong;
 import 'package:travel_tracker/features/asset/external_asset_manager.dart';
-import 'package:travel_tracker/features/travel_track/data_model/travel_config.dart';
-import 'package:travel_tracker/features/travel_track/data_model/trkseg.dart';
-import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
+import 'package:travel_tracker/models/travel_config/travel_config.dart';
+import 'package:travel_tracker/models/trkseg/trkseg.dart';
+import 'package:travel_tracker/models/wpt/wpt.dart';
 import 'package:travel_tracker/utils/latlng.dart';
 
 enum AssetType {
