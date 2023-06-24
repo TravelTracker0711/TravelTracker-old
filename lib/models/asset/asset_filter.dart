@@ -7,11 +7,13 @@ class AssetFilter {
     required DateTime startTime,
     required DateTime endTime,
   }) {
-    return assets
-        .where((asset) =>
-            asset.createdDateTime.isAfter(startTime) &&
-            asset.createdDateTime.isBefore(endTime))
-        .toList();
+    return assets.where((asset) {
+      DateTime? time = asset.createdDateTime;
+      if (time == null) {
+        return false;
+      }
+      return time.isAfter(startTime) && time.isBefore(endTime);
+    }).toList();
   }
 
   List<Asset> filterByType({

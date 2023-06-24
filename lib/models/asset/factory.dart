@@ -28,29 +28,19 @@ class _AssetTypeFactory {
   }
 }
 
-extension StringAssetTypeConversion on String {
-  AssetType toAssetType() {
-    return _AssetTypeFactory.fromString(this);
-  }
-}
-
-extension PhotoManagerAssetTypeConversion on pm.AssetType {
-  AssetType toAssetType() {
-    return _AssetTypeFactory.fromPhotoManagerType(this);
-  }
-}
-
 class AssetFactory {
   static Future<Asset> fromJson(Map<String, dynamic> json) async {
     Asset asset = Asset(
       config: TravelConfigFactory.fromJson(json['config']),
-      file: File(json['fileFullPath']),
       type: (json['type'] as String).toAssetType(),
-      createdDateTime: DateTime.parse(json['createdDateTime']),
-      coordinates: json['coordinates'] != null
-          ? WptFactory.fromJson(json['coordinates'])
-          : null,
+      assetEntityId: json['assetEntityId'],
       attachedTrksegId: json['attachedTrksegId'],
+      coordinates: json['coordinates'] == null
+          ? null
+          : WptFactory.fromJson(json['coordinates']),
+      createdDateTime: json['createdDateTime'] == null
+          ? null
+          : DateTime.parse(json['createdDateTime']),
     );
     return asset;
   }
@@ -79,13 +69,14 @@ class AssetFactory {
 
     return Asset(
       config: config,
-      file: assetFile,
       type: type,
-      createdDateTime: assetEntity.createDateTime,
+      assetEntityId: assetEntity.id,
       coordinates: coordinates,
+      createdDateTime: assetEntity.createDateTime,
     );
   }
 
+  /// Guaranteed to sort by [Asset.createdDateTime] in ascending order.
   static Future<List<Asset>> fromAssetEntitiesAsync({
     required List<pm.AssetEntity> assetEntities,
   }) async {
@@ -94,65 +85,28 @@ class AssetFactory {
       Asset? asset = await fromAssetEntityAsync(
         assetEntity: assetEntity,
       );
-      if (asset == null) {
-        continue;
+      if (asset != null) {
+        assets.add(asset);
       }
-      assets.add(asset);
     }
+    assets.sort((a, b) => a.compareTo(b));
     return assets;
   }
 
-  // TODO: refactor fromAssetEntitiesWithTrksegAsync
+  /// Guaranteed to sort by [Asset.createdDateTime] in ascending order.
   static Future<List<Asset>> fromAssetEntitiesWithTrksegAsync({
     required List<pm.AssetEntity> assetEntities,
     required Trkseg trkseg,
-    bool overrideAssetOriginCoordinates = true,
+    bool overrideOriginCoordinates = true,
   }) async {
     List<Asset> assets = await fromAssetEntitiesAsync(
       assetEntities: assetEntities,
     );
-    int trkptIndex = 0;
-    List<Wpt> trkpts = trkseg.trkpts.where((trkpt) {
-      return trkpt.time != null;
-    }).toList();
-    for (Asset asset in assets) {
-      if (overrideAssetOriginCoordinates == false &&
-          asset.coordinates != null) {
-        continue;
-      }
-      while (trkptIndex < trkpts.length - 1 &&
-          (trkpts[trkptIndex + 1].time!.isBefore(asset.createdDateTime))) {
-        trkptIndex++;
-      }
-      latlong.LatLng latLng = latlong.LatLng(
-        trkpts[trkptIndex].lat,
-        trkpts[trkptIndex].lon,
-      );
-      if (trkptIndex < trkpts.length - 1) {
-        double coordinatesRatio = 0;
-        int assetMilliseconds = asset.createdDateTime.millisecondsSinceEpoch;
-        int prevTrkptMilliseconds =
-            trkpts[trkptIndex].time!.millisecondsSinceEpoch;
-        int nextTrkptMilliseconds =
-            trkpts[trkptIndex + 1].time!.millisecondsSinceEpoch;
-        coordinatesRatio = (assetMilliseconds - prevTrkptMilliseconds) /
-            (nextTrkptMilliseconds - prevTrkptMilliseconds);
-        // (a + (b - a) * ratio) should correct in Mercator projection
-        // need to check whether it is accurate in real world
-        latLng = latlong.LatLng(
-          trkpts[trkptIndex].lat +
-              (trkpts[trkptIndex + 1].lat - trkpts[trkptIndex].lat) *
-                  coordinatesRatio,
-          trkpts[trkptIndex].lon +
-              (trkpts[trkptIndex + 1].lon - trkpts[trkptIndex].lon) *
-                  coordinatesRatio,
-        );
-      }
-      asset.coordinates = Wpt(
-        latLng: latLng,
-      );
-      asset.attachedTrksegId = trkseg.config.id;
-    }
+
+    assets.setCoordinatesByTrkseg(
+      trkseg: trkseg,
+      overrideOriginCoordinates: overrideOriginCoordinates,
+    );
     return assets;
   }
 
