@@ -1,10 +1,10 @@
 import 'package:gpx/gpx.dart' as gpx_pkg;
-import 'package:travel_tracker/features/travel_track/data_model/travel_data.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_config.dart';
 import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
 import 'package:travel_tracker/utils/datetime.dart';
 
-class Trkseg extends TravelData {
+class Trkseg {
+  final TravelConfig config;
   final List<Wpt> _trkpts = <Wpt>[];
 
   List<Wpt> get trkpts => List<Wpt>.unmodifiable(_trkpts);
@@ -28,16 +28,15 @@ class Trkseg extends TravelData {
   }
 
   Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = super.toJson();
-    json.addAll({
+    Map<String, dynamic> json = {
+      'config': config.toJson(),
       'trkpts': trkpts.map((e) => e.toJson()).toList(),
-    });
+    };
     return json;
   }
 
   Trkseg.fromJson(Map<String, dynamic> json)
       : this._(
-          id: json['id'],
           config: TravelConfig.fromJson(json['config']),
           trkpts: (json['trkpts'] as List<dynamic>)
               .map((e) => Wpt.fromJson(e))
@@ -53,13 +52,9 @@ class Trkseg extends TravelData {
         );
 
   Trkseg._({
-    String? id,
     TravelConfig? config,
     List<Wpt>? trkpts,
-  }) : super(
-          id: id,
-          config: config,
-        ) {
+  }) : config = config ?? TravelConfig() {
     if (trkpts != null) {
       _trkpts.addAll(trkpts);
       _trkpts.sort((a, b) => a.compareTo(b));

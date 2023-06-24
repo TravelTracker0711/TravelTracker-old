@@ -28,7 +28,7 @@ class TravelTrackRecorder with ChangeNotifier {
         config: TravelConfig(namePlaceholder: "New Travel Track"),
       );
       await TravelTrackManager.I.addTravelTrackAsync(activeTravelTrack);
-      TravelTrackManager.I.setActiveTravelTrackId(activeTravelTrack.id);
+      TravelTrackManager.I.setActiveTravelTrackId(activeTravelTrack.config.id);
     }
     activeTravelTrack.addTrkseg();
     _gpsListener = () {

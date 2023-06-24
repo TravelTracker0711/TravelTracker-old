@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:latlong2/latlong.dart' as latlong;
 import 'package:travel_tracker/features/asset/external_asset_manager.dart';
-import 'package:travel_tracker/features/travel_track/data_model/travel_data.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_config.dart';
 import 'package:travel_tracker/features/travel_track/data_model/trkseg.dart';
 import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
@@ -17,7 +16,8 @@ enum AssetType {
   unknown,
 }
 
-class Asset extends TravelData {
+class Asset {
+  final TravelConfig config;
   final AssetEntity assetEntity;
   final AssetType type;
   final String fileFullPath;
@@ -27,17 +27,13 @@ class Asset extends TravelData {
   DateTime get createDateTime => assetEntity.createDateTime;
 
   Asset._({
-    String? id,
     TravelConfig? config,
     required this.assetEntity,
     required this.type,
     required this.fileFullPath,
     this.coordinates,
     this.attachedTrksegId,
-  }) : super(
-          id: id,
-          config: config,
-        );
+  }) : config = config ?? TravelConfig();
 
   int compareTo(Asset other) {
     return createDateTime.compareTo(other.createDateTime);
@@ -135,7 +131,7 @@ class Asset extends TravelData {
       asset.coordinates = Wpt(
         latLng: latLng,
       );
-      asset.attachedTrksegId = trkseg.id;
+      asset.attachedTrksegId = trkseg.config.id;
     }
     return assets;
   }
@@ -160,11 +156,11 @@ class Asset extends TravelData {
   }
 
   Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = super.toJson();
-    json.addAll({
+    Map<String, dynamic> json = {
+      'config': config.toJson(),
       'type': type.toString(),
       'fileFullPath': fileFullPath,
-    });
+    };
     if (coordinates != null) {
       json['coordinates'] = coordinates!.toJson();
     }
@@ -180,7 +176,6 @@ class Asset extends TravelData {
       json['fileFullPath'],
     )!;
     Asset asset = Asset._(
-      id: json['id'],
       config:
           json['config'] != null ? TravelConfig.fromJson(json['config']) : null,
       assetEntity: assetEntity,

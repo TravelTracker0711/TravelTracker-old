@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:gpx/gpx.dart' as gpx_pkg;
 import 'package:photo_manager/photo_manager.dart';
 import 'package:travel_tracker/features/asset/external_asset_manager.dart';
-import 'package:travel_tracker/features/travel_track/data_model/travel_data.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_config.dart';
 import 'package:travel_tracker/features/travel_track/data_model/trkseg.dart';
 import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
 import 'package:travel_tracker/features/asset/data_model/asset.dart';
 import 'package:travel_tracker/utils/datetime.dart';
 
-class TravelTrack extends TravelData with ChangeNotifier {
+class TravelTrack with ChangeNotifier {
+  final TravelConfig config;
   final List<Wpt> _wpts = <Wpt>[];
   final List<Trkseg> _trksegs = <Trkseg>[];
   final Map<String, Asset> _assetMap = <String, Asset>{};
@@ -35,14 +35,14 @@ class TravelTrack extends TravelData with ChangeNotifier {
   DateTime get endTime => getTrksegsEndTime(_trksegs) ?? _createDateTime;
 
   Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = super.toJson();
-    json.addAll({
+    Map<String, dynamic> json = {
+      'config': config.toJson(),
       'wpts': _wpts.map((e) => e.toJson()).toList(),
       'trksegs': _trksegs.map((e) => e.toJson()).toList(),
       'assetMap': _assetMap.map((key, value) => MapEntry(key, value)),
       'gpxFileFullPaths': _gpxFileFullPaths,
       'createDateTime': _createDateTime.toIso8601String(),
-    });
+    };
     return json;
   }
 
@@ -52,7 +52,6 @@ class TravelTrack extends TravelData with ChangeNotifier {
         key: await Asset.fromJson(json['assetMap'][key])
     };
     TravelTrack travelTrack = TravelTrack._(
-      id: json['id'],
       config: TravelConfig.fromJson(json['config']),
       wpts: (json['wpts'] as List)
           .map((e) => Wpt.fromJson(e))
@@ -114,18 +113,14 @@ class TravelTrack extends TravelData with ChangeNotifier {
         );
 
   TravelTrack._({
-    String? id,
     TravelConfig? config,
     List<Wpt>? wpts,
     List<Trkseg>? trksegs,
     Map<String, Asset>? assetMap,
     List<String>? gpxFileFullPaths,
     DateTime? createDateTime,
-  })  : _createDateTime = createDateTime ?? DateTime.now(),
-        super(
-          id: id,
-          config: config,
-        ) {
+  })  : config = config ?? TravelConfig(),
+        _createDateTime = createDateTime ?? DateTime.now() {
     if (wpts != null) {
       _wpts.addAll(wpts);
       _wpts.sort((a, b) => a.compareTo(b));
@@ -211,7 +206,7 @@ class TravelTrack extends TravelData with ChangeNotifier {
               assetEntities:
                   assetEntities.sublist(lastAssetEndIndex, assetStartIndex),
             ))
-              asset.id: asset,
+              asset.config.id: asset,
           });
           assetEndIndex = assetStartIndex;
           while (assetEndIndex < assetCount) {
@@ -230,7 +225,7 @@ class TravelTrack extends TravelData with ChangeNotifier {
                   assetEntities.sublist(assetStartIndex, assetEndIndex),
               trkseg: trkseg,
             ))
-              asset.id: asset,
+              asset.config.id: asset,
           });
           assetStartIndex = assetEndIndex;
         }
@@ -238,7 +233,7 @@ class TravelTrack extends TravelData with ChangeNotifier {
           for (Asset asset in await Asset.fromAssetEntitiesAsync(
             assetEntities: assetEntities.sublist(lastAssetEndIndex, assetCount),
           ))
-            asset.id: asset,
+            asset.config.id: asset,
         });
       }
     }

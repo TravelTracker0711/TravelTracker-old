@@ -1,11 +1,11 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:gpx/gpx.dart' as gpx_pkg;
-import 'package:travel_tracker/features/travel_track/data_model/travel_data.dart';
 import 'package:latlong2/latlong.dart' as latlng;
 import 'package:travel_tracker/features/travel_track/data_model/travel_config.dart';
 import 'package:travel_tracker/utils/datetime.dart';
 
-class Wpt extends TravelData {
+class Wpt {
+  final TravelConfig config;
   final latlng.LatLng latLng;
   final double? elevation;
   final DateTime? time;
@@ -25,37 +25,31 @@ class Wpt extends TravelData {
     required latlng.LatLng latLng,
     this.elevation,
     this.time,
-  })  : latLng = latlng.LatLng(
+  })  : config = config ?? TravelConfig(),
+        latLng = latlng.LatLng(
           latLng.latitude,
           latLng.longitude,
-        ),
-        super(
-          config: config,
         );
 
   Wpt._({
-    String? id,
     TravelConfig? config,
     required this.latLng,
     this.elevation,
     this.time,
-  }) : super(
-          id: id,
-          config: config,
-        );
+  }) : config = config ?? TravelConfig();
 
   int compareTo(Wpt other) {
     return nullableDateTimeCompare(time, other.time);
   }
 
   Wpt.clone(Wpt other)
-      : latLng = latlng.LatLng(
+      : config = other.config,
+        latLng = latlng.LatLng(
           other.latLng.latitude,
           other.latLng.longitude,
         ),
         elevation = other.ele,
-        time = other.time,
-        super.clone(other);
+        time = other.time;
 
   static Wpt fromLatLng({
     required latlng.LatLng latLngs,
@@ -119,11 +113,11 @@ class Wpt extends TravelData {
   }
 
   Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = super.toJson();
-    json.addAll({
+    Map<String, dynamic> json = {
+      'config': config.toJson(),
       'lat': latLng.latitude,
       'lon': latLng.longitude,
-    });
+    };
     if (ele != null) {
       json['ele'] = ele;
     }
@@ -134,15 +128,15 @@ class Wpt extends TravelData {
   }
 
   Wpt.fromJson(Map<String, dynamic> json)
-      : latLng = latlng.LatLng(
+      : config = TravelConfig.fromJson(json['config']),
+        latLng = latlng.LatLng(
           json['lat'],
           json['lon'],
         ),
         elevation = json['ele'],
-        time = json['time'] == null ? null : DateTime.parse(json['time']),
-        super.fromJson(json);
+        time = json['time'] == null ? null : DateTime.parse(json['time']);
 
   String toString() {
-    return 'Wpt(id: $id, latLng: $latLng, ele: $ele, time: $time)';
+    return 'Wpt(config: $config, latLng: $latLng, ele: $ele, time: $time)';
   }
 }
