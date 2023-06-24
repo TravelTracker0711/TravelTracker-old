@@ -5,7 +5,7 @@ import 'package:latlong2/latlong.dart' as latlong;
 import 'package:travel_tracker/features/asset/external_asset_manager.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_data.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_config.dart';
-import 'package:travel_tracker/features/travel_track/data_model/trkseg_ext.dart';
+import 'package:travel_tracker/features/travel_track/data_model/trkseg.dart';
 import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
 import 'package:travel_tracker/utils/latlng.dart';
 
@@ -22,7 +22,7 @@ class AssetExt extends TravelData {
   final AssetExtType type;
   final String fileFullPath;
   Wpt? coordinates;
-  String? attachedTrksegExtId;
+  String? attachedTrksegId;
 
   DateTime get createDateTime => asset.createDateTime;
 
@@ -33,7 +33,7 @@ class AssetExt extends TravelData {
     required this.type,
     required this.fileFullPath,
     this.coordinates,
-    this.attachedTrksegExtId,
+    this.attachedTrksegId,
   }) : super(
           id: id,
           config: config,
@@ -87,16 +87,16 @@ class AssetExt extends TravelData {
     return assetExts;
   }
 
-  static Future<List<AssetExt>> fromAssetEntitiesWithTrksegExtAsync({
+  static Future<List<AssetExt>> fromAssetEntitiesWithTrksegAsync({
     required List<AssetEntity> assets,
-    required TrksegExt trksegExt,
+    required Trkseg trkseg,
     bool overrideAssetOriginCoordinates = true,
   }) async {
     List<AssetExt> assetExts = await fromAssetEntitiesAsync(
       assets: assets,
     );
     int trkptIndex = 0;
-    List<Wpt> trkpts = trksegExt.trkpts.where((trkpt) {
+    List<Wpt> trkpts = trkseg.trkpts.where((trkpt) {
       return trkpt.time != null;
     }).toList();
     for (AssetExt assetExt in assetExts) {
@@ -135,7 +135,7 @@ class AssetExt extends TravelData {
       assetExt.coordinates = Wpt(
         latLng: latLng,
       );
-      assetExt.attachedTrksegExtId = trksegExt.id;
+      assetExt.attachedTrksegId = trkseg.id;
     }
     return assetExts;
   }
@@ -168,8 +168,8 @@ class AssetExt extends TravelData {
     if (coordinates != null) {
       json['coordinates'] = coordinates!.toJson();
     }
-    if (attachedTrksegExtId != null) {
-      json['attachedTrksegExtId'] = attachedTrksegExtId;
+    if (attachedTrksegId != null) {
+      json['attachedTrksegId'] = attachedTrksegId;
     }
     return json;
   }
@@ -188,7 +188,7 @@ class AssetExt extends TravelData {
       coordinates: json['coordinates'] != null
           ? Wpt.fromJson(json['coordinates'])
           : null,
-      attachedTrksegExtId: json['attachedTrksegExtId'],
+      attachedTrksegId: json['attachedTrksegId'],
     );
     return assetExt;
   }

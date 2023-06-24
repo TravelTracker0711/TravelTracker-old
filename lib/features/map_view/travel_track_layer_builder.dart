@@ -7,10 +7,10 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:travel_tracker/features/map_view/map_view_controller.dart';
 import 'package:travel_tracker/features/map_view/marker_ext.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
-import 'package:travel_tracker/features/map_view/trkseg_ext_extractor.dart';
+import 'package:travel_tracker/features/map_view/trkseg_extractor.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
 import 'package:travel_tracker/features/asset/data_model/asset_ext.dart';
-import 'package:travel_tracker/features/travel_track/data_model/trkseg_ext.dart';
+import 'package:travel_tracker/features/travel_track/data_model/trkseg.dart';
 import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
 
 class TravelTrackLayerBuilder {
@@ -39,22 +39,22 @@ class TravelTrackLayerBuilder {
 
   List<Widget> buildPolylineLayersByTravelTrack(TravelTrack travelTrack) {
     List<Widget> layers = <Widget>[];
-    for (TrksegExt trksegExt in travelTrack.trksegExts) {
-      layers.add(buildPolylineLayerByTrksegExt(trksegExt));
+    for (Trkseg trkseg in travelTrack.trksegs) {
+      layers.add(buildPolylineLayerByTrkseg(trkseg));
       if (_controller.mode == MapViewMode.partialTrack &&
           _controller.partialTrackMiddlePercentage != null) {
-        layers.add(buildMiddlePointLayerByTrksegExt(trksegExt));
+        layers.add(buildMiddlePointLayerByTrkseg(trkseg));
       }
     }
     return layers;
   }
 
-  PolylineLayer buildPolylineLayerByTrksegExt(TrksegExt trksegExt) {
-    List<Wpt> trkpts = trksegExt.trkpts;
+  PolylineLayer buildPolylineLayerByTrkseg(Trkseg trkseg) {
+    List<Wpt> trkpts = trkseg.trkpts;
     if (_controller.mode == MapViewMode.partialTrack &&
         _controller.partialTrackMiddlePercentage != null) {
-      TrksegExtExtractor trksegExtExtractor = TrksegExtExtractor();
-      trkpts = trksegExtExtractor.getPartialTrkpts(
+      TrksegExtractor trksegExtractor = TrksegExtractor();
+      trkpts = trksegExtractor.getPartialTrkpts(
         trkpts,
         _controller.partialTrackMiddlePercentage!,
       );
@@ -77,8 +77,8 @@ class TravelTrackLayerBuilder {
     return polylineLayer;
   }
 
-  Widget buildMiddlePointLayerByTrksegExt(TrksegExt trksegExt) {
-    List<Wpt> trkpts = trksegExt.trkpts;
+  Widget buildMiddlePointLayerByTrkseg(Trkseg trkseg) {
+    List<Wpt> trkpts = trkseg.trkpts;
 
     /// TODO: fix the bug of index out of range.(round() -> truncate() ?)
     Wpt middlePoint = trkpts[

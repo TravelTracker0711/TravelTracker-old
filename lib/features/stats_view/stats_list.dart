@@ -16,7 +16,7 @@ class StatsList extends StatelessWidget {
       children: <Widget>[
         ListTile(
           title: const Text('Total Track Segments'),
-          subtitle: Text('${travelTrack.trksegExts.length}'),
+          subtitle: Text('${travelTrack.trksegs.length}'),
         ),
         ListTile(
           title: const Text('Total Distance'),
@@ -26,7 +26,7 @@ class StatsList extends StatelessWidget {
         ListTile(
           title: const Text('Total Duration'),
           subtitle: Text(
-              '${(travelTrackStatsHandler.getTotalTrksegExtDuration(travelTrack) / 60).toStringAsFixed(2)} minutes'),
+              '${(travelTrackStatsHandler.getTotalTrksegDuration(travelTrack) / 60).toStringAsFixed(2)} minutes'),
         ),
         ListTile(
           title: const Text('Average Speed'),

@@ -111,7 +111,7 @@ class _TravelTrackListViewState extends State<TravelTrackListView> {
           body: StatsList(travelTrack: travelTrack),
           // body: ListView(
           //   shrinkWrap: true,
-          //   children: _buildTrksegExtListTiles(context, travelTrack),
+          //   children: _buildTrksegListTiles(context, travelTrack),
           // ),
           canTapOnHeader: true,
           isExpanded:
@@ -189,22 +189,22 @@ class _TravelTrackListViewState extends State<TravelTrackListView> {
     );
   }
 
-  List<Widget> _buildTrksegExtListTiles(
+  List<Widget> _buildTrksegListTiles(
     BuildContext context,
     TravelTrack travelTrack,
   ) {
-    List<Widget> trksegExtListTile = [];
-    trksegExtListTile.addAll(
-      travelTrack.trksegExts.map((trksegExt) {
+    List<Widget> trksegListTile = [];
+    trksegListTile.addAll(
+      travelTrack.trksegs.map((trkseg) {
         return ListTile(
           leading: const Icon(Icons.timeline),
-          title: Text(trksegExt.config.name),
+          title: Text(trkseg.config.name),
           onTap: () {
-            debugPrint('Unimplemented: focus on trksegExt');
+            debugPrint('Unimplemented: focus on trkseg');
           },
         );
       }),
     );
-    return trksegExtListTile;
+    return trksegListTile;
   }
 }

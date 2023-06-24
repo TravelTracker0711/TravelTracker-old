@@ -4,7 +4,7 @@ import 'package:travel_tracker/features/travel_track/data_model/travel_config.da
 import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
 import 'package:travel_tracker/utils/datetime.dart';
 
-class TrksegExt extends TravelData {
+class Trkseg extends TravelData {
   final List<Wpt> _trkpts = <Wpt>[];
 
   List<Wpt> get trkpts => List<Wpt>.unmodifiable(_trkpts);
@@ -35,7 +35,7 @@ class TrksegExt extends TravelData {
     return json;
   }
 
-  TrksegExt.fromJson(Map<String, dynamic> json)
+  Trkseg.fromJson(Map<String, dynamic> json)
       : this._(
           id: json['id'],
           config: TravelConfig.fromJson(json['config']),
@@ -44,7 +44,7 @@ class TrksegExt extends TravelData {
               .toList(),
         );
 
-  TrksegExt({
+  Trkseg({
     TravelConfig? config,
     List<Wpt>? trkpts,
   }) : this._(
@@ -52,7 +52,7 @@ class TrksegExt extends TravelData {
           trkpts: trkpts,
         );
 
-  TrksegExt._({
+  Trkseg._({
     String? id,
     TravelConfig? config,
     List<Wpt>? trkpts,
@@ -66,29 +66,29 @@ class TrksegExt extends TravelData {
     }
   }
 
-  int compareTo(TrksegExt other) {
+  int compareTo(Trkseg other) {
     return nullableDateTimeCompare(startTime, other.startTime);
   }
 
-  factory TrksegExt.fromTrkseg({
+  factory Trkseg.fromTrkseg({
     required gpx_pkg.Trkseg trkseg,
   }) {
     List<Wpt> trkpts = Wpt.fromTrkseg(
       trkseg: trkseg,
     );
-    return TrksegExt._(
+    return Trkseg._(
       trkpts: trkpts,
     );
   }
 
-  static List<TrksegExt> fromGpx({
+  static List<Trkseg> fromGpx({
     required gpx_pkg.Gpx gpx,
   }) {
-    List<TrksegExt> trksegs = [];
+    List<Trkseg> trksegs = [];
     for (gpx_pkg.Trk trk in gpx.trks) {
       for (gpx_pkg.Trkseg trkseg in trk.trksegs) {
         trksegs.add(
-          TrksegExt.fromTrkseg(
+          Trkseg.fromTrkseg(
             trkseg: trkseg,
           ),
         );
@@ -102,20 +102,20 @@ class TrksegExt extends TravelData {
   }
 }
 
-DateTime? getTrksegExtsStartTime(List<TrksegExt> trksegExts) {
-  for (TrksegExt trksegExt in trksegExts) {
-    if (trksegExt.startTime != null) {
-      return trksegExt.startTime;
+DateTime? getTrksegsStartTime(List<Trkseg> trksegs) {
+  for (Trkseg trkseg in trksegs) {
+    if (trkseg.startTime != null) {
+      return trkseg.startTime;
     }
   }
   return null;
 }
 
-DateTime? getTrksegExtsEndTime(List<TrksegExt> trksegExts) {
-  for (int i = trksegExts.length - 1; i >= 0; i--) {
-    TrksegExt trksegExt = trksegExts[i];
-    if (trksegExt.endTime != null) {
-      return trksegExt.endTime;
+DateTime? getTrksegsEndTime(List<Trkseg> trksegs) {
+  for (int i = trksegs.length - 1; i >= 0; i--) {
+    Trkseg trkseg = trksegs[i];
+    if (trkseg.endTime != null) {
+      return trkseg.endTime;
     }
   }
   return null;

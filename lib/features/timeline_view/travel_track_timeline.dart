@@ -6,7 +6,7 @@ import 'package:travel_tracker/features/asset/data_model/asset_ext.dart';
 import 'package:travel_tracker/features/gallery_view/gallery_view_photo.dart';
 import 'package:travel_tracker/features/map_view/map_view_controller.dart';
 import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
-import 'package:travel_tracker/features/travel_track/data_model/trkseg_ext.dart';
+import 'package:travel_tracker/features/travel_track/data_model/trkseg.dart';
 
 class TravelTrackTimeline extends StatefulWidget {
   TravelTrackTimeline({
@@ -84,16 +84,16 @@ class _TravelTrackTimelineState extends State<TravelTrackTimeline> {
     int trksegIndex = 0;
     String? lastTrksegId;
     List<AssetExt> assetExts = travelTrack.assetExts;
-    List<TrksegExt> trksegExts = travelTrack.trksegExts;
+    List<Trkseg> trksegs = travelTrack.trksegs;
     for (int assetIndex = assetExts.length - 1; assetIndex >= 0; assetIndex--) {
       if (lastTrksegId == null) {
         timelineTiles.add(_buildTimelineHead());
-      } else if (assetExts[assetIndex].attachedTrksegExtId != null &&
-          assetExts[assetIndex].attachedTrksegExtId != lastTrksegId) {
+      } else if (assetExts[assetIndex].attachedTrksegId != null &&
+          assetExts[assetIndex].attachedTrksegId != lastTrksegId) {
         trksegIndex++;
-        timelineTiles.add(_buildTrksegExtTimelineHead(trksegExts[trksegIndex]));
+        timelineTiles.add(_buildTrksegTimelineHead(trksegs[trksegIndex]));
       }
-      lastTrksegId = assetExts[assetIndex].attachedTrksegExtId;
+      lastTrksegId = assetExts[assetIndex].attachedTrksegId;
 
       timelineTiles.add(_buildAssetExtTimelineTile(
           assetExts[assetIndex], assetExts, assetIndex));
@@ -125,7 +125,7 @@ class _TravelTrackTimelineState extends State<TravelTrackTimeline> {
     );
   }
 
-  Widget _buildTrksegExtTimelineHead(TrksegExt trksegExt) {
+  Widget _buildTrksegTimelineHead(Trkseg trkseg) {
     return TimelineTile(
       alignment: TimelineAlign.center,
       indicatorStyle: IndicatorStyle(

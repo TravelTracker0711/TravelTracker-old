@@ -54,9 +54,9 @@ class AssetExtFilter {
     }).toList();
   }
 
-  List<AssetExt> filterByTrkseg(List<AssetExt> assetExts, String trksegExtId) {
+  List<AssetExt> filterByTrkseg(List<AssetExt> assetExts, String trksegId) {
     return assetExts
-        .where((assetExt) => assetExt.attachedTrksegExtId == trksegExtId)
+        .where((assetExt) => assetExt.attachedTrksegId == trksegId)
         .toList();
   }
 }

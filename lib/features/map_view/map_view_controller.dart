@@ -3,7 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_animations/flutter_map_animations.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:latlong2/latlong.dart' as latlng;
-import 'package:travel_tracker/features/travel_track/data_model/trkseg_ext.dart';
+import 'package:travel_tracker/features/travel_track/data_model/trkseg.dart';
 import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
 
 enum MapViewMode {
@@ -34,8 +34,8 @@ class MapViewController with ChangeNotifier {
     _mode = mode;
   }
 
-  void locateToTrksegExt(TrksegExt trksegExt) {
-    locateToWpts(trksegExt.trkpts);
+  void locateToTrkseg(Trkseg trkseg) {
+    locateToWpts(trkseg.trkpts);
   }
 
   void locateToWpts(List<Wpt> wpts) {

@@ -1,14 +1,14 @@
 import 'package:latlong2/latlong.dart' as latlng;
 import 'package:travel_tracker/features/travel_track/data_model/travel_track.dart';
-import 'package:travel_tracker/features/travel_track/data_model/trkseg_ext.dart';
+import 'package:travel_tracker/features/travel_track/data_model/trkseg.dart';
 import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
 
 class TravelTrackStatsHandler {
   double getTotalTrksegDistance(TravelTrack travelTrack) {
     double totalDistance = 0.0;
     List<Wpt> trkpts = [];
-    for (TrksegExt trksegExt in travelTrack.trksegExts) {
-      trkpts.addAll(trksegExt.trkpts);
+    for (Trkseg trkseg in travelTrack.trksegs) {
+      trkpts.addAll(trkseg.trkpts);
     }
     const latlng.Distance distance = latlng.Distance();
 
@@ -18,18 +18,18 @@ class TravelTrackStatsHandler {
     return totalDistance;
   }
 
-  double getTotalTrksegExtDuration(TravelTrack travelTrack) {
+  double getTotalTrksegDuration(TravelTrack travelTrack) {
     double totalDuration = 0.0;
-    for (TrksegExt trksegExt in travelTrack.trksegExts) {
+    for (Trkseg trkseg in travelTrack.trksegs) {
       totalDuration +=
-          trksegExt.endTime?.difference(trksegExt.startTime!).inSeconds ?? 0.0;
+          trkseg.endTime?.difference(trkseg.startTime!).inSeconds ?? 0.0;
     }
     return totalDuration;
   }
 
   double getAverageSpeed(TravelTrack travelTrack) {
     double averageSpeed = getTotalTrksegDistance(travelTrack) /
-        getTotalTrksegExtDuration(travelTrack);
+        getTotalTrksegDuration(travelTrack);
     if (averageSpeed.isNaN) {
       averageSpeed = 0.0;
     }

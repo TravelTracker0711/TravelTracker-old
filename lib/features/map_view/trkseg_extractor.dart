@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:travel_tracker/features/travel_track/data_model/wpt.dart';
 import 'dart:math';
 
-class TrksegExtExtractor {
+class TrksegExtractor {
   double _orientation(
       double x1, double y1, double x2, double y2, double x3, double y3) {
     return (x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1);
