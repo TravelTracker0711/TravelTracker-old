@@ -32,7 +32,7 @@ class ExternalAssetManager with ChangeNotifier {
     }
     _isInitializing = true;
 
-    if (!(await PermissionManager.PhotoManagerRequestAsync())) {
+    if (!(await PermissionManager.photoManagerRequestAsync())) {
       return;
     }
 
