@@ -190,7 +190,7 @@ class TravelTrackFactory {
             trkseg: trkseg,
           );
     assetMap.addAll({
-      for (Asset asset in assets) asset.config.id: asset,
+      for (Asset asset in assets) asset.id: asset,
     });
   }
 }

@@ -85,8 +85,7 @@ class _TravelTrackListViewState extends State<TravelTrackListView> {
       children: _buildTravelTrackExpansionPanels(context, travelTracks),
       expansionCallback: (int index, bool isExpanded) {
         setState(() {
-          widget.options
-                  .isTravelTrackExpandedMap[travelTracks[index].config.id] =
+          widget.options.isTravelTrackExpandedMap[travelTracks[index].id] =
               !isExpanded;
         });
       },
@@ -99,9 +98,8 @@ class _TravelTrackListViewState extends State<TravelTrackListView> {
     travelTrackExpansionPanels.addAll(
       travelTracks.map((travelTrack) {
         if (!widget.options.isTravelTrackExpandedMap
-            .containsKey(travelTrack.config.id)) {
-          widget.options.isTravelTrackExpandedMap[travelTrack.config.id] =
-              false;
+            .containsKey(travelTrack.id)) {
+          widget.options.isTravelTrackExpandedMap[travelTrack.id] = false;
         }
         return ExpansionPanel(
           headerBuilder: (BuildContext context, bool isExpanded) {
@@ -117,8 +115,7 @@ class _TravelTrackListViewState extends State<TravelTrackListView> {
           // ),
           canTapOnHeader: true,
           isExpanded:
-              widget.options.isTravelTrackExpandedMap[travelTrack.config.id] ??
-                  false,
+              widget.options.isTravelTrackExpandedMap[travelTrack.id] ?? false,
         );
       }),
     );
@@ -132,30 +129,27 @@ class _TravelTrackListViewState extends State<TravelTrackListView> {
     return GestureDetector(
       onLongPress: () {
         travelTrackManager.setTravelTrackSelected(
-          travelTrackId: travelTrack.config.id,
-          isSelected:
-              !travelTrackManager.isTravelTrackSelected(travelTrack.config.id),
+          travelTrackId: travelTrack.id,
+          isSelected: !travelTrackManager.isTravelTrackSelected(travelTrack.id),
         );
       },
       child: ListTile(
         title: Text(
           travelTrack.config.name,
           style: TextStyle(
-            color: travelTrackManager
-                    .isTravelTrackSelected(travelTrack.config.id)
+            color: travelTrackManager.isTravelTrackSelected(travelTrack.id)
                 ? Theme.of(context).primaryColor
-                : travelTrackManager.isTravelTrackVisible(travelTrack.config.id)
+                : travelTrackManager.isTravelTrackVisible(travelTrack.id)
                     ? Colors.black
                     : Colors.grey,
           ),
         ),
         leading: travelTrackManager.isAnyTravelTrackSelected
             ? Checkbox(
-                value: travelTrackManager
-                    .isTravelTrackSelected(travelTrack.config.id),
+                value: travelTrackManager.isTravelTrackSelected(travelTrack.id),
                 onChanged: (bool? value) {
                   travelTrackManager.setTravelTrackSelected(
-                    travelTrackId: travelTrack.config.id,
+                    travelTrackId: travelTrack.id,
                     isSelected: value ?? false,
                   );
                 },
@@ -165,14 +159,14 @@ class _TravelTrackListViewState extends State<TravelTrackListView> {
                   // Flexible(
                   //   child: IconButton(
                   //     icon: TravelTrackManager.I
-                  //             .isTravelTrackVisible(travelTrack.config.id)
+                  //             .isTravelTrackVisible(travelTrack.id)
                   //         ? const Icon(Icons.visibility)
                   //         : const Icon(Icons.visibility_off),
                   //     onPressed: () {
                   //       TravelTrackManager.I.setTravelTrackVisible(
-                  //         travelTrackId: travelTrack.config.id,
+                  //         travelTrackId: travelTrack.id,
                   //         isVisible: !TravelTrackManager.I
-                  //             .isTravelTrackVisible(travelTrack.config.id),
+                  //             .isTravelTrackVisible(travelTrack.id),
                   //       );
                   //     },
                   //   ),
@@ -180,12 +174,12 @@ class _TravelTrackListViewState extends State<TravelTrackListView> {
                   Flexible(
                     child: IconButton(
                       icon: TravelTrackManager.I.activeTravelTrackId ==
-                              travelTrack.config.id
+                              travelTrack.id
                           ? const Icon(Icons.radio_button_checked)
                           : const Icon(Icons.radio_button_unchecked),
                       onPressed: () {
                         TravelTrackManager.I
-                            .setActiveTravelTrackId(travelTrack.config.id);
+                            .setActiveTravelTrackId(travelTrack.id);
                       },
                     ),
                   ),

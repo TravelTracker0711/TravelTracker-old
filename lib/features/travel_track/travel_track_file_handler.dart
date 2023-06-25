@@ -61,7 +61,7 @@ class TravelTrackFileHandler {
               File(travelTrackJsonFilePath).readAsStringSync();
           TravelTrack travelTrack =
               await TravelTrackFactory.fromJson(jsonDecode(travelTrackJson));
-          travelTrackMap[travelTrack.config.id] = travelTrack;
+          travelTrackMap[travelTrack.id] = travelTrack;
         }
       }
     }

@@ -54,6 +54,7 @@ class Asset {
   AssetType _type;
   DateTime? _createdDateTime;
 
+  String get id => config.id;
   bool get isEntityFetched => _isEntityFetched;
   bool get isEntityExists => _entity != null;
 

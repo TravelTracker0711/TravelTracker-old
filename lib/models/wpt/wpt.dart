@@ -21,6 +21,7 @@ class Wpt {
   // final double? speedAccuracy;
   // final int? floor;
 
+  String get id => config.id;
   double get lat => latLng.latitude;
   double get lon => latLng.longitude;
   double? get ele => elevation;

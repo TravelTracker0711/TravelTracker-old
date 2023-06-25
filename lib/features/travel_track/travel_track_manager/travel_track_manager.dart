@@ -61,7 +61,7 @@ class TravelTrackManager with ChangeNotifier {
   Future<void> addTravelTrackAsync(TravelTrack travelTrack) async {
     TravelTrackFileHandler travelTrackFileHandler = TravelTrackFileHandler();
     await travelTrackFileHandler.writeAsync(travelTrack);
-    _travelTrackMap[travelTrack.config.id] = travelTrack;
+    _travelTrackMap[travelTrack.id] = travelTrack;
     notifyListeners();
   }
 

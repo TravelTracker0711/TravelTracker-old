@@ -77,7 +77,7 @@ extension AssetsUtils on List<Asset> {
       asset._coordinates = Wpt(
         latLng: latLng,
       );
-      asset.attachedTrksegId = trkseg.config.id;
+      asset.attachedTrksegId = trkseg.id;
     }
   }
 

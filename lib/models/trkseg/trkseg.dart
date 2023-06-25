@@ -12,6 +12,8 @@ class Trkseg {
   final TravelConfig config;
   final List<Wpt> _trkpts = <Wpt>[];
 
+  String get id => config.id;
+
   /// Guarantee to be sorted by [Wpt.time] in ascending order.
   List<Wpt> get trkpts => List<Wpt>.unmodifiable(_trkpts);
   DateTime? get startTime => _trkpts.startTime;
@@ -38,6 +40,9 @@ class Trkseg {
   }
 
   void addTrkpt(Wpt trkpt) {
+    if (_trkpts.isNotEmpty && trkpt.id == _trkpts.last.id) {
+      return;
+    }
     _trkpts
       ..add(trkpt)
       ..sort((a, b) => a.compareTo(b));

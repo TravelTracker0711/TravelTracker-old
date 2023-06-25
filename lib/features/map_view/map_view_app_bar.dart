@@ -109,7 +109,7 @@ class MapViewAppBar extends StatelessWidget implements PreferredSizeWidget {
           ).then((travelTrack) {
             context.read<TravelTrackManager>()
               ..addTravelTrackAsync(travelTrack)
-              ..setActiveTravelTrackId(travelTrack.config.id);
+              ..setActiveTravelTrackId(travelTrack.id);
           });
         }
       },

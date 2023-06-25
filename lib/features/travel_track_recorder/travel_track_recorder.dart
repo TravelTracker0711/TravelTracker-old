@@ -77,7 +77,7 @@ class TravelTrackRecorder with ChangeNotifier {
       config: newTravelTrackConfig,
     );
     await TravelTrackManager.I.addTravelTrackAsync(newTravelTrack);
-    TravelTrackManager.I.setActiveTravelTrackId(newTravelTrack.config.id);
+    TravelTrackManager.I.setActiveTravelTrackId(newTravelTrack.id);
   }
 
   VoidCallback _getGpsListener(TravelTrack activeTravelTrack) {
