@@ -29,7 +29,7 @@ class TravelTrackRecorder with ChangeNotifier {
     if (_isRecording) {
       return;
     }
-    if (ActivateTravelTrackManager.I.isActivateTravelTrackExist ||
+    if (!ActivateTravelTrackManager.I.isActivateTravelTrackExist ||
         forceNewTravelTrack) {
       await _addNewActiveTravelTrack(newTravelTrackConfig);
     }

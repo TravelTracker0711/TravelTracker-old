@@ -73,7 +73,13 @@ class GpsProvider with ChangeNotifier {
     if (pos == null) {
       return;
     }
-    _wpt = WptFactory.fromPosition(position: pos);
+    Wpt newWpt = WptFactory.fromPosition(position: pos);
+    if (_wpt != null && _wpt!.latLng == newWpt.latLng) {
+      debugPrint('GpsProvider: same position');
+      return;
+    }
+    _wpt = newWpt;
+    debugPrint('GpsProvider: new position: $pos');
     notifyListeners(isNewPoint: true);
   }
 

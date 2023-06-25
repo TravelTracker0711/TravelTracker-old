@@ -10,6 +10,7 @@ class ExternalAssetManager with ChangeNotifier {
   AssetPathEntity? _allAssetsPathEntity;
   List<AssetEntity> _allAssetEntities = [];
   Map<String, AssetEntity> _allAssetEntitiesMap = {};
+  Map<String, AssetEntity> _lastAllAssetEntitiesMap = {};
 
   bool get isReady => _isReady;
   AssetPathEntity? get allAssetsPathEntity => _allAssetsPathEntity;
@@ -20,6 +21,26 @@ class ExternalAssetManager with ChangeNotifier {
       Map<String, AssetEntity>.unmodifiable(
         _allAssetEntitiesMap,
       );
+
+  List<AssetEntity> get addedAssetEntitieIds {
+    List<AssetEntity> addedAssetEntitieIds = [];
+    _allAssetEntitiesMap.forEach((key, value) {
+      if (!_lastAllAssetEntitiesMap.containsKey(key)) {
+        addedAssetEntitieIds.add(value);
+      }
+    });
+    return addedAssetEntitieIds;
+  }
+
+  List<AssetEntity> get deletedAssetEntitieIds {
+    List<AssetEntity> deleteAssetEntitieIds = [];
+    _lastAllAssetEntitiesMap.forEach((key, value) {
+      if (!_allAssetEntitiesMap.containsKey(key)) {
+        deleteAssetEntitieIds.add(value);
+      }
+    });
+    return deleteAssetEntitieIds;
+  }
 
   // ignore: non_constant_identifier_names
   static Future<ExternalAssetManager> get FI async {
@@ -79,6 +100,7 @@ class ExternalAssetManager with ChangeNotifier {
   }
 
   Future<void> fetchAllAssetEntitiesAsync() async {
+    _lastAllAssetEntitiesMap = _allAssetEntitiesMap;
     _allAssetsPathEntity =
         await PhotoManagerExtension.getAllAssetsPathEntityAsync();
     if (_allAssetsPathEntity == null) {

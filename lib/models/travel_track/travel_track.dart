@@ -132,6 +132,20 @@ class TravelTrack with ChangeNotifier {
     notifyListeners();
   }
 
+  void addAsset({
+    required Asset asset,
+    bool attachToLastTrkseg = true,
+  }) {
+    if (attachToLastTrkseg) {
+      if (_trksegs.isEmpty) {
+        addTrkseg();
+      }
+      asset.attachedTrksegId = _trksegs.last.id;
+    }
+    _assetMap[asset.id] = asset;
+    notifyListeners();
+  }
+
   List<Asset> getAssetsByIds(List<String> assetIds) {
     List<Asset> assets = <Asset>[];
     for (String assetId in assetIds) {
