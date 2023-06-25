@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_tracker/features/stats_view/stats_list.dart';
+import 'package:travel_tracker/features/travel_track/travel_track_manager/travel_track_state_changer.dart';
 import 'package:travel_tracker/models/travel_track/travel_track.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_list_view_options.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_manager/travel_track_manager.dart';
@@ -128,30 +129,34 @@ class _TravelTrackListViewState extends State<TravelTrackListView> {
   ) {
     return GestureDetector(
       onLongPress: () {
-        travelTrackManager.setTravelTrackSelected(
+        TravelTrackStateChanger.toggleTravelTrackSelection(
           travelTrackId: travelTrack.id,
-          isSelected: !travelTrackManager.isTravelTrackSelected(travelTrack.id),
         );
       },
       child: ListTile(
         title: Text(
           travelTrack.config.name,
           style: TextStyle(
-            color: travelTrackManager.isTravelTrackSelected(travelTrack.id)
+            color: TravelTrackStateChanger.isTravelTrackSelected(travelTrack.id)
                 ? Theme.of(context).primaryColor
-                : travelTrackManager.isTravelTrackVisible(travelTrack.id)
+                : TravelTrackStateChanger.isTravelTrackVisible(travelTrack.id)
                     ? Colors.black
                     : Colors.grey,
           ),
         ),
         leading: travelTrackManager.isAnyTravelTrackSelected
             ? Checkbox(
-                value: travelTrackManager.isTravelTrackSelected(travelTrack.id),
-                onChanged: (bool? value) {
-                  travelTrackManager.setTravelTrackSelected(
-                    travelTrackId: travelTrack.id,
-                    isSelected: value ?? false,
-                  );
+                value: TravelTrackStateChanger.isTravelTrackSelected(
+                    travelTrack.id),
+                onChanged: (bool? selected) {
+                  selected ??= false;
+                  if (selected) {
+                    TravelTrackStateChanger.selectTravelTrack(
+                        travelTrackId: travelTrack.id);
+                  } else {
+                    TravelTrackStateChanger.unselectTravelTrack(
+                        travelTrackId: travelTrack.id);
+                  }
                 },
               )
             : Wrap(

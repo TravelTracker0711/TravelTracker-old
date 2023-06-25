@@ -12,17 +12,19 @@ class TravelTrackManager with ChangeNotifier {
   bool _isInitialized = false;
   VoidCallback? _travelTrackListener;
 
-  bool get isInitialized => _isInitialized;
-  bool get isAnyTravelTrackSelected => _travelTrackMap.values
-      .any((travelTrack) => travelTrack.isSelected == true);
-
   Map<String, TravelTrack> get travelTrackMap =>
       Map<String, TravelTrack>.unmodifiable(_travelTrackMap);
   List<TravelTrack> get travelTracks => _travelTrackMap.values.toList();
 
-  TravelTrack? get activeTravelTrack => _travelTrackMap[_activeTravelTrackId];
   String? get activeTravelTrackId => _activeTravelTrackId;
+  TravelTrack? get activeTravelTrack => _travelTrackMap[_activeTravelTrackId];
   bool get isActivateTravelTrackExist => activeTravelTrack != null;
+
+  bool get isInitialized => _isInitialized;
+  bool get isAnyTravelTrackSelected => _travelTrackMap.values
+      .any((travelTrack) => travelTrack.isSelected == true);
+  bool get isAnyTravelTrackVisible => _travelTrackMap.values
+      .any((travelTrack) => travelTrack.isVisible == true);
 
   List<TravelTrack> get selectedTravelTracks => travelTracks
       .where((travelTrack) => travelTrack.isSelected == true)
@@ -44,20 +46,26 @@ class TravelTrackManager with ChangeNotifier {
   }
 
   Future<void> _initAsync() async {
-    SnackBar snackBar =
-        SnackBar(content: Text("Loading your travel tracks from storage..."));
+    // TODO: understand snackbar principle
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      snackbarKey.currentState?.showSnackBar(snackBar);
+      snackbarKey.currentState?.showSnackBar(
+        const SnackBar(
+          content: Text("Loading your travel tracks from storage..."),
+        ),
+      );
     });
 
     TravelTrackFileHandler travelTrackFileHandler = TravelTrackFileHandler();
     _travelTrackMap.addAll(await travelTrackFileHandler.readAllAsync());
     _isInitialized = true;
-    snackBar = SnackBar(content: Text("Your travel tracks are loaded!"));
-    snackbarKey.currentState?.showSnackBar(snackBar);
+
+    snackbarKey.currentState?.showSnackBar(
+      const SnackBar(content: Text("Your travel tracks are loaded!")),
+    );
     notifyListeners();
   }
 
+  // TODO: move writeAsync to somewhere else
   Future<void> addTravelTrackAsync(TravelTrack travelTrack) async {
     TravelTrackFileHandler travelTrackFileHandler = TravelTrackFileHandler();
     await travelTrackFileHandler.writeAsync(travelTrack);
@@ -65,34 +73,10 @@ class TravelTrackManager with ChangeNotifier {
     notifyListeners();
   }
 
+  // TODO: delete travelTrack from storage
   Future<void> removeTravelTrackAsync(String travelTrackId) async {
-    // TODO: delete travelTrack from storage
     _travelTrackMap.remove(travelTrackId);
     notifyListeners();
-  }
-
-  void setTravelTrackSelected({
-    required String travelTrackId,
-    required bool isSelected,
-  }) {
-    _travelTrackMap[travelTrackId]!.isSelected = isSelected;
-    notifyListeners();
-  }
-
-  void setTravelTrackVisible({
-    required String travelTrackId,
-    required bool isVisible,
-  }) {
-    _travelTrackMap[travelTrackId]!.isVisible = isVisible;
-    notifyListeners();
-  }
-
-  bool isTravelTrackSelected(String travelTrackId) {
-    return _travelTrackMap[travelTrackId]!.isSelected;
-  }
-
-  bool isTravelTrackVisible(String travelTrackId) {
-    return _travelTrackMap[travelTrackId]!.isVisible;
   }
 
   void setActiveTravelTrackId(String? travelTrackId) {
@@ -110,5 +94,10 @@ class TravelTrackManager with ChangeNotifier {
     }
     _activeTravelTrackId = travelTrackId;
     notifyListeners();
+  }
+
+  @override
+  void notifyListeners() {
+    super.notifyListeners();
   }
 }
