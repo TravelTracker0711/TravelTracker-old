@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get_it/get_it.dart';
+import 'package:travel_tracker/features/travel_track/travel_track_manager/activate_travel_track_mananger.dart';
 import 'package:travel_tracker/models/travel_config/travel_config.dart';
 import 'package:travel_tracker/models/travel_track/travel_track.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_file_handler.dart';
@@ -28,11 +29,12 @@ class TravelTrackRecorder with ChangeNotifier {
     if (_isRecording) {
       return;
     }
-    if (TravelTrackManager.I.isActivateTravelTrackExist ||
+    if (ActivateTravelTrackManager.I.isActivateTravelTrackExist ||
         forceNewTravelTrack) {
       await _addNewActiveTravelTrack(newTravelTrackConfig);
     }
-    TravelTrack activeTravelTrack = TravelTrackManager.I.activeTravelTrack!;
+    TravelTrack activeTravelTrack =
+        ActivateTravelTrackManager.I.activeTravelTrack!;
     activeTravelTrack.addTrkseg();
 
     _gpsListener = _getGpsListener(activeTravelTrack);
@@ -64,7 +66,7 @@ class TravelTrackRecorder with ChangeNotifier {
       return;
     }
     pauseRecording();
-    TravelTrackManager.I.setActiveTravelTrackId(null);
+    ActivateTravelTrackManager.I.unsetActiveTravelTrack();
     _isActivated = false;
     notifyListeners();
   }
@@ -77,7 +79,8 @@ class TravelTrackRecorder with ChangeNotifier {
       config: newTravelTrackConfig,
     );
     await TravelTrackManager.I.addTravelTrackAsync(newTravelTrack);
-    TravelTrackManager.I.setActiveTravelTrackId(newTravelTrack.id);
+    ActivateTravelTrackManager.I
+        .setActiveTravelTrack(travelTrackId: newTravelTrack.id);
   }
 
   VoidCallback _getGpsListener(TravelTrack activeTravelTrack) {
@@ -103,9 +106,9 @@ class TravelTrackRecorder with ChangeNotifier {
   }
 
   void _writeActiveTravelTrack() {
-    if (TravelTrackManager.I.activeTravelTrack != null) {
+    if (ActivateTravelTrackManager.I.activeTravelTrack != null) {
       TravelTrackFileHandler()
-          .writeAsync(TravelTrackManager.I.activeTravelTrack!);
+          .writeAsync(ActivateTravelTrackManager.I.activeTravelTrack!);
     }
   }
 }

@@ -7,18 +7,12 @@ import 'package:travel_tracker/global.dart';
 
 class TravelTrackManager with ChangeNotifier {
   final Map<String, TravelTrack> _travelTrackMap = <String, TravelTrack>{};
-  String? _activeTravelTrackId;
   bool _isInitializing = false;
   bool _isInitialized = false;
-  VoidCallback? _travelTrackListener;
 
   Map<String, TravelTrack> get travelTrackMap =>
       Map<String, TravelTrack>.unmodifiable(_travelTrackMap);
   List<TravelTrack> get travelTracks => _travelTrackMap.values.toList();
-
-  String? get activeTravelTrackId => _activeTravelTrackId;
-  TravelTrack? get activeTravelTrack => _travelTrackMap[_activeTravelTrackId];
-  bool get isActivateTravelTrackExist => activeTravelTrack != null;
 
   bool get isInitialized => _isInitialized;
   bool get isAnyTravelTrackSelected => _travelTrackMap.values
@@ -76,23 +70,6 @@ class TravelTrackManager with ChangeNotifier {
   // TODO: delete travelTrack from storage
   Future<void> removeTravelTrackAsync(String travelTrackId) async {
     _travelTrackMap.remove(travelTrackId);
-    notifyListeners();
-  }
-
-  void setActiveTravelTrackId(String? travelTrackId) {
-    if (_activeTravelTrackId != null) {
-      if (_travelTrackListener != null) {
-        _travelTrackMap[_activeTravelTrackId]
-            ?.removeListener(_travelTrackListener!);
-      }
-    }
-    if (travelTrackId != null && _travelTrackMap.containsKey(travelTrackId)) {
-      _travelTrackListener = () {
-        notifyListeners();
-      };
-      _travelTrackMap[travelTrackId]!.addListener(_travelTrackListener!);
-    }
-    _activeTravelTrackId = travelTrackId;
     notifyListeners();
   }
 

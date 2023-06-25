@@ -9,6 +9,8 @@ import 'package:go_router/go_router.dart';
 import 'package:travel_tracker/features/travel_track_recorder/travel_track_recorder.dart';
 import 'package:travel_tracker/global.dart';
 
+import 'features/travel_track/travel_track_manager/activate_travel_track_mananger.dart';
+
 void main() {
   GetIt.I.registerLazySingletonAsync<ExternalAssetManager>(
     () async {
@@ -18,6 +20,8 @@ void main() {
     },
   );
   GetIt.I.registerSingleton<TravelTrackManager>(TravelTrackManager());
+  GetIt.I.registerSingleton<ActivateTravelTrackManager>(
+      ActivateTravelTrackManager());
   GetIt.I.registerSingleton<GpsProvider>(GpsProvider());
   GetIt.I.registerSingleton<TravelTrackRecorder>(TravelTrackRecorder());
 
@@ -42,6 +46,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<TravelTrackManager>(
           create: (_) => TravelTrackManager.I,
+        ),
+        ChangeNotifierProvider<ActivateTravelTrackManager>(
+          create: (_) => ActivateTravelTrackManager.I,
         ),
         ChangeNotifierProvider<GpsProvider>(
           create: (_) => GpsProvider.I,

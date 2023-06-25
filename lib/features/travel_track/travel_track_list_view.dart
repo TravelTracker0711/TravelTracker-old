@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_tracker/features/stats_view/stats_list.dart';
+import 'package:travel_tracker/features/travel_track/travel_track_manager/activate_travel_track_mananger.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_manager/travel_track_state_changer.dart';
 import 'package:travel_tracker/models/travel_track/travel_track.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_list_view_options.dart';
@@ -32,6 +33,7 @@ class _TravelTrackListViewState extends State<TravelTrackListView> {
   @override
   Widget build(context) {
     travelTrackManager = context.watch<TravelTrackManager>();
+    context.watch<ActivateTravelTrackManager>();
     travelTracks = travelTrackManager.travelTracks;
 
     List<Widget> children = [];
@@ -178,13 +180,14 @@ class _TravelTrackListViewState extends State<TravelTrackListView> {
                   // ),
                   Flexible(
                     child: IconButton(
-                      icon: TravelTrackManager.I.activeTravelTrackId ==
+                      icon: ActivateTravelTrackManager.I.activeTravelTrackId ==
                               travelTrack.id
                           ? const Icon(Icons.radio_button_checked)
                           : const Icon(Icons.radio_button_unchecked),
                       onPressed: () {
-                        TravelTrackManager.I
-                            .setActiveTravelTrackId(travelTrack.id);
+                        ActivateTravelTrackManager.I.setActiveTravelTrack(
+                          travelTrackId: travelTrack.id,
+                        );
                       },
                     ),
                   ),

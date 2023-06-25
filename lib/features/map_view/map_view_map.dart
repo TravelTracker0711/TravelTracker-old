@@ -6,8 +6,8 @@ import 'package:latlong2/latlong.dart' as latlng;
 import 'package:provider/provider.dart';
 import 'package:travel_tracker/features/map_view/map_view_controller.dart';
 import 'package:travel_tracker/features/map_view/travel_track_layer_builder.dart';
+import 'package:travel_tracker/features/travel_track/travel_track_manager/activate_travel_track_mananger.dart';
 import 'package:travel_tracker/models/travel_track/travel_track.dart';
-import 'package:travel_tracker/features/travel_track/travel_track_manager/travel_track_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MapViewMap extends StatefulWidget {
@@ -86,7 +86,7 @@ class _MapViewMapState extends State<MapViewMap> with TickerProviderStateMixin {
 
     List<Widget> layers = [];
     TravelTrack? activeTravelTrack =
-        context.watch<TravelTrackManager>().activeTravelTrack;
+        context.watch<ActivateTravelTrackManager>().activeTravelTrack;
     TravelTrackLayerBuilder travelTrackLayerBuilder = TravelTrackLayerBuilder(
       mapRotationNotifier: mapRotationNotifier,
       mapViewController: mapViewController,

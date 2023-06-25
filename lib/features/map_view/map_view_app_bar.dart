@@ -4,6 +4,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_tracker/features/map_view/map_view_controller.dart';
 import 'package:travel_tracker/features/permission/permission_manager.dart';
+import 'package:travel_tracker/features/travel_track/travel_track_manager/activate_travel_track_mananger.dart';
 import 'package:travel_tracker/models/travel_config/travel_config.dart';
 import 'package:travel_tracker/models/travel_track/travel_track.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_file_handler.dart';
@@ -107,9 +108,10 @@ class MapViewAppBar extends StatelessWidget implements PreferredSizeWidget {
             gpxFileFullPaths: filePaths,
             autoAttachAssets: true,
           ).then((travelTrack) {
-            context.read<TravelTrackManager>()
-              ..addTravelTrackAsync(travelTrack)
-              ..setActiveTravelTrackId(travelTrack.id);
+            context.read<TravelTrackManager>().addTravelTrackAsync(travelTrack);
+            context
+                .read<ActivateTravelTrackManager>()
+                .setActiveTravelTrack(travelTrackId: travelTrack.id);
           });
         }
       },
