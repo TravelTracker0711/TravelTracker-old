@@ -26,6 +26,7 @@ class TravelTrack with ChangeNotifier {
   bool isVisible = true;
 
   String get id => config.id;
+  String get name => config.name;
 
   /// Guarantee to be sorted by [Wpt.time] in ascending order.
   List<Wpt> get wpts => List<Wpt>.unmodifiable(_wpts);

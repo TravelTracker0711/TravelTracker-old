@@ -135,7 +135,7 @@ class _TravelTrackListViewState extends State<TravelTrackListView> {
       },
       child: ListTile(
         title: Text(
-          travelTrack.config.name,
+          travelTrack.name,
           style: TextStyle(
             color: TravelTrackStateChanger.isTravelTrackSelected(travelTrack.id)
                 ? Theme.of(context).primaryColor
@@ -203,7 +203,7 @@ class _TravelTrackListViewState extends State<TravelTrackListView> {
       travelTrack.trksegs.map((trkseg) {
         return ListTile(
           leading: const Icon(Icons.timeline),
-          title: Text(trkseg.config.name),
+          title: Text(trkseg.name),
           onTap: () {
             // TODO: focus on trkseg
           },

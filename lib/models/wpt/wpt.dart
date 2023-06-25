@@ -22,6 +22,7 @@ class Wpt {
   // final int? floor;
 
   String get id => config.id;
+  String get name => config.name;
   double get lat => latLng.latitude;
   double get lon => latLng.longitude;
   double? get ele => elevation;

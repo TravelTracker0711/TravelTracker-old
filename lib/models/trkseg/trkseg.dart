@@ -13,6 +13,7 @@ class Trkseg {
   final List<Wpt> _trkpts = <Wpt>[];
 
   String get id => config.id;
+  String get name => config.name;
 
   /// Guarantee to be sorted by [Wpt.time] in ascending order.
   List<Wpt> get trkpts => List<Wpt>.unmodifiable(_trkpts);

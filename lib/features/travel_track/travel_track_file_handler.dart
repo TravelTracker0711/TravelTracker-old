@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:permission_handler/permission_handler.dart';
@@ -29,16 +28,9 @@ class TravelTrackFileHandler {
     return fileFullPath;
   }
 
-  Future<void> test() async {
-    String documentsPath = await _documentsPathAsync;
-    Directory d = Directory(p.join(documentsPath));
-    d.list().forEach((element) {});
-  }
-
   Future<void> writeAsync(TravelTrack travelTrack) async {
     await PermissionManager.requestAsync(Permission.manageExternalStorage);
-    String travelTrackDirPath =
-        await toDocumentsPathAsync(travelTrack.config.name);
+    String travelTrackDirPath = await toDocumentsPathAsync(travelTrack.name);
     Directory(travelTrackDirPath).createSync(recursive: true);
     _writeTravelTrackFileAsync(
       travelTrack,
@@ -46,7 +38,6 @@ class TravelTrackFileHandler {
     );
   }
 
-  // read all travel tracks from storage and return
   Future<Map<String, TravelTrack>> readAllAsync() async {
     String documentsPath = await _documentsPathAsync;
     Directory documentsDir = Directory(documentsPath);
