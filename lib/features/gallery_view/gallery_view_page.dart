@@ -4,7 +4,7 @@ import 'package:travel_tracker/features/gallery_view/gallery_view_controller.dar
 import 'package:travel_tracker/features/gallery_view/gallery_view_grid.dart';
 import 'package:travel_tracker/models/asset/asset.dart';
 import 'package:travel_tracker/models/travel_track/travel_track.dart';
-import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
+import 'package:travel_tracker/features/travel_track/travel_track_manager/travel_track_manager.dart';
 
 class GalleryViewPage extends StatefulWidget {
   const GalleryViewPage({super.key});

@@ -77,8 +77,8 @@ class TravelTrack with ChangeNotifier {
 
   int compareTo(TravelTrack other) {
     return nullableDateTimeCompare(
-      trksegs.first.startTime,
-      other.trksegs.first.startTime,
+      startTime,
+      other.startTime,
     );
   }
 

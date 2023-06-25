@@ -4,7 +4,7 @@ class TravelTrackFactory {
   static Future<TravelTrack> fromJson(Map<String, dynamic> json) async {
     Map<String, Asset> assetMap = {
       for (String key in (json['assetMap'] as Map).keys)
-        key: await AssetFactory.fromJson(json['assetMap'][key])
+        key: await AssetFactory.fromJsonAsync(json['assetMap'][key])
     };
     TravelTrack travelTrack = TravelTrack(
       config: TravelConfigFactory.fromJson(json['config']),
@@ -31,7 +31,7 @@ class TravelTrackFactory {
     Map<String, Asset> assetMap = <String, Asset>{};
 
     for (String gpxFilePath in gpxFileFullPaths) {
-      await _fetchDataFromGpxFileFullPath(
+      await _fetchDataFromGpxFileFullPathAsync(
         gpxFilePath: gpxFilePath,
         wpts: wpts,
         trksegs: trksegs,
@@ -39,7 +39,7 @@ class TravelTrackFactory {
     }
 
     if (autoAttachAssets) {
-      await _fetchAssetsWithTrksegs(
+      await _fetchAssetsWithTrksegsAsync(
         trksegs: trksegs,
         assetMap: assetMap,
       );
@@ -53,12 +53,12 @@ class TravelTrackFactory {
     );
   }
 
-  static Future<void> _fetchDataFromGpxFileFullPath({
+  static Future<void> _fetchDataFromGpxFileFullPathAsync({
     required String gpxFilePath,
     required List<Wpt> wpts,
     required List<Trkseg> trksegs,
   }) async {
-    gpx_pkg.Gpx? gpx = await _readGpxFromFileFullPath(gpxFilePath);
+    gpx_pkg.Gpx? gpx = await _readGpxFromFileFullPathAsync(gpxFilePath);
     if (gpx == null) {
       return;
     }
@@ -70,7 +70,7 @@ class TravelTrackFactory {
     ));
   }
 
-  static Future<gpx_pkg.Gpx?> _readGpxFromFileFullPath(
+  static Future<gpx_pkg.Gpx?> _readGpxFromFileFullPathAsync(
     String gpxFilePath,
   ) async {
     File gpxFile = File(gpxFilePath);
@@ -82,7 +82,7 @@ class TravelTrackFactory {
     return gpx;
   }
 
-  static Future<void> _fetchAssetsWithTrksegs({
+  static Future<void> _fetchAssetsWithTrksegsAsync({
     required List<Trkseg> trksegs,
     required Map<String, Asset> assetMap,
   }) async {
@@ -92,7 +92,7 @@ class TravelTrackFactory {
     if (startTime == null || endTime == null) {
       return;
     }
-    List<AssetEntity>? assetEntities = await _getAssetEntities(
+    List<AssetEntity>? assetEntities = await _getAssetEntitiesAsync(
       startTime: startTime,
       endTime: endTime,
     );
@@ -114,7 +114,7 @@ class TravelTrackFactory {
         time: trksegStartTime,
       );
       // add assets outside of trkseg (include assets before first trkseg)
-      await _addAssetsToMap(
+      await _addAssetsToMapAsync(
         assetMap: assetMap,
         assetEntities: assetEntities.sublist(
           endIndex,
@@ -128,7 +128,7 @@ class TravelTrackFactory {
         time: trksegEndTime,
       );
       // add assets inside of trkseg
-      await _addAssetsToMap(
+      await _addAssetsToMapAsync(
         assetMap: assetMap,
         assetEntities: assetEntities.sublist(
           startIndex,
@@ -138,7 +138,7 @@ class TravelTrackFactory {
       );
     }
     // add assets after last trkseg
-    await _addAssetsToMap(
+    await _addAssetsToMapAsync(
       assetMap: assetMap,
       assetEntities: assetEntities.sublist(
         endIndex,
@@ -147,7 +147,7 @@ class TravelTrackFactory {
     );
   }
 
-  static Future<List<AssetEntity>?> _getAssetEntities({
+  static Future<List<AssetEntity>?> _getAssetEntitiesAsync({
     required DateTime startTime,
     required DateTime endTime,
   }) async {
@@ -176,7 +176,7 @@ class TravelTrackFactory {
     return currentIndex;
   }
 
-  static Future<void> _addAssetsToMap({
+  static Future<void> _addAssetsToMapAsync({
     required Map<String, Asset> assetMap,
     required List<AssetEntity> assetEntities,
     Trkseg? trkseg,

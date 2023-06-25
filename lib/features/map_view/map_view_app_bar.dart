@@ -7,7 +7,7 @@ import 'package:travel_tracker/features/permission/permission_manager.dart';
 import 'package:travel_tracker/models/travel_config/travel_config.dart';
 import 'package:travel_tracker/models/travel_track/travel_track.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_file_handler.dart';
-import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
+import 'package:travel_tracker/features/travel_track/travel_track_manager/travel_track_manager.dart';
 
 enum PopupAction { test1, addGpxFile }
 

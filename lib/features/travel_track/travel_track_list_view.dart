@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:travel_tracker/features/stats_view/stats_list.dart';
 import 'package:travel_tracker/models/travel_track/travel_track.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_list_view_options.dart';
-import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
+import 'package:travel_tracker/features/travel_track/travel_track_manager/travel_track_manager.dart';
 
 class TravelTrackListView extends StatefulWidget {
   const TravelTrackListView({

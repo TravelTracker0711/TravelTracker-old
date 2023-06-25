@@ -33,7 +33,7 @@ class GpsProvider with ChangeNotifier {
     _isInitialized = true;
   }
 
-  void startRecording(LocationSettings? locationSettings) async {
+  Future<void> startRecordingAsync(LocationSettings? locationSettings) async {
     if (_isRecording) {
       return;
     }
@@ -63,7 +63,7 @@ class GpsProvider with ChangeNotifier {
     if (_isRecording) {
       stopRecording();
     } else {
-      startRecording(locationSettings);
+      startRecordingAsync(locationSettings);
     }
   }
 

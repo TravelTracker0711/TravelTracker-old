@@ -11,7 +11,7 @@ import 'package:travel_tracker/models/travel_track/travel_track.dart';
 
 class TravelTrackFileHandler {
   // TODO: handle ios, windows, linux
-  Future<String> get _documentsPath async {
+  Future<String> get _documentsPathAsync async {
     Directory? externalStorageDir = await getExternalStorageDirectory();
     // /storage/emulated/0/Android/data/com.example.travel_tracker/files
     if (externalStorageDir == null) {
@@ -24,30 +24,31 @@ class TravelTrackFileHandler {
     return documentsDir.path;
   }
 
-  Future<String> toDocumentsPath(String fileName) async {
-    String fileFullPath = p.join(await _documentsPath, fileName);
+  Future<String> toDocumentsPathAsync(String fileName) async {
+    String fileFullPath = p.join(await _documentsPathAsync, fileName);
     return fileFullPath;
   }
 
   Future<void> test() async {
-    String documentsPath = await _documentsPath;
+    String documentsPath = await _documentsPathAsync;
     Directory d = Directory(p.join(documentsPath));
     d.list().forEach((element) {});
   }
 
-  Future<void> write(TravelTrack travelTrack) async {
+  Future<void> writeAsync(TravelTrack travelTrack) async {
     await PermissionManager.requestAsync(Permission.manageExternalStorage);
-    String travelTrackDirPath = await toDocumentsPath(travelTrack.config.name);
+    String travelTrackDirPath =
+        await toDocumentsPathAsync(travelTrack.config.name);
     Directory(travelTrackDirPath).createSync(recursive: true);
-    _writeTravelTrackFile(
+    _writeTravelTrackFileAsync(
       travelTrack,
       p.join(travelTrackDirPath, 'travel_track.json'),
     );
   }
 
   // read all travel tracks from storage and return
-  Future<Map<String, TravelTrack>> readAll() async {
-    String documentsPath = await _documentsPath;
+  Future<Map<String, TravelTrack>> readAllAsync() async {
+    String documentsPath = await _documentsPathAsync;
     Directory documentsDir = Directory(documentsPath);
     List<FileSystemEntity> travelTrackDirList = documentsDir.listSync();
     Map<String, TravelTrack> travelTrackMap = <String, TravelTrack>{};
@@ -67,7 +68,7 @@ class TravelTrackFileHandler {
     return travelTrackMap;
   }
 
-  Future<void> _writeTravelTrackFile(
+  Future<void> _writeTravelTrackFileAsync(
       TravelTrack travelTrack, String fullFilePath) async {
     String travelTrackJson = jsonEncode(travelTrack);
     File(fullFilePath).writeAsStringSync(travelTrackJson);

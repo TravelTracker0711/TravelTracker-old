@@ -15,18 +15,23 @@ class TravelTrackManager with ChangeNotifier {
   bool get isInitialized => _isInitialized;
   bool get isAnyTravelTrackSelected => _travelTrackMap.values
       .any((travelTrack) => travelTrack.isSelected == true);
+
   Map<String, TravelTrack> get travelTrackMap =>
       Map<String, TravelTrack>.unmodifiable(_travelTrackMap);
+  List<TravelTrack> get travelTracks => _travelTrackMap.values.toList();
+
   TravelTrack? get activeTravelTrack => _travelTrackMap[_activeTravelTrackId];
   String? get activeTravelTrackId => _activeTravelTrackId;
-  // TODO: get list of travel tracks, with setted sort and filter
-  List<TravelTrack> get travelTracks => _travelTrackMap.values.toList();
+  bool get isActivateTravelTrackExist => activeTravelTrack != null;
+
   List<TravelTrack> get selectedTravelTracks => travelTracks
       .where((travelTrack) => travelTrack.isSelected == true)
-      .toList();
+      .toList()
+    ..sort((a, b) => a.compareTo(b));
   List<TravelTrack> get visibleTravelTracks => travelTracks
       .where((travelTrack) => travelTrack.isVisible == true)
-      .toList();
+      .toList()
+    ..sort((a, b) => a.compareTo(b));
 
   // ignore: non_constant_identifier_names
   static TravelTrackManager get I {
@@ -46,7 +51,7 @@ class TravelTrackManager with ChangeNotifier {
     });
 
     TravelTrackFileHandler travelTrackFileHandler = TravelTrackFileHandler();
-    _travelTrackMap.addAll(await travelTrackFileHandler.readAll());
+    _travelTrackMap.addAll(await travelTrackFileHandler.readAllAsync());
     _isInitialized = true;
     snackBar = SnackBar(content: Text("Your travel tracks are loaded!"));
     snackbarKey.currentState?.showSnackBar(snackBar);
@@ -55,7 +60,7 @@ class TravelTrackManager with ChangeNotifier {
 
   Future<void> addTravelTrackAsync(TravelTrack travelTrack) async {
     TravelTrackFileHandler travelTrackFileHandler = TravelTrackFileHandler();
-    await travelTrackFileHandler.write(travelTrack);
+    await travelTrackFileHandler.writeAsync(travelTrack);
     _travelTrackMap[travelTrack.config.id] = travelTrack;
     notifyListeners();
   }

@@ -4,7 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:travel_tracker/models/travel_config/travel_config.dart';
 import 'package:travel_tracker/models/travel_track/travel_track.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_file_handler.dart';
-import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
+import 'package:travel_tracker/features/travel_track/travel_track_manager/travel_track_manager.dart';
 import 'package:travel_tracker/features/travel_track_recorder/gps_provider.dart';
 
 class TravelTrackRecorder with ChangeNotifier {
@@ -21,25 +21,23 @@ class TravelTrackRecorder with ChangeNotifier {
   bool get isActivated => _isActivated;
   bool get isRecording => _isRecording;
 
-  Future<void> startRecordingAsync() async {
-    TravelTrack? activeTravelTrack = TravelTrackManager.I.activeTravelTrack;
-    if (activeTravelTrack == null) {
-      activeTravelTrack = TravelTrack(
-        config: TravelConfig(namePlaceholder: "New Travel Track"),
-      );
-      await TravelTrackManager.I.addTravelTrackAsync(activeTravelTrack);
-      TravelTrackManager.I.setActiveTravelTrackId(activeTravelTrack.config.id);
+  Future<void> startRecordingAsync({
+    bool forceNewTravelTrack = false,
+    TravelConfig? newTravelTrackConfig,
+  }) async {
+    if (_isRecording) {
+      return;
     }
+    if (TravelTrackManager.I.isActivateTravelTrackExist ||
+        forceNewTravelTrack) {
+      await _addNewActiveTravelTrack(newTravelTrackConfig);
+    }
+    TravelTrack activeTravelTrack = TravelTrackManager.I.activeTravelTrack!;
     activeTravelTrack.addTrkseg();
-    _gpsListener = () {
-      if (GpsProvider.I.wpt != null) {
-        activeTravelTrack?.addTrkpt(
-          trkpt: GpsProvider.I.wpt!,
-        );
-      }
-    };
+
+    _gpsListener = _getGpsListener(activeTravelTrack);
     GpsProvider.I.addListener(_gpsListener!);
-    GpsProvider.I.startRecording(
+    GpsProvider.I.startRecordingAsync(
       const LocationSettings(
         accuracy: LocationAccuracy.high,
         distanceFilter: 10,
@@ -51,25 +49,59 @@ class TravelTrackRecorder with ChangeNotifier {
   }
 
   void pauseRecording() {
-    if (_gpsListener != null) {
-      GpsProvider.I.removeListener(_gpsListener!);
-      _gpsListener = null;
+    if (!_isRecording) {
+      return;
     }
+    _removeGpsListener();
     GpsProvider.I.stopRecording();
+    _writeActiveTravelTrack();
     _isRecording = false;
-    if (TravelTrackManager.I.activeTravelTrack != null) {
-      TravelTrackFileHandler().write(TravelTrackManager.I.activeTravelTrack!);
-    }
     notifyListeners();
   }
 
   void stopRecording() {
-    pauseRecording();
-    _isActivated = false;
-    if (TravelTrackManager.I.activeTravelTrack != null) {
-      TravelTrackFileHandler().write(TravelTrackManager.I.activeTravelTrack!);
+    if (!_isActivated) {
+      return;
     }
+    pauseRecording();
     TravelTrackManager.I.setActiveTravelTrackId(null);
+    _isActivated = false;
     notifyListeners();
+  }
+
+  Future<void> _addNewActiveTravelTrack(
+    TravelConfig? newTravelTrackConfig,
+  ) async {
+    newTravelTrackConfig ??= TravelConfig(namePlaceholder: "New Travel Track");
+    TravelTrack newTravelTrack = TravelTrack(
+      config: newTravelTrackConfig,
+    );
+    await TravelTrackManager.I.addTravelTrackAsync(newTravelTrack);
+    TravelTrackManager.I.setActiveTravelTrackId(newTravelTrack.config.id);
+  }
+
+  VoidCallback _getGpsListener(TravelTrack activeTravelTrack) {
+    return () {
+      if (GpsProvider.I.wpt != null) {
+        activeTravelTrack.addTrkpt(
+          trkpt: GpsProvider.I.wpt!,
+        );
+      }
+    };
+  }
+
+  void _removeGpsListener() {
+    if (_gpsListener == null) {
+      return;
+    }
+    GpsProvider.I.removeListener(_gpsListener!);
+    _gpsListener = null;
+  }
+
+  void _writeActiveTravelTrack() {
+    if (TravelTrackManager.I.activeTravelTrack != null) {
+      TravelTrackFileHandler()
+          .writeAsync(TravelTrackManager.I.activeTravelTrack!);
+    }
   }
 }

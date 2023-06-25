@@ -4,7 +4,7 @@ import 'package:travel_tracker/features/map_view/map_view_controller.dart';
 import 'package:travel_tracker/features/timeline_view/timeline_view_controller.dart';
 import 'package:travel_tracker/features/timeline_view/travel_track_timeline.dart';
 import 'package:travel_tracker/models/travel_track/travel_track.dart';
-import 'package:travel_tracker/features/travel_track/travel_track_manager.dart';
+import 'package:travel_tracker/features/travel_track/travel_track_manager/travel_track_manager.dart';
 
 class TimelineView extends StatefulWidget {
   const TimelineView({

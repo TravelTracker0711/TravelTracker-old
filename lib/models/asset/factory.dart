@@ -35,7 +35,7 @@ class _AssetTypeFactory {
 }
 
 class AssetFactory {
-  static Future<Asset> fromJson(Map<String, dynamic> json) async {
+  static Future<Asset> fromJsonAsync(Map<String, dynamic> json) async {
     Asset asset = Asset(
       config: TravelConfigFactory.fromJson(json['config']),
       type: (json['type'] as String).toAssetType(),
