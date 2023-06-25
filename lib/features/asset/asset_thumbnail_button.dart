@@ -27,6 +27,7 @@ class AssetThumbnailButton extends StatelessWidget {
       child: AspectRatio(
         aspectRatio: 1 / 1,
         child: Container(
+          clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(circularRadius),
             border: Border.all(
@@ -105,9 +106,9 @@ class AssetThumbnailButton extends StatelessWidget {
     return Stack(
       children: <Widget>[
         _buildBlack(context, opacity: 0.5),
-        const Center(
-          child: CircularProgressIndicator(),
-        ),
+        // const Center(
+        //   child: CircularProgressIndicator(),
+        // ),
       ],
     );
   }

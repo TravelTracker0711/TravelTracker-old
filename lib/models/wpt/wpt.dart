@@ -49,4 +49,19 @@ class Wpt {
   String toString() {
     return 'Wpt(config: $config, latLng: $latLng, ele: $ele, time: $time)';
   }
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {
+      'config': config.toJson(),
+      'lat': lat,
+      'lon': lon,
+    };
+    if (ele != null) {
+      json['ele'] = ele;
+    }
+    if (time != null) {
+      json['time'] = time!.toIso8601String();
+    }
+    return json;
+  }
 }

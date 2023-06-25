@@ -133,4 +133,24 @@ class Asset {
       other._createdDateTime,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {
+      'config': config.toJson(),
+      'type': _type.toString(),
+    };
+    if (assetEntityId != null) {
+      json['assetEntityId'] = assetEntityId;
+    }
+    if (attachedTrksegId != null) {
+      json['attachedTrksegId'] = attachedTrksegId;
+    }
+    if (coordinates != null) {
+      json['coordinates'] = coordinates!.toJson();
+    }
+    if (_createdDateTime != null) {
+      json['createdDateTime'] = _createdDateTime.toString();
+    }
+    return json;
+  }
 }

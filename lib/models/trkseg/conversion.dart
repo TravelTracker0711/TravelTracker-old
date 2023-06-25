@@ -1,11 +1,13 @@
 part of 'trkseg.dart';
 
 extension TrksegConversion on Trkseg {
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {
-      'config': config.toJson(),
-      'trkpts': trkpts.map((e) => e.toJson()).toList(),
-    };
-    return json;
+  gpx_pkg.Trkseg toGpxTrkseg() {
+    List<gpx_pkg.Wpt> gpxTrkpts = [];
+    for (Wpt wpt in trkpts) {
+      gpx_pkg.Wpt gpxWpt = wpt.toGpxWpt();
+      gpxTrkpts.add(gpxWpt);
+    }
+    gpx_pkg.Trkseg gpxTrkseg = gpx_pkg.Trkseg(trkpts: gpxTrkpts);
+    return gpxTrkseg;
   }
 }

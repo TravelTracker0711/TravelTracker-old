@@ -1,18 +1,17 @@
 part of 'wpt.dart';
 
 extension WptConversion on Wpt {
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {
-      'config': config.toJson(),
-      'lat': lat,
-      'lon': lon,
-    };
+  gpx_pkg.Wpt toGpxWpt() {
+    gpx_pkg.Wpt gpxWpt = gpx_pkg.Wpt(
+      lat: lat,
+      lon: lon,
+    );
     if (ele != null) {
-      json['ele'] = ele;
+      gpxWpt.ele = ele;
     }
     if (time != null) {
-      json['time'] = time!.toIso8601String();
+      gpxWpt.time = time;
     }
-    return json;
+    return gpxWpt;
   }
 }

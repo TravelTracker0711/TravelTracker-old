@@ -46,4 +46,18 @@ class TravelConfig {
       tags: tags,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {
+      'id': id,
+      'name': name,
+    };
+    if (description != null) {
+      json['description'] = description;
+    }
+    if (tags.isNotEmpty) {
+      json['tags'] = tags;
+    }
+    return json;
+  }
 }

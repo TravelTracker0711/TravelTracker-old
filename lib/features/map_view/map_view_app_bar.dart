@@ -102,7 +102,7 @@ class MapViewAppBar extends StatelessWidget implements PreferredSizeWidget {
               filePaths.add(path);
             }
           }
-          TravelTrack.fromGpxFileFullPathsAsync(
+          TravelTrackFactory.fromGpxFileFullPathsAsync(
             config: TravelConfig(namePlaceholder: 'New Travel Track'),
             gpxFileFullPaths: filePaths,
             autoAttachAssets: true,

@@ -33,7 +33,9 @@ class TravelTrackRecorder with ChangeNotifier {
     activeTravelTrack.addTrkseg();
     _gpsListener = () {
       if (GpsProvider.I.wpt != null) {
-        activeTravelTrack?.addTrkpt(GpsProvider.I.wpt!);
+        activeTravelTrack?.addTrkpt(
+          trkpt: GpsProvider.I.wpt!,
+        );
       }
     };
     GpsProvider.I.addListener(_gpsListener!);

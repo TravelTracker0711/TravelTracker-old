@@ -59,7 +59,7 @@ class TravelTrackFileHandler {
           String travelTrackJson =
               File(travelTrackJsonFilePath).readAsStringSync();
           TravelTrack travelTrack =
-              await TravelTrack.fromJson(jsonDecode(travelTrackJson));
+              await TravelTrackFactory.fromJson(jsonDecode(travelTrackJson));
           travelTrackMap[travelTrack.config.id] = travelTrack;
         }
       }

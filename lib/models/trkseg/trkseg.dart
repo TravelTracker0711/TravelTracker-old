@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:gpx/gpx.dart' as gpx_pkg;
 import 'package:travel_tracker/models/travel_config/travel_config.dart';
 import 'package:travel_tracker/models/wpt/wpt.dart';
@@ -40,5 +41,13 @@ class Trkseg {
     _trkpts
       ..add(trkpt)
       ..sort((a, b) => a.compareTo(b));
+  }
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {
+      'config': config.toJson(),
+      'trkpts': trkpts.map((e) => e.toJson()).toList(),
+    };
+    return json;
   }
 }

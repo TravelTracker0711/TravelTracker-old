@@ -89,6 +89,8 @@ class ExternalAssetManager with ChangeNotifier {
           await _allAssetsPathEntity!.getAllAssetEntitiesAsync();
       _allAssetEntitiesMap = _allAssetEntities.toMap();
     }
+    debugPrint(
+        "ExternalAssetManager fetched ${_allAssetEntities.length} assets.");
     notifyListeners();
   }
 
