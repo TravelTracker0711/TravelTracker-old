@@ -51,6 +51,16 @@ class AssetThumbnailButton extends StatelessWidget {
     if (displayedAsset == null || !(displayedAsset!.type.hasThumbnail)) {
       return _buildIconWithCount(context);
     }
+    if (displayedAsset!.isEntityFetched) {
+      if (displayedAsset!.isEntityExists) {
+        return _buildAssetEntityWithCount(
+          context,
+          assetEntity: displayedAsset!.entity!,
+        );
+      } else {
+        return _buildIconWithCount(context);
+      }
+    }
     return FutureBuilder(
       future: displayedAsset?.fetchEntityDataAsync(),
       builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
@@ -90,9 +100,11 @@ class AssetThumbnailButton extends StatelessWidget {
   }) {
     return Stack(
       children: [
-        Image(
-          image: pm.AssetEntityImageProvider(assetEntity, isOriginal: false),
-          fit: BoxFit.cover,
+        SizedBox.expand(
+          child: Image(
+            image: pm.AssetEntityImageProvider(assetEntity, isOriginal: false),
+            fit: BoxFit.cover,
+          ),
         ),
         if (_isShowingCount()) ...[
           _buildBlack(context, opacity: 0.3),

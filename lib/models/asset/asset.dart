@@ -48,10 +48,14 @@ class Asset {
   final String? assetEntityId;
   String? attachedTrksegId;
 
+  bool _isEntityFetched = false;
   pm.AssetEntity? _entity;
   Wpt? _coordinates;
   AssetType _type;
   DateTime? _createdDateTime;
+
+  bool get isEntityFetched => _isEntityFetched;
+  bool get isEntityExists => _entity != null;
 
   /// run [fetchEntityDataAsync] before using [entity]
   pm.AssetEntity? get entity => _entity;
@@ -79,6 +83,7 @@ class Asset {
   /// fetches entity data(entity, type, createdDateTime) from assetEntityId
   /// with [force] set to true, it will fetch data even if it has already been fetched
   /// with [entity] set, it will use that instead of fetching from assetEntityId
+  // TODO: check if fetch multiple times is a problem
   Future<void> fetchEntityDataAsync({
     bool force = false,
     pm.AssetEntity? entity,
@@ -113,6 +118,7 @@ class Asset {
         _createdDateTime = _entity!.createDateTime;
       }
     }
+    _isEntityFetched = true;
   }
 
   Asset({
