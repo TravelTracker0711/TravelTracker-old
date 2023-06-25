@@ -16,6 +16,7 @@ class TravelTrackFactory {
       gpxFileFullPaths:
           (json['gpxFileFullPaths'] as List).map((e) => e.toString()).toList(),
       createDateTime: DateTime.parse(json['createDateTime']),
+      updateDateTime: DateTime.parse(json['updateDateTime']),
     );
     return travelTrack;
   }
@@ -44,6 +45,7 @@ class TravelTrackFactory {
         assetMap: assetMap,
       );
     }
+    // TODO: get time from gpx file
     return TravelTrack(
       wpts: wpts,
       trksegs: trksegs,

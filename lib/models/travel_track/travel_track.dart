@@ -22,6 +22,7 @@ class TravelTrack with ChangeNotifier {
   // List<List<String>> _assetIdGroups = <List<String>>[];
   final List<String> _gpxFileFullPaths = <String>[];
   final DateTime _createDateTime;
+  DateTime _updateDateTime;
   bool isSelected = false;
   bool isVisible = true;
 
@@ -46,9 +47,21 @@ class TravelTrack with ChangeNotifier {
   // List<List<String>> get assetIdGroups => List<List<String>>.unmodifiable(
   //     _assetIdGroups.map((e) => List<String>.unmodifiable(e)));
 
-  // TODO: get start/end time more accurately
-  DateTime get startTime => _trksegs.startTime ?? _createDateTime;
-  DateTime get endTime => _trksegs.endTime ?? _createDateTime;
+  DateTime get startTime {
+    DateTime? startTime = _trksegs.startTime;
+    if (startTime == null || startTime.isAfter(_createDateTime)) {
+      startTime = _createDateTime;
+    }
+    return startTime;
+  }
+
+  DateTime get endTime {
+    DateTime? endTime = _trksegs.endTime;
+    if (endTime == null || endTime.isBefore(_updateDateTime)) {
+      endTime = _updateDateTime;
+    }
+    return endTime;
+  }
 
   TravelTrack({
     TravelConfig? config,
@@ -57,8 +70,12 @@ class TravelTrack with ChangeNotifier {
     Map<String, Asset>? assetMap,
     List<String>? gpxFileFullPaths,
     DateTime? createDateTime,
+    DateTime? updateDateTime,
   })  : config = config?.clone() ?? TravelConfig(),
-        _createDateTime = createDateTime?.toUtc() ?? DateTime.now() {
+        _createDateTime = createDateTime?.toUtc() ?? DateTime.now().toUtc(),
+        _updateDateTime = updateDateTime?.toUtc() ??
+            createDateTime?.toUtc() ??
+            DateTime.now().toUtc() {
     if (wpts != null) {
       _wpts
         ..addAll(wpts.clone())
@@ -85,7 +102,7 @@ class TravelTrack with ChangeNotifier {
     );
   }
 
-  // TODO: extract setter/getter to another file
+  // TODO: extract setter/getter/adder to another file
   void addTrkseg({
     Trkseg? trkseg,
   }) {
@@ -135,7 +152,7 @@ class TravelTrack with ChangeNotifier {
 
   @override
   String toString() {
-    return 'TravelTrack{config: $config, ${_wpts.length} wpts, ${_trksegs.length} trksegs, ${_assetMap.length} assets, ${_gpxFileFullPaths.length} gpxFileFullPaths, createDateTime: $_createDateTime}';
+    return 'TravelTrack{config: $config, ${_wpts.length} wpts, ${_trksegs.length} trksegs, ${_assetMap.length} assets, ${_gpxFileFullPaths.length} gpxFileFullPaths, createDateTime: $_createDateTime, updateDateTime: $_updateDateTime}';
   }
 
   Map<String, dynamic> toJson() {
@@ -147,8 +164,22 @@ class TravelTrack with ChangeNotifier {
       // 'assetIdGroups': _assetIdGroups,
       'gpxFileFullPaths': _gpxFileFullPaths,
       'createDateTime': _createDateTime.toIso8601String(),
+      'updateDateTime': _updateDateTime.toIso8601String(),
     };
     return json;
+  }
+
+  @override
+  void notifyListeners() {
+    updateDateTime();
+    super.notifyListeners();
+  }
+
+  void updateDateTime({DateTime? dateTime}) {
+    if (dateTime != null && dateTime.isBefore(_updateDateTime)) {
+      dateTime = null;
+    }
+    _updateDateTime = dateTime?.toUtc() ?? DateTime.now().toUtc();
   }
 
   // void clearAssetIdGroupsAsync() async {
