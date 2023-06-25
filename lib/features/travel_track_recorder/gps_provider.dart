@@ -10,11 +10,13 @@ class GpsProvider with ChangeNotifier {
   bool _isInitializing = false;
   bool _isInitialized = false;
   bool _isRecording = false;
+  bool _isNewPoint = false;
   StreamSubscription<Position>? _positionStreamSubscription;
   Wpt? _wpt;
 
   bool get isInitialized => _isInitialized;
   bool get isRecording => _isRecording;
+  bool get isNewPoint => _isNewPoint;
 
   Wpt? get wpt => _wpt;
 
@@ -29,8 +31,8 @@ class GpsProvider with ChangeNotifier {
 
   Future<void> _initAsync() async {
     await PermissionManager.geolocatorRequestAsync();
-    notifyListeners();
     _isInitialized = true;
+    notifyListeners();
   }
 
   Future<void> startRecordingAsync(LocationSettings? locationSettings) async {
@@ -72,6 +74,14 @@ class GpsProvider with ChangeNotifier {
       return;
     }
     _wpt = WptFactory.fromPosition(position: pos);
-    notifyListeners();
+    notifyListeners(isNewPoint: true);
+  }
+
+  @override
+  void notifyListeners({
+    bool isNewPoint = false,
+  }) {
+    _isNewPoint = isNewPoint;
+    super.notifyListeners();
   }
 }

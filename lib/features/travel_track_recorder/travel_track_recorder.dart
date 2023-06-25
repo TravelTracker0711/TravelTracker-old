@@ -82,11 +82,15 @@ class TravelTrackRecorder with ChangeNotifier {
 
   VoidCallback _getGpsListener(TravelTrack activeTravelTrack) {
     return () {
-      if (GpsProvider.I.wpt != null) {
-        activeTravelTrack.addTrkpt(
-          trkpt: GpsProvider.I.wpt!,
-        );
+      if (!GpsProvider.I.isNewPoint) {
+        return;
       }
+      if (GpsProvider.I.wpt == null) {
+        return;
+      }
+      activeTravelTrack.addTrkpt(
+        trkpt: GpsProvider.I.wpt!,
+      );
     };
   }
 
