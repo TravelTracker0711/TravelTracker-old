@@ -1,4 +1,7 @@
-import 'package:geolocator/geolocator.dart';
+import 'package:geolocator/geolocator.dart' as geolocator;
+import 'package:location/location.dart' as loc;
+import 'package:flutter_background_geolocation/flutter_background_geolocation.dart'
+    as bg;
 import 'package:gpx/gpx.dart' as gpx_pkg;
 import 'package:latlong2/latlong.dart' as latlng;
 import 'package:travel_tracker/models/travel_config/travel_config.dart';

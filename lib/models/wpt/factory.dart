@@ -14,7 +14,7 @@ class WptFactory {
   }
 
   static Wpt fromPosition({
-    required Position position,
+    required geolocator.Position position,
   }) {
     return Wpt(
       latLng: latlng.LatLng(
@@ -23,6 +23,35 @@ class WptFactory {
       ),
       elevation: position.altitude,
       time: position.timestamp,
+    );
+  }
+
+  static Wpt fromLocationData({
+    required loc.LocationData locationData,
+  }) {
+    DateTime time = locationData.time == null
+        ? DateTime.now()
+        : DateTime.fromMillisecondsSinceEpoch(locationData.time!.toInt());
+    return Wpt(
+      latLng: latlng.LatLng(
+        locationData.latitude!,
+        locationData.longitude!,
+      ),
+      elevation: locationData.altitude,
+      time: time,
+    );
+  }
+
+  static Wpt fromBgLocation({
+    required bg.Location location,
+  }) {
+    return Wpt(
+      latLng: latlng.LatLng(
+        location.coords.latitude,
+        location.coords.longitude,
+      ),
+      elevation: location.coords.altitude,
+      time: DateTime.parse(location.timestamp),
     );
   }
 

@@ -1,3 +1,4 @@
+import 'package:location/location.dart' as loc;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:geolocator/geolocator.dart';
@@ -46,6 +47,39 @@ class PermissionManager {
         permission == LocationPermission.deniedForever) {
       return false;
     }
+    return true;
+  }
+
+  static bool _locationServiceEnabled = false;
+  static loc.PermissionStatus _locationPermissionGranted =
+      loc.PermissionStatus.denied;
+
+  static bool get locationServiceEnabled => _locationServiceEnabled;
+  static loc.PermissionStatus get locationPermissionGranted =>
+      _locationPermissionGranted;
+
+  static Future<bool> locationRequestAsync(loc.Location location) async {
+    if (locationServiceEnabled &&
+        locationPermissionGranted == loc.PermissionStatus.granted) {
+      return true;
+    }
+
+    _locationServiceEnabled = await location.serviceEnabled();
+    if (!_locationServiceEnabled) {
+      _locationServiceEnabled = await location.requestService();
+      if (!_locationServiceEnabled) {
+        return false;
+      }
+    }
+
+    _locationPermissionGranted = await location.hasPermission();
+    if (_locationPermissionGranted == loc.PermissionStatus.denied) {
+      _locationPermissionGranted = await location.requestPermission();
+      if (_locationPermissionGranted != loc.PermissionStatus.granted) {
+        return false;
+      }
+    }
+
     return true;
   }
 }

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get_it/get_it.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_manager/activate_travel_track_mananger.dart';
+import 'package:travel_tracker/features/travel_track_recorder/gps_provider.dart';
 import 'package:travel_tracker/models/travel_config/travel_config.dart';
 import 'package:travel_tracker/models/travel_track/travel_track.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_file_handler.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_manager/travel_track_manager.dart';
-import 'package:travel_tracker/features/travel_track_recorder/gps_provider.dart';
 
 class TravelTrackRecorder with ChangeNotifier {
   // ignore: non_constant_identifier_names
@@ -39,12 +38,7 @@ class TravelTrackRecorder with ChangeNotifier {
 
     _gpsListener = _getGpsListener(activeTravelTrack);
     GpsProvider.I.addListener(_gpsListener!);
-    GpsProvider.I.startRecordingAsync(
-      const LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 10,
-      ),
-    );
+    GpsProvider.I.startRecordingAsync();
     _isActivated = true;
     _isRecording = true;
     notifyListeners();
@@ -86,9 +80,6 @@ class TravelTrackRecorder with ChangeNotifier {
   VoidCallback _getGpsListener(TravelTrack activeTravelTrack) {
     return () {
       if (!GpsProvider.I.isNewPoint) {
-        return;
-      }
-      if (GpsProvider.I.wpt == null) {
         return;
       }
       activeTravelTrack.addTrkpt(

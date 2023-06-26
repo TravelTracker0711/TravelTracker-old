@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_tracker/features/asset/external_asset_manager.dart';
-import 'package:travel_tracker/features/travel_track_recorder/gps_provider.dart';
+import 'package:travel_tracker/features/travel_track/travel_track_manager/activate_travel_track_mananger.dart';
 import 'package:travel_tracker/features/travel_track/travel_track_manager/travel_track_manager.dart';
 import 'package:travel_tracker/features/home_page/home_page.dart';
 import 'package:go_router/go_router.dart';
+import 'package:travel_tracker/features/travel_track_recorder/bg_gps_provider.dart';
+import 'package:travel_tracker/features/travel_track_recorder/gps_provider.dart';
+import 'package:travel_tracker/features/travel_track_recorder/location_gps_provider.dart';
 import 'package:travel_tracker/features/travel_track_recorder/travel_track_recorder.dart';
 import 'package:travel_tracker/global.dart';
-
-import 'features/travel_track/travel_track_manager/activate_travel_track_mananger.dart';
 
 void main() {
   GetIt.I.registerLazySingletonAsync<ExternalAssetManager>(
@@ -22,7 +23,7 @@ void main() {
   GetIt.I.registerSingleton<TravelTrackManager>(TravelTrackManager());
   GetIt.I.registerSingleton<ActivateTravelTrackManager>(
       ActivateTravelTrackManager());
-  GetIt.I.registerSingleton<GpsProvider>(GpsProvider());
+  GetIt.I.registerSingleton<GpsProvider>(BgGpsProvider());
   GetIt.I.registerSingleton<TravelTrackRecorder>(TravelTrackRecorder());
 
   runApp(const MyApp());
@@ -51,7 +52,7 @@ class MyApp extends StatelessWidget {
           create: (_) => ActivateTravelTrackManager.I,
         ),
         ChangeNotifierProvider<GpsProvider>(
-          create: (_) => GpsProvider.I,
+          create: (_) => GetIt.I<GpsProvider>(),
         ),
         ChangeNotifierProvider<TravelTrackRecorder>(
           create: (_) => TravelTrackRecorder.I,
